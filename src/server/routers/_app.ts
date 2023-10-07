@@ -1,10 +1,14 @@
-import { router } from '../trpc';
+import { router, mergeRouters } from '../trpc';
 import { hello } from '../controllers/hello.controller';
-import { getAllUsers } from './users.router'
+import { usersRouter } from './users.router'
 
-export const appRouter = router({
+const demoRouter = router({
   hello,
-  getAllUsers,
 });
+
+export const appRouter = mergeRouters(
+  demoRouter,
+  usersRouter,
+);
 
 export type AppRouter = typeof appRouter;
