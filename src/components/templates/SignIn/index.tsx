@@ -1,4 +1,7 @@
 import React from "react";
-export default function SignInTemplate() {
+
+const SignInTemplate = () => {
   return <h1>SignIn</h1>;
 }
+
+export default SignInTemplate;

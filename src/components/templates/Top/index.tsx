@@ -1,6 +1,6 @@
 import { trpc } from '@/utils/trpc';
 
-export default function TopTemplate() {
+const TopTemplate = () => {
   const { data } = trpc.getAllUsers.useQuery();
 
   return (
@@ -13,3 +13,5 @@ export default function TopTemplate() {
     </div>
   );
 }
+
+export default TopTemplate;
