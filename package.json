@@ -22,7 +22,8 @@
     "react": "^18",
     "react-dom": "^18",
     "supabase": "^1.100.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",
