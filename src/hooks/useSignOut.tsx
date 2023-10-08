@@ -1,3 +1,8 @@
+/*
+  ログアウト処理を行うカスタムフック。
+  server に移行するかもしれない。
+*/
+
 import { useSupabase } from "@/hooks/useSupabase";
 
 export const useSignOut = async () => {
