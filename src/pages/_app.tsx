@@ -1,4 +1,5 @@
 import React from 'react';
+import '@/styles/reset.css';
 import type { AppType } from 'next/app';
 import { trpc } from  '../utils/trpc';
 
