@@ -1,9 +1,7 @@
-import React, { useCallback } from "react";
-import { trpc } from '@/utils/trpc';
-import BorderdButton from '@/components/common/BorderdButton';
+import React from "react";
 import styled from '@emotion/styled';
 import { useForm } from "react-hook-form";
-import type { SubmitHandler } from "react-hook-form";
+import { useSignUp } from "./logic";
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,14 +21,7 @@ export type SignUpInputs = {
 
 const SignUpTemplate = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<SignUpInputs>();
-
-  const mutation = trpc.signUp.useMutation();
-  const onSubmit: SubmitHandler<SignUpInputs> = useCallback(async ({
-    email,
-    password,
-  }) => {
-    mutation.mutate({ email, password });
-  }, [mutation]);
+  const { onSubmit } = useSignUp();
 
   return (
     <Wrapper>
