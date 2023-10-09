@@ -4,14 +4,17 @@ import type { signUpParams } from "../services/auth.service";
 
 export const signUpHandler = async ({email, password}: signUpParams) => {
   try {
-    if (!email || (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email)) {
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex = /^[a-zA-Z0-9.?!\/-]{8,24}$/;
+
+    if (!email || !(emailRegex).test(email)) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Invalid email',
       });
     }
 
-    if (!password || (/^[a-zA-Z0-9.?/-]{8,24}$/).test(password)) {
+    if (!password || !(passwordRegex).test(password)) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Invalid password',

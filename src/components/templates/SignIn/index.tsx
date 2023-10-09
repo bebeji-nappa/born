@@ -18,7 +18,7 @@ const SignInTemplate = () => {
 
   return (
     <Wrapper>
-      <h1>SignIn</h1>
+      <h1>Sign In</h1>
       <BorderdButton onPress={handleLogin}>送信</BorderdButton>
     </Wrapper>
   );
