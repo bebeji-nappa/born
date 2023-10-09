@@ -1,21 +1,14 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { trpc } from '@/utils/trpc';
-import Router from "next/router";
+import { supabase } from '@/libs/supabase';
 
 export const useSignOut = () => {
-  const mutation = trpc.signOut.useMutation();
   const handlePress = useCallback(async () => {
-    mutation.mutate();
-  }, [mutation]);
-
-  useEffect(() => {
-    if (mutation.isSuccess) {
-      Router.push("/sign_in");
-    }
-  }, [mutation]);
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  }, []);
 
   return {
     handlePress,
-    mutation,
   }
 };

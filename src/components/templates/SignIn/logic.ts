@@ -1,26 +1,25 @@
-import { useCallback, useEffect } from "react";
-import { trpc } from '@/utils/trpc';
+import { useCallback } from "react";
 import type { SubmitHandler } from "react-hook-form";
-import Router from "next/router";
 import type { SignInInputs } from "./index";
+import { supabase } from '@/libs/supabase';
 
 export const useSignIn = () => {
-  const mutation = trpc.signIn.useMutation();
-  const onSubmit: SubmitHandler<SignInInputs> = useCallback(({
+  const onSubmit: SubmitHandler<SignInInputs> = useCallback(async ({
     email,
     password,
   }) => {
-    mutation.mutate({ email, password });
-  }, [mutation]);
-
-  useEffect(() => {
-    if (mutation.isSuccess) {
-      Router.push("/home");
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+  
+    if (error) {
+      console.error(error);
+      throw error.message;
     }
-  }, [mutation]);
+  }, []);
 
   return {
     onSubmit,
-    mutation,
   }
 };

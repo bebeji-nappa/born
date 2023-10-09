@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { signUp, signIn, signOut } from "../services/auth.service";
+import { signUp, signIn, signOut, isAuthed } from "../services/auth.service";
 import type { signUpParams } from "../services/auth.service";
 
 export const signUpHandler = async ({email, password}: signUpParams) => {
@@ -24,9 +24,7 @@ export const signUpHandler = async ({email, password}: signUpParams) => {
     const result = await signUp({email, password});
     return {
       status: 'success',
-      data: {
-        result,
-      },
+      result,
     };
   } catch (err: any) {
     if (err.code === 'P2002') {
@@ -44,9 +42,7 @@ export const signInHandler = async ({email, password}: signUpParams) => {
     const result = await signIn({email, password});
     return {
       status: 'success',
-      data: {
-        result,
-      },
+      result,
     };
   } catch (err: any) {
     throw err;
@@ -58,7 +54,18 @@ export const signOutHandler = async () => {
     await signOut();
     return {
       status: 'success',
-      data: {},
+    };
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const isAuthedHandler = async () => {
+  try {
+    const data = await isAuthed();
+    return {
+      status: 'success',
+      isAuthed: data,
     };
   } catch (err: any) {
     throw err;

@@ -1,4 +1,4 @@
-import { supabase } from '@/contants/supabase';
+import { supabase } from '@/lib/supabase';
 
 export type signInParams = {
   email: string;
@@ -37,7 +37,7 @@ export const signIn = async ({
 
   if (error) {
     console.error(error);
-    throw error.message;
+    throw error;
   }
   return data;
 };
@@ -50,4 +50,12 @@ export const signOut = async () => {
     throw error;
   }
   return true;
+};
+
+export const isAuthed = async () => {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) {
+    return false;
+  }
+  return data.session !== null ? true : false;
 };

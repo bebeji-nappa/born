@@ -3,7 +3,8 @@ import { publicProcedure } from '../trpc';
 import {
   signUpHandler,
   signInHandler,
-  signOutHandler
+  signOutHandler,
+  isAuthedHandler,
 } from '../controllers/auth.controller';
 import { z } from 'zod';
 
@@ -23,5 +24,9 @@ export const authRouter = router({
   signOut: publicProcedure
     .mutation(async () => {
       return await signOutHandler();
+    }),
+  isAuthed: publicProcedure
+    .query(async () => {
+      return await isAuthedHandler();
     }),
 });
