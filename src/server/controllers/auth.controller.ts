@@ -1,0 +1,41 @@
+import { TRPCError } from "@trpc/server";
+import { signUp, signIn, signOut } from "../services/auth.service";
+import type { signUpParams } from "../services/auth.service";
+
+export const signUpHandler = async ({email, password}: signUpParams) => {
+  try {
+    if (!email || (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email)) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid email',
+      });
+    }
+
+    if (!password || (/^[a-zA-Z0-9.?/-]{8,24}$/).test(password)) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Invalid password',
+      });
+    }
+
+    const result = await signUp({email, password});
+    return {
+      status: 'success',
+      data: {
+        result,
+      },
+    };
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      throw new TRPCError({
+        code: 'CONFLICT',
+        message: 'Post with that account already exists',
+      });
+    }
+    throw err;
+  }
+};
+
+export const signInHandler = async ({email, password}: signUpParams) => await signIn({email, password});
+
+export const signOutHandler = async () => await signOut();
