@@ -36,6 +36,28 @@ export const signUpHandler = async ({email, password}: signUpParams) => {
   }
 };
 
-export const signInHandler = async ({email, password}: signUpParams) => await signIn({email, password});
+export const signInHandler = async ({email, password}: signUpParams) => {
+  try {
+    const result = await signIn({email, password});
+    return {
+      status: 'success',
+      data: {
+        result,
+      },
+    };
+  } catch (err: any) {
+    throw err;
+  }
+};
 
-export const signOutHandler = async () => await signOut();
+export const signOutHandler = async () => {
+  try {
+    await signOut();
+    return {
+      status: 'success',
+      data: {},
+    };
+  } catch (err: any) {
+    throw err;
+  }
+};
