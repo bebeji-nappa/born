@@ -2,8 +2,9 @@ import '@/styles/reset.css';
 import type { AppType } from 'next/app';
 import { trpc } from  '../utils/trpc';
 import { SessionProvider } from "next-auth/react"
+import type { Session } from "next-auth"
 
-const MyApp: AppType<{ session: any }> = ({
+const MyApp: AppType<{ session: Session }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
