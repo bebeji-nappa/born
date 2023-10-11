@@ -1,25 +1,9 @@
 import { useCallback } from "react";
-import type { SubmitHandler } from "react-hook-form";
-import type { SignInInputs } from "./index";
-import { supabase } from '@/libs/supabase';
-
+import { signIn } from "next-auth/react";
 export const useSignIn = () => {
-  const onSubmit: SubmitHandler<SignInInputs> = useCallback(async ({
-    email,
-    password,
-  }) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
-  
-    if (error) {
-      console.error(error);
-      throw error.message;
-    }
+  const githubSignIn = useCallback(() => {
+    signIn("github", { callbackUrl: "/home" });
   }, []);
 
-  return {
-    onSubmit,
-  }
+  return { githubSignIn };
 };
