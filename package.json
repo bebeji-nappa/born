@@ -64,8 +64,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pnpm fix:lint",
+      "pre-commit": "lint-staged",
       "pre-push": "pnpm test"
+    },
+    "lint-staged": {
+      "src/**/*.{ts,tsx}": [
+        "pnpm fix:lint"
+      ]
     }
   }
 }
