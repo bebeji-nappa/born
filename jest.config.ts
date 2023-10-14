@@ -22,7 +22,8 @@ const customJestConfig = {
     '@/(.*)$': '<rootDir>/src/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
-  testMatch: ['**/*.spec.tsx'],
+  testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
+  testPathIgnorePatterns: ['src/tests/e2e/'],
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
