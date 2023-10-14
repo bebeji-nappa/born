@@ -1,7 +1,9 @@
 # Reborn (仮)
+
 リポジトリ名は今後変わる可能性があります。
 
 ## 使用技術
+
 技術的な深掘りも目的としてあるので、実験的な技術選定にしています。
 
 - Framework
@@ -13,6 +15,7 @@
   - Supabase
 
 ## 事前準備
+
 1. 以下コマンドで .env を作成します
 
 ```
@@ -71,6 +74,7 @@ GITHUB_SECRET=[Client Secret Key]
 ```
 
 ## アプリ起動
+
 以下コマンドで起動します。
 
 ```
@@ -78,3 +82,37 @@ $ pnpm dev
 ```
 
 http://localhost:3000/signin にアクセスして、Sign in of GitHub クリックして、ログインできるか確認してください。
+
+## テストについて
+
+以下のテストを導入しています。
+
+### フォーマットテスト
+
+- ESLint
+- Prettier
+
+### 単体テスト(コンポーネント/API)
+
+- Jest
+- React Testing Library
+
+### E2E
+
+- Playwright
+
+テストは、CIで実行されますが、手動でも実行できます。
+
+```bash
+# Running Prettier & ESLint
+$ pnpm lint
+
+# Add Auto fix Option to Prettier & ESLint
+$ pnpm fix:lint
+
+# Running Unit Test
+$ pnpm test
+
+# Running E2E Test
+$ pnpm e2e
+```
