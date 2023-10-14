@@ -69,7 +69,8 @@
     },
     "lint-staged": {
       "src/**/*.{ts,tsx}": [
-        "pnpm fix:lint"
+        "pnpm fix:lint",
+        "git add"
       ]
     }
   }
