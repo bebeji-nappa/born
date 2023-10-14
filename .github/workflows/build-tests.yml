@@ -1,4 +1,4 @@
-name: Build Tests
+name: E2E Tests
 on:
   push:
     branches: [main, master]
@@ -18,10 +18,6 @@ jobs:
           version: 8.9.0
       - name: Install dependencies
         run: pnpm install
-      - name: Running Lint
-        run: pnpm run lint
-      - name: Running Tests
-        run: pnpm run test
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
