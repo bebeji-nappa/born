@@ -1,40 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Reborn (仮)
+リポジトリ名は今後変わる可能性があります。
 
-## Getting Started
+## 使用技術
+技術的な深掘りも目的としてあるので、実験的な技術選定にしています。
 
-First, run the development server:
+- Framework
+  - Next.js
+- API
+  - tRPC
+  - Prisma Client
+- DB
+  - Supabase
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 事前準備
+1. 以下コマンドで .env を作成します
+
+```
+$ cp .env.sample .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. [Homebrew 公式サイト](https://brew.sh/ja/)から、Homebrew をインストールします。
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+3. Homebrew で Docker をインストールします。
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```
+$ brew install --cask docker
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+4. pnpm install を実行します
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+$ pnpm install
+```
 
-## Learn More
+5. ローカル環境で Supabase を起動します。
 
-To learn more about Next.js, take a look at the following resources:
+```
+$ supabase start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+起動完了すると Supabase の情報が出てくるので、以下の環境変数を設定します。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+(Supabase の 各 URL 情報 は `supabase stutas` で確認できます。)
 
-## Deploy on Vercel
+```
+DATABASE_URL=[DB URL]
+NEXT_PUBLIC_SUPABASE_URL=[API URL]
+NEXT_PUBLIC_SUPABASE_ANON_KEY=[anon key]
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+6. 環境変数設定後、Prisma で マイグレーションを実行します
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+$ prisma migrate dev
+```
+
+Supabase の studio URL から、テーブルが作成されているか確認します。
+
+## GitHub 認証の環境構築
+
+1. こちらの [GitHub 公式 Docs](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) に従って、開発用の OAuth App を作成します
+
+`homepage URL`, `Authorization callback URL` は `http://localhost:3000` で入力してください。
+
+2. Client ID と Client Secret Key が発行されるので、それぞれ、以下の環境変数に設定します
+
+```
+GITHUB_ID=[Client ID]
+GITHUB_SECRET=[Client Secret Key]
+```
+
+## アプリ起動
+以下コマンドで起動します。
+
+```
+$ pnpm dev
+```
+
+http://localhost:3000/signin にアクセスして、Sign in of GitHub クリックして、ログインできるか確認してください。
