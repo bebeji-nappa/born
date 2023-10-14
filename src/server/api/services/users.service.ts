@@ -6,3 +6,14 @@ export const getAll = async () => {
     users,
   };
 };
+
+export const getAuthUserId = async (email: string) => {
+  const data = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  return {
+    userId: data?.id ?? '',
+  };
+};
