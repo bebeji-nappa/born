@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, master]
 jobs:
-  test:
+  tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -15,6 +15,10 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: pnpm install
+      - name: Running Lint
+        run: pnpm run lint
+      - name: Running Tests
+        run: pnpm run test
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
