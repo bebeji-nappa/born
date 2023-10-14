@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
@@ -13,6 +13,7 @@ export type AuthGuardProps = {
 export default function AuthGuardPrivider({ children }: AuthGuardProps) {
   const { status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated" && router.pathname !== "/signin") {
@@ -21,7 +22,8 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
     if (status === "authenticated" && router.pathname === "/signin") {
       router.push("/home");
     }
-  }, [router, status]);
+    setLoading(false);
+  }, [router, status, setLoading]);
 
-  return children;
+  return !loading && children;
 };
