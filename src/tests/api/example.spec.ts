@@ -3,5 +3,5 @@ import { getAllUsersHandler } from '../../server/api/controllers/users.controlle
 
 test('API Example Test', async () => {
   const data = await getAllUsersHandler();
-  expect(data?.users).not.toHaveLength(3);
+  expect(data?.users).not.toHaveLength(0);
 });
