@@ -12,6 +12,7 @@
     "lint:eslint": "eslint src --ext .ts",
     "fix:prettier": "prettier --write src",
     "lint:prettier": "prettier --check src",
+    "test:component": "jest src/tests/components/** --config jest.config.ts",
     "test": "jest --config jest.config.ts",
     "e2e": "pnpm playwright test"
   },
@@ -53,6 +54,7 @@
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
     "eslint-plugin-testing-library": "^6.1.0",
+    "husky": "^8.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.0.3",
@@ -60,9 +62,10 @@
     "ts-node": "^10.9.1",
     "typescript": "^5"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|tsx|js|jsx)$": "ts-jest"
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm fix:lint",
+      "pre-push": "pnpm test"
     }
   }
 }
