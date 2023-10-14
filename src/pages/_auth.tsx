@@ -16,15 +16,15 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const user = trpc.getAuthUserId.useQuery({
-    email: data?.user?.email || '',
+    email: data?.user?.email ?? '',
   });
 
   useEffect(() => {
     if (status === 'authenticated' && data?.user) {
       const userData = {
         id: user?.data?.userId,
-        email: data?.user?.email || '',
-        name: data?.user?.name || '',
+        email: data?.user?.email ?? '',
+        name: data?.user?.name ?? '',
       };
       useStore.setState({
         user: userData,
