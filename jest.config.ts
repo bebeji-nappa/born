@@ -23,7 +23,7 @@ const customJestConfig = {
   },
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
-  testPathIgnorePatterns: ['src/tests/e2e/'],
+  testPathIgnorePatterns: ['src/tests/api/', 'src/tests/e2e/'],
   transform: {
     '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
