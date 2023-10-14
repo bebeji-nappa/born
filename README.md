@@ -120,3 +120,10 @@ $ pnpm e2e
 ## commit について
 
 Husky を導入しており、基本的に pre-push 時にE2E以外のテストを実行しています。
+
+`--no-verify` オプションでテストを回避して、push 出来ます。
+
+```bash
+git push --no-verify origin
+
+```
