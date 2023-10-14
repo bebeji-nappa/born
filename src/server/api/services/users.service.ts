@@ -14,6 +14,6 @@ export const getAuthUserId = async (email: string) => {
     },
   });
   return {
-    userId: data?.id,
+    userId: data?.id ?? '',
   };
 };
