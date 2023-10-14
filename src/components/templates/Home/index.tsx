@@ -10,7 +10,7 @@ const HomeTemplate = () => {
       {session && (
         <>
           <Image
-            src={session.user?.image!}
+            src={session.user?.image as string}
             alt="icon"
             width={400}
             height={400}
