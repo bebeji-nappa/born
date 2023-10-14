@@ -2,17 +2,18 @@ import NextAuth from 'next-auth/next';
 import GithubProvider from 'next-auth/providers/github';
 
 // Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
+/* eslint @typescript-eslint/no-explicit-any: off */
 export const authOptions = {
   callbacks: {
     async jwt({ token, account }: any) {
       if (account) {
-        token.accessToken = account.access_token
+        token.accessToken = account.access_token;
       }
-      return token
+      return token;
     },
     session({ session, token, user }: any) {
       if (session.user) {

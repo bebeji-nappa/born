@@ -1,8 +1,8 @@
 import '@/styles/reset.css';
 import type { AppType } from 'next/app';
-import { trpc } from  '../utils/trpc';
-import { SessionProvider } from "next-auth/react"
-import type { Session } from "next-auth"
+import { trpc } from '../utils/trpc';
+import { SessionProvider } from 'next-auth/react';
+import type { Session } from 'next-auth';
 import AuthGuardPrivider from './_auth';
 
 const MyApp: AppType<{ session: Session }> = ({

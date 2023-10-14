@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import { trpc } from '@/utils/trpc';
+import { useCallback } from 'react';
 import { supabase } from '@/libs/supabase';
 
 export const useSignOut = () => {
@@ -10,5 +9,5 @@ export const useSignOut = () => {
 
   return {
     handlePress,
-  }
+  };
 };

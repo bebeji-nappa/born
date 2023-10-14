@@ -5,13 +5,9 @@ const TopTemplate = () => {
 
   return (
     <div>
-      <ul>
-        {data?.users.map((user) => 
-          <li key={user.id}>{user.name}</li>
-        )}
-      </ul>
+      <ul>{data?.users.map((user) => <li key={user.id}>{user.name}</li>)}</ul>
     </div>
   );
-}
+};
 
 export default TopTemplate;

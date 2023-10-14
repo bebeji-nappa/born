@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import styled from '@emotion/styled';
 import Image from 'next/image';
-import { useSignIn } from "./logic";
+import { useSignIn } from './logic';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,7 +53,7 @@ const GitHubButton = styled.button`
 export type SignInInputs = {
   email: string;
   password: string;
-}
+};
 
 const SignInTemplate = () => {
   const { githubSignIn } = useSignIn();
@@ -75,6 +75,6 @@ const SignInTemplate = () => {
       </Container>
     </Wrapper>
   );
-}
+};
 
 export default SignInTemplate;

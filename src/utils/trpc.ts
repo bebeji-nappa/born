@@ -3,11 +3,9 @@ import { createTRPCNext } from '@trpc/next';
 import type { AppRouter } from '../server/api/routers/_app';
 
 function getBaseUrl() {
-  if (typeof window !== 'undefined') 
-    return '';
+  if (typeof window !== 'undefined') return '';
 
-  if (process.env.VERCEL_URL) 
-    return `https://${process.env.VERCEL_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
 
   if (process.env.RENDER_INTERNAL_HOSTNAME)
     return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
@@ -16,7 +14,7 @@ function getBaseUrl() {
 }
 
 export const trpc = createTRPCNext<AppRouter>({
-  config(opts) {
+  config() {
     return {
       links: [
         httpBatchLink({

@@ -5,4 +5,4 @@ export const getAll = async () => {
   return {
     users,
   };
-}
+};
