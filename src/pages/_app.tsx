@@ -1,4 +1,4 @@
-import '@/styles/reset.css';
+// import '@/styles/reset.css';
 import type { AppType } from 'next/app';
 import { trpc } from '../utils/trpc';
 import { SessionProvider } from 'next-auth/react';

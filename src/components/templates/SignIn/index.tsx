@@ -28,8 +28,7 @@ const SigninImage = styled.div`
   height: 100vh;
   background-image: url('/images/sign-in-background.jpg');
   background-size: cover;
-  backgroud-repeat: no-repeat;
-  content-fit: cover;
+  background-repeat: no-repeat;
 `;
 
 const Title = styled.h1`
