@@ -25,15 +25,16 @@ const PostCreateTemplate = () => {
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
   const ref = useRef<HTMLButtonElement>(null);
 
-  const { buttonProps } = useButton({
-    onPress: handleIsEdit,
-  }, ref);
+  const { buttonProps } = useButton(
+    {
+      onPress: handleIsEdit,
+    },
+    ref,
+  );
 
   return (
     <Wrapper>
-      <Button {...buttonProps}>
-        {isEdit ? 'Preview' : 'Edit'}
-      </Button>
+      <Button {...buttonProps}>{isEdit ? 'Preview' : 'Edit'}</Button>
       {isEdit ? (
         <Textarea
           defaultValue={text}

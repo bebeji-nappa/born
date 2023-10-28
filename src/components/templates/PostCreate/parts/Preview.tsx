@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "@emotion/styled";
+import React from 'react';
+import styled from '@emotion/styled';
 import { Richmd } from 'richmd-react';
 import 'richmd/richmd.css';
 
