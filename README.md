@@ -41,15 +41,13 @@ homebrew で mysql をインストールします。
 $ brew install mysql
 ```
 
-mysql を起動して、born データベースを作成します。
+mysql を起動して、以下の SQL born データベースを作成します。
 
 ```
 create database born;
 ```
 
-起動完了すると Supabase の情報が出てくるので、以下の環境変数を設定します。
-
-(Supabase の 各 URL 情報 は `supabase stutas` で確認できます。)
+設定が終わったら、以下の環境変数を設定します。
 
 ```
 DATABASE_URL=mysql://[username]:[password]@localhost:3306/born
