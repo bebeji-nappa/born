@@ -34,20 +34,23 @@ $ brew install --cask docker
 $ pnpm install
 ```
 
-5. ローカル環境で Supabase を起動します。
+5. DB を設定します。
+homebrew で mysql をインストールします。
 
 ```
-$ supabase start
+$ brew install mysql
 ```
 
-起動完了すると Supabase の情報が出てくるので、以下の環境変数を設定します。
-
-(Supabase の 各 URL 情報 は `supabase stutas` で確認できます。)
+mysql を起動して、以下の SQL born データベースを作成します。
 
 ```
-DATABASE_URL=[DB URL]
-NEXT_PUBLIC_SUPABASE_URL=[API URL]
-NEXT_PUBLIC_SUPABASE_ANON_KEY=[anon key]
+create database born;
+```
+
+設定が終わったら、以下の環境変数を設定します。
+
+```
+DATABASE_URL=mysql://[username]:[password]@localhost:3306/born
 ```
 
 6. 環境変数設定後、Prisma で マイグレーションを実行します
