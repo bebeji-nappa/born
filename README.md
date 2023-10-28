@@ -59,7 +59,13 @@ DATABASE_URL=mysql://[username]:[password]@localhost:3306/born
 $ prisma migrate dev
 ```
 
-Supabase の studio URL から、テーブルが作成されているか確認します。
+MySQL でテーブルが作成されているか確認します。
+
+設定完了したら、APIでデータを取得できるように、以下コマンドを実行します
+
+```
+$ pnpm prisma generate
+```
 
 ## GitHub 認証の環境構築
 
