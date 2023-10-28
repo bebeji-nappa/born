@@ -1,37 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from '@emotion/styled';
-import { Richmd } from 'richmd-react';
-import 'richmd/richmd.css';
+import { useButton } from 'react-aria';
+import { useBoolean } from 'ahooks';
+import Preview from './parts/Preview';
 
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: 8px;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
-const StyledRichmd = styled(Richmd)`
-  width: 100%;
-  padding: 0 16px;
+const Textarea = styled.textarea`
+  padding: 8px;
+  resize: none;
+  width: 70%;
+  height: 25rem;
+`;
+
+const Button = styled.button`
+  width: 300px;
 `;
 
 const PostCreateTemplate = () => {
   const [text, setText] = useState('# Hello World');
-  const [isEdit, setIsEdit] = useState(true);
+  const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  const { buttonProps } = useButton({
+    onPress: handleIsEdit,
+  }, ref);
 
   return (
-    <>
-      <button onClick={() => setIsEdit(!isEdit)}>
+    <Wrapper>
+      <Button {...buttonProps}>
         {isEdit ? 'Preview' : 'Edit'}
-      </button>
+      </Button>
       {isEdit ? (
         <Textarea
           defaultValue={text}
           onChange={(e) => setText(e.target.value)}
-          rows={50}
         />
       ) : (
-        <StyledRichmd text={text} />
+        <Preview text={text} />
       )}
-    </>
+    </Wrapper>
   );
 };
 
