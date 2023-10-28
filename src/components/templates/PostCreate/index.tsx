@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import styled from '@emotion/styled';
-import { useButton } from 'react-aria';
+import { useButton, useTextField } from 'react-aria';
 import { useBoolean } from 'ahooks';
 import Preview from './parts/Preview';
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,13 +22,25 @@ const Button = styled.button`
 const PostCreateTemplate = () => {
   const [text, setText] = useState('# Hello World');
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
-  const ref = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleChange = useCallback((value: string) => {
+    setText(value);
+  }, []);
+
+  const { inputProps } = useTextField({
+    placeholder: '記事内容を入力...',
+    value: text,
+    inputElementType: 'textarea',
+    onChange: handleChange,
+  }, inputRef);
 
   const { buttonProps } = useButton(
     {
       onPress: handleIsEdit,
     },
-    ref,
+    buttonRef,
   );
 
   return (
@@ -38,7 +49,7 @@ const PostCreateTemplate = () => {
       {isEdit ? (
         <Textarea
           defaultValue={text}
-          onChange={(e) => setText(e.target.value)}
+          {...inputProps}
         />
       ) : (
         <Preview text={text} />
