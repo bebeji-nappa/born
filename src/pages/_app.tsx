@@ -5,6 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import AuthGuardPrivider from './_auth';
 import '../styles/reset.css';
+
 const MyApp: AppType<{ session: Session }> = ({
   Component,
   pageProps: { session, ...pageProps },

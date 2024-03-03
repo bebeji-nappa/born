@@ -7,11 +7,11 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100vw;
   height: 100vh;
   @supports (height: 100svh) {
     height: 100svh;
   }
-  width: 100vw;
 `;
 
 const Container = styled.div`
