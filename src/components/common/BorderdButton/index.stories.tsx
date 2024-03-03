@@ -10,8 +10,4 @@ export default {
   },
 } as Meta<typeof BorderedButton>;
 
-export const Primary: StoryObj<typeof BorderedButton> = {
-  args: {
-    children: 'Button',
-  },
-};
+export const Primary: StoryObj<typeof BorderedButton> = {};
