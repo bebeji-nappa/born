@@ -5,6 +5,7 @@ import { useBoolean } from 'ahooks';
 import { useForm } from 'react-hook-form';
 import Preview from './parts/Preview';
 import { trpc } from '@/utils/trpc';
+import { router } from '@/server/api/trpc';
 import { useRouter } from 'next/router';
 
 const Wrapper = styled.div`
@@ -93,38 +94,42 @@ export type PostEditInputValues = {
   content: string;
 };
 
-export type PostCreateTemplateProps = {
-  userId: string;
+export type PostEditTemplateProps = {
+  id: number;
+  title: string;
+  content: string;
 };
 
-const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
+const PostEditTemplate: FC<PostEditTemplateProps> = ({
+  id,
+  title,
+  content,
+}) => {
   const router = useRouter();
-  const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
-  const inputTextRef = useRef<HTMLTextAreaElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [alertMessage, setAlertMessage] = useState('');
-  const createPostMutation = trpc.createPost.useMutation();
+  const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
+  const updatePostMutation = trpc.updatePostById.useMutation();
 
   const { handleSubmit, register, getValues } = useForm({
     defaultValues: {
-      title: '',
-      content: '',
+      title: title,
+      content: content,
     },
   });
 
-  const onSubmit = async (e) => {
-    await createPostMutation
+  const onSubmit = async (e: any) => {
+    await updatePostMutation
       .mutateAsync({
+        id,
         title: e.title,
         content: e.content,
-        userId,
       })
-      .then(({ newPost }) => {
-        router.push(`/post/${newPost.id}`);
+      .then(() => {
+        router.push(`/post/${id}`);
       })
       .catch((error) => {
-        console.error('Failed to create post:', error);
-        setAlertMessage('Failed to create post. Please try again.');
+        console.error('Failed to update post:', error);
+        setAlertMessage('Failed to update post. Please try again.');
       });
   };
 
@@ -139,18 +144,14 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
 
   return (
     <Wrapper>
-      <h1>新規投稿</h1>
+      <h1>投稿編集</h1>
       {alertMessage && <p style={{ color: 'red' }}>{alertMessage}</p>}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Label htmlFor="title">タイトル</Label>
-        <Input
-          type="text"
-          {...register('title')}
-          placeholder="タイトルを入力..."
-        />
+        <Input type="text" defaultValue={title} {...register('title')} />
 
         <Label htmlFor="content">内容</Label>
-        <EditorWrapper>
+        <EditorWrapper id="content">
           <TabContainer>
             <Tab
               type="button"
@@ -169,12 +170,9 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
           </TabContainer>
 
           {isEdit ? (
-            <Textarea
-              {...register('content')}
-              placeholder="記事の内容を入力..."
-            />
+            <Textarea defaultValue={content} {...register('content')} />
           ) : (
-            <Preview text={getValues('content')} id="content" />
+            <Preview text={getValues('content')} />
           )}
         </EditorWrapper>
         <SubmitButton type="submit">送信</SubmitButton>
@@ -183,4 +181,4 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
   );
 };
 
-export default PostCreateTemplate;
+export default PostEditTemplate;
