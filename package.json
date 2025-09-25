@@ -33,6 +33,7 @@
     "@trpc/react-query": "^11.6.0",
     "@trpc/server": "^11.6.0",
     "ahooks": "^3.9.5",
+    "dayjs": "^1.11.18",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
     "prisma": "^6.16.2",

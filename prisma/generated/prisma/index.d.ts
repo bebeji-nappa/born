@@ -1264,6 +1264,7 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number;
     sessions: number;
+    Post: number;
   };
 
   export type UserCountOutputTypeSelect<
@@ -1271,6 +1272,7 @@ export namespace Prisma {
   > = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs;
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs;
+    Post?: boolean | UserCountOutputTypeCountPostArgs;
   };
 
   // Custom InputTypes
@@ -1302,6 +1304,15 @@ export namespace Prisma {
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
   > = {
     where?: SessionWhereInput;
+  };
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPostArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+  > = {
+    where?: PostWhereInput;
   };
 
   /**
@@ -3854,6 +3865,7 @@ export namespace Prisma {
       image?: boolean;
       accounts?: boolean | User$accountsArgs<ExtArgs>;
       sessions?: boolean | User$sessionsArgs<ExtArgs>;
+      Post?: boolean | User$PostArgs<ExtArgs>;
       _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['user']
@@ -3878,6 +3890,7 @@ export namespace Prisma {
   > = {
     accounts?: boolean | User$accountsArgs<ExtArgs>;
     sessions?: boolean | User$sessionsArgs<ExtArgs>;
+    Post?: boolean | User$PostArgs<ExtArgs>;
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>;
   };
 
@@ -3888,6 +3901,7 @@ export namespace Prisma {
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[];
       sessions: Prisma.$SessionPayload<ExtArgs>[];
+      Post: Prisma.$PostPayload<ExtArgs>[];
     };
     scalars: $Extensions.GetPayloadResult<
       {
@@ -4391,6 +4405,17 @@ export namespace Prisma {
         >
       | Null
     >;
+    Post<T extends User$PostArgs<ExtArgs> = {}>(
+      args?: Subset<T, User$PostArgs<ExtArgs>>,
+    ): Prisma.PrismaPromise<
+      | $Result.GetResult<
+          Prisma.$PostPayload<ExtArgs>,
+          T,
+          'findMany',
+          GlobalOmitOptions
+        >
+      | Null
+    >;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4855,6 +4880,32 @@ export namespace Prisma {
     take?: number;
     skip?: number;
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[];
+  };
+
+  /**
+   * User.Post
+   */
+  export type User$PostArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+  > = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    where?: PostWhereInput;
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[];
+    cursor?: PostWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[];
   };
 
   /**
@@ -5985,7 +6036,7 @@ export namespace Prisma {
     title: string | null;
     content: string | null;
     published: boolean | null;
-    authorId: string | null;
+    userId: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
   };
@@ -5995,7 +6046,7 @@ export namespace Prisma {
     title: string | null;
     content: string | null;
     published: boolean | null;
-    authorId: string | null;
+    userId: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
   };
@@ -6005,7 +6056,7 @@ export namespace Prisma {
     title: number;
     content: number;
     published: number;
-    authorId: number;
+    userId: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -6024,7 +6075,7 @@ export namespace Prisma {
     title?: true;
     content?: true;
     published?: true;
-    authorId?: true;
+    userId?: true;
     createdAt?: true;
     updatedAt?: true;
   };
@@ -6034,7 +6085,7 @@ export namespace Prisma {
     title?: true;
     content?: true;
     published?: true;
-    authorId?: true;
+    userId?: true;
     createdAt?: true;
     updatedAt?: true;
   };
@@ -6044,7 +6095,7 @@ export namespace Prisma {
     title?: true;
     content?: true;
     published?: true;
-    authorId?: true;
+    userId?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -6144,7 +6195,7 @@ export namespace Prisma {
     title: string;
     content: string;
     published: boolean;
-    authorId: string;
+    userId: string;
     createdAt: Date;
     updatedAt: Date;
     _count: PostCountAggregateOutputType | null;
@@ -6174,9 +6225,10 @@ export namespace Prisma {
       title?: boolean;
       content?: boolean;
       published?: boolean;
-      authorId?: boolean;
+      userId?: boolean;
       createdAt?: boolean;
       updatedAt?: boolean;
+      user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['post']
   >;
@@ -6186,7 +6238,7 @@ export namespace Prisma {
     title?: boolean;
     content?: boolean;
     published?: boolean;
-    authorId?: boolean;
+    userId?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
   };
@@ -6198,24 +6250,31 @@ export namespace Prisma {
     | 'title'
     | 'content'
     | 'published'
-    | 'authorId'
+    | 'userId'
     | 'createdAt'
     | 'updatedAt',
     ExtArgs['result']['post']
   >;
+  export type PostInclude<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+  > = {
+    user?: boolean | UserDefaultArgs<ExtArgs>;
+  };
 
   export type $PostPayload<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
   > = {
     name: 'Post';
-    objects: {};
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>;
+    };
     scalars: $Extensions.GetPayloadResult<
       {
         id: number;
         title: string;
         content: string;
         published: boolean;
-        authorId: string;
+        userId: string;
         createdAt: Date;
         updatedAt: Date;
       },
@@ -6691,6 +6750,20 @@ export namespace Prisma {
     GlobalOmitOptions = {},
   > extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(
+      args?: Subset<T, UserDefaultArgs<ExtArgs>>,
+    ): Prisma__UserClient<
+      | $Result.GetResult<
+          Prisma.$UserPayload<ExtArgs>,
+          T,
+          'findUniqueOrThrow',
+          GlobalOmitOptions
+        >
+      | Null,
+      Null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6735,7 +6808,7 @@ export namespace Prisma {
     readonly title: FieldRef<'Post', 'String'>;
     readonly content: FieldRef<'Post', 'String'>;
     readonly published: FieldRef<'Post', 'Boolean'>;
-    readonly authorId: FieldRef<'Post', 'String'>;
+    readonly userId: FieldRef<'Post', 'String'>;
     readonly createdAt: FieldRef<'Post', 'DateTime'>;
     readonly updatedAt: FieldRef<'Post', 'DateTime'>;
   }
@@ -6755,6 +6828,10 @@ export namespace Prisma {
      * Omit specific fields from the Post
      */
     omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
     /**
      * Filter, which Post to fetch.
      */
@@ -6776,6 +6853,10 @@ export namespace Prisma {
      */
     omit?: PostOmit<ExtArgs> | null;
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    /**
      * Filter, which Post to fetch.
      */
     where: PostWhereUniqueInput;
@@ -6795,6 +6876,10 @@ export namespace Prisma {
      * Omit specific fields from the Post
      */
     omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
     /**
      * Filter, which Post to fetch.
      */
@@ -6846,6 +6931,10 @@ export namespace Prisma {
      */
     omit?: PostOmit<ExtArgs> | null;
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    /**
      * Filter, which Post to fetch.
      */
     where?: PostWhereInput;
@@ -6896,6 +6985,10 @@ export namespace Prisma {
      */
     omit?: PostOmit<ExtArgs> | null;
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    /**
      * Filter, which Posts to fetch.
      */
     where?: PostWhereInput;
@@ -6941,6 +7034,10 @@ export namespace Prisma {
      */
     omit?: PostOmit<ExtArgs> | null;
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    /**
      * The data needed to create a Post.
      */
     data: XOR<PostCreateInput, PostUncheckedCreateInput>;
@@ -6973,6 +7070,10 @@ export namespace Prisma {
      * Omit specific fields from the Post
      */
     omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
     /**
      * The data needed to update a Post.
      */
@@ -7018,6 +7119,10 @@ export namespace Prisma {
      */
     omit?: PostOmit<ExtArgs> | null;
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
+    /**
      * The filter to search for the Post to update in case it exists.
      */
     where: PostWhereUniqueInput;
@@ -7045,6 +7150,10 @@ export namespace Prisma {
      * Omit specific fields from the Post
      */
     omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
     /**
      * Filter which Post to delete.
      */
@@ -7081,6 +7190,10 @@ export namespace Prisma {
      * Omit specific fields from the Post
      */
     omit?: PostOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null;
   };
 
   /**
@@ -7150,7 +7263,7 @@ export namespace Prisma {
     title: 'title';
     content: 'content';
     published: 'published';
-    authorId: 'authorId';
+    userId: 'userId';
     createdAt: 'createdAt';
     updatedAt: 'updatedAt';
   };
@@ -7219,7 +7332,7 @@ export namespace Prisma {
   export const PostOrderByRelevanceFieldEnum: {
     title: 'title';
     content: 'content';
-    authorId: 'authorId';
+    userId: 'userId';
   };
 
   export type PostOrderByRelevanceFieldEnum =
@@ -7452,6 +7565,7 @@ export namespace Prisma {
     image?: StringNullableFilter<'User'> | string | null;
     accounts?: AccountListRelationFilter;
     sessions?: SessionListRelationFilter;
+    Post?: PostListRelationFilter;
   };
 
   export type UserOrderByWithRelationInput = {
@@ -7462,6 +7576,7 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder;
     accounts?: AccountOrderByRelationAggregateInput;
     sessions?: SessionOrderByRelationAggregateInput;
+    Post?: PostOrderByRelationAggregateInput;
     _relevance?: UserOrderByRelevanceInput;
   };
 
@@ -7477,6 +7592,7 @@ export namespace Prisma {
       image?: StringNullableFilter<'User'> | string | null;
       accounts?: AccountListRelationFilter;
       sessions?: SessionListRelationFilter;
+      Post?: PostListRelationFilter;
     },
     'id' | 'email'
   >;
@@ -7570,9 +7686,10 @@ export namespace Prisma {
     title?: StringFilter<'Post'> | string;
     content?: StringFilter<'Post'> | string;
     published?: BoolFilter<'Post'> | boolean;
-    authorId?: StringFilter<'Post'> | string;
+    userId?: StringFilter<'Post'> | string;
     createdAt?: DateTimeFilter<'Post'> | Date | string;
     updatedAt?: DateTimeFilter<'Post'> | Date | string;
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>;
   };
 
   export type PostOrderByWithRelationInput = {
@@ -7580,9 +7697,10 @@ export namespace Prisma {
     title?: SortOrder;
     content?: SortOrder;
     published?: SortOrder;
-    authorId?: SortOrder;
+    userId?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
+    user?: UserOrderByWithRelationInput;
     _relevance?: PostOrderByRelevanceInput;
   };
 
@@ -7595,9 +7713,10 @@ export namespace Prisma {
       title?: StringFilter<'Post'> | string;
       content?: StringFilter<'Post'> | string;
       published?: BoolFilter<'Post'> | boolean;
-      authorId?: StringFilter<'Post'> | string;
+      userId?: StringFilter<'Post'> | string;
       createdAt?: DateTimeFilter<'Post'> | Date | string;
       updatedAt?: DateTimeFilter<'Post'> | Date | string;
+      user?: XOR<UserScalarRelationFilter, UserWhereInput>;
     },
     'id'
   >;
@@ -7607,7 +7726,7 @@ export namespace Prisma {
     title?: SortOrder;
     content?: SortOrder;
     published?: SortOrder;
-    authorId?: SortOrder;
+    userId?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     _count?: PostCountOrderByAggregateInput;
@@ -7629,7 +7748,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<'Post'> | string;
     content?: StringWithAggregatesFilter<'Post'> | string;
     published?: BoolWithAggregatesFilter<'Post'> | boolean;
-    authorId?: StringWithAggregatesFilter<'Post'> | string;
+    userId?: StringWithAggregatesFilter<'Post'> | string;
     createdAt?: DateTimeWithAggregatesFilter<'Post'> | Date | string;
     updatedAt?: DateTimeWithAggregatesFilter<'Post'> | Date | string;
   };
@@ -7794,6 +7913,7 @@ export namespace Prisma {
     image?: string | null;
     accounts?: AccountCreateNestedManyWithoutUserInput;
     sessions?: SessionCreateNestedManyWithoutUserInput;
+    Post?: PostCreateNestedManyWithoutUserInput;
   };
 
   export type UserUncheckedCreateInput = {
@@ -7804,6 +7924,7 @@ export namespace Prisma {
     image?: string | null;
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput;
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput;
+    Post?: PostUncheckedCreateNestedManyWithoutUserInput;
   };
 
   export type UserUpdateInput = {
@@ -7818,6 +7939,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     accounts?: AccountUpdateManyWithoutUserNestedInput;
     sessions?: SessionUpdateManyWithoutUserNestedInput;
+    Post?: PostUpdateManyWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateInput = {
@@ -7832,6 +7954,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput;
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput;
+    Post?: PostUncheckedUpdateManyWithoutUserNestedInput;
   };
 
   export type UserCreateManyInput = {
@@ -7912,9 +8035,9 @@ export namespace Prisma {
     title: string;
     content: string;
     published?: boolean;
-    authorId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    user: UserCreateNestedOneWithoutPostInput;
   };
 
   export type PostUncheckedCreateInput = {
@@ -7922,7 +8045,7 @@ export namespace Prisma {
     title: string;
     content: string;
     published?: boolean;
-    authorId: string;
+    userId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
   };
@@ -7931,9 +8054,9 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string;
     content?: StringFieldUpdateOperationsInput | string;
     published?: BoolFieldUpdateOperationsInput | boolean;
-    authorId?: StringFieldUpdateOperationsInput | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    user?: UserUpdateOneRequiredWithoutPostNestedInput;
   };
 
   export type PostUncheckedUpdateInput = {
@@ -7941,7 +8064,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string;
     content?: StringFieldUpdateOperationsInput | string;
     published?: BoolFieldUpdateOperationsInput | boolean;
-    authorId?: StringFieldUpdateOperationsInput | string;
+    userId?: StringFieldUpdateOperationsInput | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
@@ -7951,7 +8074,7 @@ export namespace Prisma {
     title: string;
     content: string;
     published?: boolean;
-    authorId: string;
+    userId: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
   };
@@ -7960,7 +8083,6 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string;
     content?: StringFieldUpdateOperationsInput | string;
     published?: BoolFieldUpdateOperationsInput | boolean;
-    authorId?: StringFieldUpdateOperationsInput | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
@@ -7970,7 +8092,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string;
     content?: StringFieldUpdateOperationsInput | string;
     published?: BoolFieldUpdateOperationsInput | boolean;
-    authorId?: StringFieldUpdateOperationsInput | string;
+    userId?: StringFieldUpdateOperationsInput | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
@@ -8224,11 +8346,21 @@ export namespace Prisma {
     none?: SessionWhereInput;
   };
 
+  export type PostListRelationFilter = {
+    every?: PostWhereInput;
+    some?: PostWhereInput;
+    none?: PostWhereInput;
+  };
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder;
   };
 
   export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder;
+  };
+
+  export type PostOrderByRelationAggregateInput = {
     _count?: SortOrder;
   };
 
@@ -8338,7 +8470,7 @@ export namespace Prisma {
     title?: SortOrder;
     content?: SortOrder;
     published?: SortOrder;
-    authorId?: SortOrder;
+    userId?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
   };
@@ -8352,7 +8484,7 @@ export namespace Prisma {
     title?: SortOrder;
     content?: SortOrder;
     published?: SortOrder;
-    authorId?: SortOrder;
+    userId?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
   };
@@ -8362,7 +8494,7 @@ export namespace Prisma {
     title?: SortOrder;
     content?: SortOrder;
     published?: SortOrder;
-    authorId?: SortOrder;
+    userId?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
   };
@@ -8497,6 +8629,18 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[];
   };
 
+  export type PostCreateNestedManyWithoutUserInput = {
+    create?:
+      | XOR<PostCreateWithoutUserInput, PostUncheckedCreateWithoutUserInput>
+      | PostCreateWithoutUserInput[]
+      | PostUncheckedCreateWithoutUserInput[];
+    connectOrCreate?:
+      | PostCreateOrConnectWithoutUserInput
+      | PostCreateOrConnectWithoutUserInput[];
+    createMany?: PostCreateManyUserInputEnvelope;
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[];
+  };
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?:
       | XOR<
@@ -8525,6 +8669,18 @@ export namespace Prisma {
       | SessionCreateOrConnectWithoutUserInput[];
     createMany?: SessionCreateManyUserInputEnvelope;
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[];
+  };
+
+  export type PostUncheckedCreateNestedManyWithoutUserInput = {
+    create?:
+      | XOR<PostCreateWithoutUserInput, PostUncheckedCreateWithoutUserInput>
+      | PostCreateWithoutUserInput[]
+      | PostUncheckedCreateWithoutUserInput[];
+    connectOrCreate?:
+      | PostCreateOrConnectWithoutUserInput
+      | PostCreateOrConnectWithoutUserInput[];
+    createMany?: PostCreateManyUserInputEnvelope;
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[];
   };
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -8587,6 +8743,31 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[];
   };
 
+  export type PostUpdateManyWithoutUserNestedInput = {
+    create?:
+      | XOR<PostCreateWithoutUserInput, PostUncheckedCreateWithoutUserInput>
+      | PostCreateWithoutUserInput[]
+      | PostUncheckedCreateWithoutUserInput[];
+    connectOrCreate?:
+      | PostCreateOrConnectWithoutUserInput
+      | PostCreateOrConnectWithoutUserInput[];
+    upsert?:
+      | PostUpsertWithWhereUniqueWithoutUserInput
+      | PostUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: PostCreateManyUserInputEnvelope;
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    update?:
+      | PostUpdateWithWhereUniqueWithoutUserInput
+      | PostUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?:
+      | PostUpdateManyWithWhereWithoutUserInput
+      | PostUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[];
+  };
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?:
       | XOR<
@@ -8643,8 +8824,56 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[];
   };
 
+  export type PostUncheckedUpdateManyWithoutUserNestedInput = {
+    create?:
+      | XOR<PostCreateWithoutUserInput, PostUncheckedCreateWithoutUserInput>
+      | PostCreateWithoutUserInput[]
+      | PostUncheckedCreateWithoutUserInput[];
+    connectOrCreate?:
+      | PostCreateOrConnectWithoutUserInput
+      | PostCreateOrConnectWithoutUserInput[];
+    upsert?:
+      | PostUpsertWithWhereUniqueWithoutUserInput
+      | PostUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: PostCreateManyUserInputEnvelope;
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[];
+    update?:
+      | PostUpdateWithWhereUniqueWithoutUserInput
+      | PostUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?:
+      | PostUpdateManyWithWhereWithoutUserInput
+      | PostUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[];
+  };
+
+  export type UserCreateNestedOneWithoutPostInput = {
+    create?: XOR<
+      UserCreateWithoutPostInput,
+      UserUncheckedCreateWithoutPostInput
+    >;
+    connectOrCreate?: UserCreateOrConnectWithoutPostInput;
+    connect?: UserWhereUniqueInput;
+  };
+
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean;
+  };
+
+  export type UserUpdateOneRequiredWithoutPostNestedInput = {
+    create?: XOR<
+      UserCreateWithoutPostInput,
+      UserUncheckedCreateWithoutPostInput
+    >;
+    connectOrCreate?: UserCreateOrConnectWithoutPostInput;
+    upsert?: UserUpsertWithoutPostInput;
+    connect?: UserWhereUniqueInput;
+    update?: XOR<
+      XOR<UserUpdateToOneWithWhereWithoutPostInput, UserUpdateWithoutPostInput>,
+      UserUncheckedUpdateWithoutPostInput
+    >;
   };
 
   export type IntFieldUpdateOperationsInput = {
@@ -8875,6 +9104,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null;
     image?: string | null;
     sessions?: SessionCreateNestedManyWithoutUserInput;
+    Post?: PostCreateNestedManyWithoutUserInput;
   };
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -8884,6 +9114,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null;
     image?: string | null;
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput;
+    Post?: PostUncheckedCreateNestedManyWithoutUserInput;
   };
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -8925,6 +9156,7 @@ export namespace Prisma {
       | null;
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     sessions?: SessionUpdateManyWithoutUserNestedInput;
+    Post?: PostUpdateManyWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -8938,6 +9170,7 @@ export namespace Prisma {
       | null;
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput;
+    Post?: PostUncheckedUpdateManyWithoutUserNestedInput;
   };
 
   export type UserCreateWithoutSessionsInput = {
@@ -8947,6 +9180,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null;
     image?: string | null;
     accounts?: AccountCreateNestedManyWithoutUserInput;
+    Post?: PostCreateNestedManyWithoutUserInput;
   };
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -8956,6 +9190,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null;
     image?: string | null;
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput;
+    Post?: PostUncheckedCreateNestedManyWithoutUserInput;
   };
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -8997,6 +9232,7 @@ export namespace Prisma {
       | null;
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     accounts?: AccountUpdateManyWithoutUserNestedInput;
+    Post?: PostUpdateManyWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -9010,6 +9246,7 @@ export namespace Prisma {
       | null;
     image?: NullableStringFieldUpdateOperationsInput | string | null;
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput;
+    Post?: PostUncheckedUpdateManyWithoutUserNestedInput;
   };
 
   export type AccountCreateWithoutUserInput = {
@@ -9075,6 +9312,36 @@ export namespace Prisma {
 
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[];
+    skipDuplicates?: boolean;
+  };
+
+  export type PostCreateWithoutUserInput = {
+    title: string;
+    content: string;
+    published?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+  };
+
+  export type PostUncheckedCreateWithoutUserInput = {
+    id?: number;
+    title: string;
+    content: string;
+    published?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+  };
+
+  export type PostCreateOrConnectWithoutUserInput = {
+    where: PostWhereUniqueInput;
+    create: XOR<
+      PostCreateWithoutUserInput,
+      PostUncheckedCreateWithoutUserInput
+    >;
+  };
+
+  export type PostCreateManyUserInputEnvelope = {
+    data: PostCreateManyUserInput | PostCreateManyUserInput[];
     skipDuplicates?: boolean;
   };
 
@@ -9162,6 +9429,117 @@ export namespace Prisma {
     expires?: DateTimeFilter<'Session'> | Date | string;
   };
 
+  export type PostUpsertWithWhereUniqueWithoutUserInput = {
+    where: PostWhereUniqueInput;
+    update: XOR<
+      PostUpdateWithoutUserInput,
+      PostUncheckedUpdateWithoutUserInput
+    >;
+    create: XOR<
+      PostCreateWithoutUserInput,
+      PostUncheckedCreateWithoutUserInput
+    >;
+  };
+
+  export type PostUpdateWithWhereUniqueWithoutUserInput = {
+    where: PostWhereUniqueInput;
+    data: XOR<PostUpdateWithoutUserInput, PostUncheckedUpdateWithoutUserInput>;
+  };
+
+  export type PostUpdateManyWithWhereWithoutUserInput = {
+    where: PostScalarWhereInput;
+    data: XOR<
+      PostUpdateManyMutationInput,
+      PostUncheckedUpdateManyWithoutUserInput
+    >;
+  };
+
+  export type PostScalarWhereInput = {
+    AND?: PostScalarWhereInput | PostScalarWhereInput[];
+    OR?: PostScalarWhereInput[];
+    NOT?: PostScalarWhereInput | PostScalarWhereInput[];
+    id?: IntFilter<'Post'> | number;
+    title?: StringFilter<'Post'> | string;
+    content?: StringFilter<'Post'> | string;
+    published?: BoolFilter<'Post'> | boolean;
+    userId?: StringFilter<'Post'> | string;
+    createdAt?: DateTimeFilter<'Post'> | Date | string;
+    updatedAt?: DateTimeFilter<'Post'> | Date | string;
+  };
+
+  export type UserCreateWithoutPostInput = {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    emailVerified?: Date | string | null;
+    image?: string | null;
+    accounts?: AccountCreateNestedManyWithoutUserInput;
+    sessions?: SessionCreateNestedManyWithoutUserInput;
+  };
+
+  export type UserUncheckedCreateWithoutPostInput = {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    emailVerified?: Date | string | null;
+    image?: string | null;
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput;
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput;
+  };
+
+  export type UserCreateOrConnectWithoutPostInput = {
+    where: UserWhereUniqueInput;
+    create: XOR<
+      UserCreateWithoutPostInput,
+      UserUncheckedCreateWithoutPostInput
+    >;
+  };
+
+  export type UserUpsertWithoutPostInput = {
+    update: XOR<
+      UserUpdateWithoutPostInput,
+      UserUncheckedUpdateWithoutPostInput
+    >;
+    create: XOR<
+      UserCreateWithoutPostInput,
+      UserUncheckedCreateWithoutPostInput
+    >;
+    where?: UserWhereInput;
+  };
+
+  export type UserUpdateToOneWithWhereWithoutPostInput = {
+    where?: UserWhereInput;
+    data: XOR<UserUpdateWithoutPostInput, UserUncheckedUpdateWithoutPostInput>;
+  };
+
+  export type UserUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string;
+    name?: NullableStringFieldUpdateOperationsInput | string | null;
+    email?: NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?:
+      | NullableDateTimeFieldUpdateOperationsInput
+      | Date
+      | string
+      | null;
+    image?: NullableStringFieldUpdateOperationsInput | string | null;
+    accounts?: AccountUpdateManyWithoutUserNestedInput;
+    sessions?: SessionUpdateManyWithoutUserNestedInput;
+  };
+
+  export type UserUncheckedUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string;
+    name?: NullableStringFieldUpdateOperationsInput | string | null;
+    email?: NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?:
+      | NullableDateTimeFieldUpdateOperationsInput
+      | Date
+      | string
+      | null;
+    image?: NullableStringFieldUpdateOperationsInput | string | null;
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput;
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput;
+  };
+
   export type AccountCreateManyUserInput = {
     id?: string;
     type: string;
@@ -9180,6 +9558,15 @@ export namespace Prisma {
     id?: string;
     sessionToken: string;
     expires: Date | string;
+  };
+
+  export type PostCreateManyUserInput = {
+    id?: number;
+    title: string;
+    content: string;
+    published?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
   };
 
   export type AccountUpdateWithoutUserInput = {
@@ -9240,6 +9627,32 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string;
     sessionToken?: StringFieldUpdateOperationsInput | string;
     expires?: DateTimeFieldUpdateOperationsInput | Date | string;
+  };
+
+  export type PostUpdateWithoutUserInput = {
+    title?: StringFieldUpdateOperationsInput | string;
+    content?: StringFieldUpdateOperationsInput | string;
+    published?: BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+  };
+
+  export type PostUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number;
+    title?: StringFieldUpdateOperationsInput | string;
+    content?: StringFieldUpdateOperationsInput | string;
+    published?: BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+  };
+
+  export type PostUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number;
+    title?: StringFieldUpdateOperationsInput | string;
+    content?: StringFieldUpdateOperationsInput | string;
+    published?: BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
 
   /**

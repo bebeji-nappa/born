@@ -5,6 +5,9 @@ export const getPostById = async (id: number) => {
     where: {
       id: id,
     },
+    include: {
+      user: { select: { id: true, name: true, email: true, image: true } },
+    },
   });
   return {
     post,
@@ -50,7 +53,7 @@ export const createPost = async (
     data: {
       title: title,
       content: content,
-      authorId: userId,
+      userId: userId,
       published: true,
     },
   });

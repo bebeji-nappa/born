@@ -161,7 +161,7 @@ exports.Prisma.PostScalarFieldEnum = {
   title: 'title',
   content: 'content',
   published: 'published',
-  authorId: 'authorId',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -211,7 +211,7 @@ exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
 exports.Prisma.PostOrderByRelevanceFieldEnum = {
   title: 'title',
   content: 'content',
-  authorId: 'authorId'
+  userId: 'userId'
 };
 
 
