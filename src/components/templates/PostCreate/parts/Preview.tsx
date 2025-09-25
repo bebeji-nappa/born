@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Richmd } from 'richmd-react';
-import 'richmd/richmd.css';
+import { Richmd } from '@richmd/react';
+// @ts-ignore-next-line
+import '@richmd/react/dist/richmd.css';
 
 const StyledRichmd = styled(Richmd)`
   width: 100%;
