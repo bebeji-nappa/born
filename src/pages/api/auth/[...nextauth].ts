@@ -3,7 +3,7 @@ import GithubProvider from 'next-auth/providers/github';
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../../../prisma/generated/prisma';
 const prisma = new PrismaClient();
 
 /* eslint @typescript-eslint/no-explicit-any: off */
