@@ -4,6 +4,11 @@ const nextConfig = {
   transpilePackages: [
     'ahooks',
   ],
+  serverExternalPackages: [
+    'jose',
+    '@panva/hkdf',
+    'openid-client',
+  ],
   images: {
     remotePatterns: [
       {
@@ -15,4 +20,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig;

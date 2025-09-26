@@ -4,6 +4,7 @@ import GithubProvider from 'next-auth/providers/github';
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '../../../../prisma/generated/prisma';
+
 const prisma = new PrismaClient();
 
 /* eslint @typescript-eslint/no-explicit-any: off */
@@ -28,13 +29,15 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
     }),
   ],
   pages: {
     signIn: '/signin',
   },
+  trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
