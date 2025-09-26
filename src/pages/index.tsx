@@ -23,20 +23,7 @@ const Posts = () => {
     return <LoadingSpinner />;
   }
 
-  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;
-
-  return (
-    <>
-      <Head>
-        <meta property="og:image" content={ogImageUrl} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={ogImageUrl} />
-      </Head>
-      <PostListTemplate posts={data} />
-    </>
-  );
+  return <PostListTemplate posts={data} />;
 };
 
 export default Posts;
