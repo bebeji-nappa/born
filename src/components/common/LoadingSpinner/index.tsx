@@ -32,7 +32,7 @@ const Spinner = styled.div<{ size: number; color: string }>`
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 200,
-  color = '#2b35b5',
+  color = '#000000',
 }) => {
   return (
     <Wrapper>
