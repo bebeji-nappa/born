@@ -31,6 +31,16 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
       });
     }
 
+    if (
+      router.pathname === '/post/create' ||
+      router.pathname === '/post/[id]/edit'
+    ) {
+      if (status === 'unauthenticated') {
+        router.push('/signin');
+        return;
+      }
+    }
+
     if (status === 'unauthenticated' && router.pathname !== '/signin') {
       router.push('/signin');
     }

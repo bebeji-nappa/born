@@ -3,6 +3,7 @@ import {
   updatePostById,
   deletePostById,
   getPostById,
+  getAllPostsByUserId,
 } from '../services/post.service';
 
 /**
@@ -17,6 +18,8 @@ import {
  */
 
 export const getPostByIdHandler = async (id: number) => await getPostById(id);
+export const getAllPostsByUserIdHandler = async (userId: string) =>
+  await getAllPostsByUserId(userId);
 export const createPostHandler = async (
   title: string,
   content: string,

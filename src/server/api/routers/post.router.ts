@@ -4,6 +4,7 @@ import { z } from 'zod';
 import {
   createPostHandler,
   deletePostHandler,
+  getAllPostsByUserIdHandler,
   getPostByIdHandler,
   updatePostByIdHandler,
 } from '../controllers/post.controller';
@@ -14,6 +15,12 @@ export const postRouter = router({
     .query(async ({ input }) => {
       const post = await getPostByIdHandler(input.id);
       return post;
+    }),
+  getAllPostsByUserId: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input }) => {
+      const { posts } = await getAllPostsByUserIdHandler(input.userId);
+      return posts;
     }),
   createPost: publicProcedure
     .input(

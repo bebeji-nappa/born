@@ -14,6 +14,21 @@ export const getPostById = async (id: number) => {
   };
 };
 
+export const getAllPostsByUserId = async (userId: string) => {
+  const posts = await prisma.post.findMany({
+    where: { userId },
+    include: {
+      user: { select: { id: true, name: true, email: true, image: true } },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return {
+    posts,
+  };
+};
+
 export const updatePostById = async (
   id: number,
   title: string,
