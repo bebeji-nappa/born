@@ -28,6 +28,8 @@ const Posts = () => {
   return (
     <>
       <Head>
+        <title>nappa's Blog</title>
+        <meta name="description" content="nappa のブログ。" />
         <meta property="og:image" content={ogImageUrl} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
