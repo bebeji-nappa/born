@@ -172,39 +172,43 @@ const PostListTemplate = ({ posts }) => {
           />
         </div>
       </PageHeader>
-      <VirtuosoGrid
-        style={{ height: 'calc(100vh - 82px)' }}
-        data={posts}
-        components={gridComponents}
-        itemContent={(_, post) => {
-          const { id, title, user, createdAt } = post;
-          return (
-            <Article key={id} onClick={() => router.push(`/post/${id}`)}>
-              <Header>
-                <Title>{title}</Title>
-                <AuthorSection>
-                  <AuthorAvatar>
-                    {user.image ? (
-                      <AuthorImage
-                        src={user.image}
-                        alt={user.name || 'Author'}
-                      />
-                    ) : (
-                      getInitials(user.name)
-                    )}
-                  </AuthorAvatar>
-                  <AuthorInfo>
-                    <AuthorName>{user.name || 'Unknown Author'}</AuthorName>
-                  </AuthorInfo>
-                </AuthorSection>
-                <DateSetion>
-                  公開日: {dayjs(createdAt).format('YYYY年MM月DD日')}
-                </DateSetion>
-              </Header>
-            </Article>
-          );
-        }}
-      />
+      {posts.length ? (
+        <VirtuosoGrid
+          style={{ height: 'calc(100vh - 82px)' }}
+          data={posts}
+          components={gridComponents}
+          itemContent={(_, post) => {
+            const { id, title, user, createdAt } = post;
+            return (
+              <Article key={id} onClick={() => router.push(`/post/${id}`)}>
+                <Header>
+                  <Title>{title}</Title>
+                  <AuthorSection>
+                    <AuthorAvatar>
+                      {user.image ? (
+                        <AuthorImage
+                          src={user.image}
+                          alt={user.name || 'Author'}
+                        />
+                      ) : (
+                        getInitials(user.name)
+                      )}
+                    </AuthorAvatar>
+                    <AuthorInfo>
+                      <AuthorName>{user.name || 'Unknown Author'}</AuthorName>
+                    </AuthorInfo>
+                  </AuthorSection>
+                  <DateSetion>
+                    公開日: {dayjs(createdAt).format('YYYY年MM月DD日')}
+                  </DateSetion>
+                </Header>
+              </Article>
+            );
+          }}
+        />
+      ) : (
+        <Container>投稿がありません。</Container>
+      )}
     </Background>
   );
 };

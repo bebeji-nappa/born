@@ -45,7 +45,7 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
       router.push('/signin');
     }
     if (status === 'authenticated' && router.pathname === '/signin') {
-      router.push('/home');
+      router.push('/');
     }
     setLoading(false);
   }, [router, status, setLoading, data, user]);

@@ -1,4 +1,9 @@
-import { getAll, getAuthUserId, getUserbyId } from '../services/users.service';
+import {
+  getAll,
+  getAuthUserId,
+  getUserbyEmail,
+  getUserbyId,
+} from '../services/users.service';
 
 /**
  * @get /api/users
@@ -9,3 +14,6 @@ export const getAuthUserIdHandler = async (email: string) =>
   await getAuthUserId(email);
 
 export const getUserbyIdHandler = async (id: string) => await getUserbyId(id);
+
+export const getUserbyEmailHandler = async (email: string) =>
+  await getUserbyEmail(email);
