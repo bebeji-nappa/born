@@ -20,3 +20,5 @@ const MyApp: AppType<{ session: Session }> = ({
 };
 
 export default trpc.withTRPC(MyApp);
+
+export const dynamic = 'force-dynamic';
