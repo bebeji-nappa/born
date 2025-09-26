@@ -246,7 +246,7 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
         </div>
       </PageHeader>
       <Container>
-        <RedirectButton onClick={() => router.push('/posts')}>
+        <RedirectButton onClick={() => router.push('/')}>
           {'< 一覧に戻る'}
         </RedirectButton>
         <Article>

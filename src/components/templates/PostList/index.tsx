@@ -34,12 +34,21 @@ const Container = styled.div`
   padding: 24px;
   display: grid;
   gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
   grid-template-rows: auto;
 
   @media (max-width: 768px) {
     padding: 16px;
   }
+`;
+
+const EmptyMessage = styled.div`
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
 `;
 
 const Article = styled.article`
@@ -207,7 +216,9 @@ const PostListTemplate = ({ posts }) => {
           }}
         />
       ) : (
-        <Container>投稿がありません。</Container>
+        <Container>
+          <EmptyMessage>投稿がありません。</EmptyMessage>
+        </Container>
       )}
     </Background>
   );

@@ -41,7 +41,11 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
       }
     }
 
-    if (status === 'unauthenticated' && router.pathname !== '/signin') {
+    if (
+      status === 'unauthenticated' &&
+      router.pathname !== '/' &&
+      router.pathname !== '/signin'
+    ) {
       router.push('/signin');
     }
     if (status === 'authenticated' && router.pathname === '/signin') {
