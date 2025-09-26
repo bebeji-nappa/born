@@ -29,6 +29,11 @@ const Posts = () => {
     <>
       <Head>
         <title>nappa's Blog</title>
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}`}
+        />
+        <meta property="og:type" content="website" />
         <meta name="description" content="nappa のブログ。" />
         <meta property="og:image" content={ogImageUrl} />
         <meta property="og:image:width" content="1200" />

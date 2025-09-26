@@ -29,6 +29,11 @@ const PostDetail = () => {
     <>
       <Head>
         <title>{post.title}</title>
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}${router.asPath}`}
+        />
+        <meta property="og:type" content="website" />
         <meta property="og:image" content={ogImageUrl} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
