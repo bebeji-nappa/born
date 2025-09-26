@@ -2,6 +2,7 @@ import PostListTemplate from '@/components/templates/PostList';
 import { trpc } from '@/utils/trpc';
 import { skipToken } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 
 const Posts = () => {
   const session = useSession();
@@ -21,7 +22,24 @@ const Posts = () => {
     return <div>Loading...</div>;
   }
 
-  return <PostListTemplate posts={data} />;
+  return (
+    <div>
+      <Head>
+        <title></title>
+        <meta name="description" content="nappa のブログ" />
+        <meta
+          property="og:image"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/api/og`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:image"
+          content={`${process.env.NEXT_PUBLIC_BASE_URL}/api/og`}
+        />
+      </Head>
+      <PostListTemplate posts={data} />
+    </div>
+  );
 };
 
 export default Posts;
