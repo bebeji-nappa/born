@@ -2,6 +2,7 @@ import React, { use } from 'react';
 import PostCreateTemplate from '@/components/templates/PostCreate';
 import { useSession } from 'next-auth/react';
 import { trpc } from '@/utils/trpc';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const PostCreate = () => {
   const { data: session } = useSession();
@@ -12,7 +13,7 @@ const PostCreate = () => {
   const userId = data?.userId;
 
   if (!userId) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return <PostCreateTemplate userId={userId} />;

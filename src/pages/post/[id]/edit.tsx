@@ -2,6 +2,7 @@ import React from 'react';
 import PostEditTemplate from '@/components/templates/PostEdit';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const PostEdit = () => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const PostEdit = () => {
   });
 
   if (!data?.post) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   const { post } = data;

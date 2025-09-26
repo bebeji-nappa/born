@@ -1,3 +1,4 @@
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import PostListTemplate from '@/components/templates/PostList';
 import { trpc } from '@/utils/trpc';
 import { skipToken } from '@tanstack/react-query';
@@ -19,7 +20,7 @@ const Posts = () => {
   );
 
   if (session.status === 'loading' || !data) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;

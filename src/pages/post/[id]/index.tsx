@@ -3,6 +3,7 @@ import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 import { skipToken } from '@tanstack/react-query';
 import Head from 'next/head';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const PostDetail = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const PostDetail = () => {
   );
 
   if (!data?.post) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   const { post } = data;

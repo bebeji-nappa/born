@@ -27,6 +27,7 @@
     "@auth/core": "^0.40.0",
     "@auth/prisma-adapter": "^2.10.0",
     "@biomejs/biome": "^2.2.4",
+    "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/adapter-pg": "^6.16.2",
