@@ -1,37 +1,39 @@
-import { NextResponse, type NextRequest } from 'next/server';
+// import { NextResponse, type NextRequest } from 'next/server';
 
-// ホワイトリストに登録されたIPリストを取得します。
-const ipWhiteList = new Set(
-  process.env.IP_WHITE_LIST?.split(',').map((item: string) => {
-    return item.trim();
-  }),
-);
+export const runtime = 'edge';
 
-// アクセス制限対象のFQDNを取得します。
-const accessRestrictionFqdnList = new Set(
-  process.env.ACCESS_RESTRICTION_FQDN_LIST?.split(',').map((item: string) => {
-    return item.trim();
-  }),
-);
+// // ホワイトリストに登録されたIPリストを取得します。
+// const ipWhiteList = new Set(
+//   process.env.IP_WHITE_LIST?.split(',').map((item: string) => {
+//     return item.trim();
+//   }),
+// );
 
-export function middleware(request: NextRequest) {
-  if (process.env.NODE_ENV === 'production') {
-    const clientIP =
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      'unknown';
-    if (
-      !ipWhiteList.has(clientIP) &&
-      accessRestrictionFqdnList.has(request.nextUrl.host)
-    ) {
-      console.info(
-        `ホワイトリストに追加されていないIPアドレスからアクセスされたため、アクセスを拒否しました。[clientIP = ${clientIP}, request.nextUrl.host = ${request.nextUrl.host}]`,
-      );
-      return new NextResponse(null, { status: 401 });
-    } else {
-      console.info(
-        `ホワイトリストに追加されているIPアドレスからアクセスされました。[clientIP = ${clientIP}, request.nextUrl.host = ${request.nextUrl.host}]`,
-      );
-    }
-  }
-}
+// // アクセス制限対象のFQDNを取得します。
+// const accessRestrictionFqdnList = new Set(
+//   process.env.ACCESS_RESTRICTION_FQDN_LIST?.split(',').map((item: string) => {
+//     return item.trim();
+//   }),
+// );
+
+// export function middleware(request: NextRequest) {
+//   if (process.env.NODE_ENV === 'production') {
+//     const clientIP =
+//       request.headers.get('x-forwarded-for') ||
+//       request.headers.get('x-real-ip') ||
+//       'unknown';
+//     if (
+//       !ipWhiteList.has(clientIP) &&
+//       accessRestrictionFqdnList.has(request.nextUrl.host)
+//     ) {
+//       console.info(
+//         `ホワイトリストに追加されていないIPアドレスからアクセスされたため、アクセスを拒否しました。[clientIP = ${clientIP}, request.nextUrl.host = ${request.nextUrl.host}]`,
+//       );
+//       return new NextResponse(null, { status: 401 });
+//     } else {
+//       console.info(
+//         `ホワイトリストに追加されているIPアドレスからアクセスされました。[clientIP = ${clientIP}, request.nextUrl.host = ${request.nextUrl.host}]`,
+//       );
+//     }
+//   }
+// }
