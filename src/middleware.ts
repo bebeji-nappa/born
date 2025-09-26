@@ -13,27 +13,36 @@ export function middleware(request: NextRequest) {
   const isRestricted = restrictedPaths.includes(pathname) || isPostEditPath;
 
   if (isRestricted) {
-    // IP_WHITE_LIST環境変数から許可IPを取得
-    const whitelistIps =
-      process.env.NEXT_PUBLIC_IP_WHITE_LIST?.split(',').map((ip) =>
-        ip.trim(),
-      ) || [];
+    // BASIC認証のチェック
+    const basicAuth = request.headers.get('authorization');
+    console.log('authorizationヘッダを確認😎', basicAuth);
 
-    // クライアントIPを取得
-    const forwardedFor = request.headers.get('x-forwarded-for');
-    const realIp = request.headers.get('x-real-ip');
-    const clientIp =
-      forwardedFor?.split(',')[0]?.split('::')[0]?.trim() ||
-      realIp ||
-      request.headers.get('x-client-ip') ||
-      '127.0.0.1';
+    if (basicAuth) {
+      const authValue = basicAuth.split(' ')[1];
+      const [username, password] = Buffer.from(authValue, 'base64')
+        .toString()
+        .split(':');
+      console.log('認証情報確認😲', authValue, username, password);
 
-    // IPが許可リストに含まれているかチェック
-    if (!clientIp || !whitelistIps.includes(clientIp)) {
-      console.log('Access denied for IP:', clientIp);
-      // アクセス拒否
-      return new NextResponse('Access Forbidden', { status: 403 });
+      if (
+        username === process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME &&
+        password === process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD
+      ) {
+        // BASIC認証に成功した場合、アクセスを許可する
+        return NextResponse.next();
+      }
     }
+
+    // BASIC認証に失敗した場合、エラーを表示する
+    console.log('認証失敗🙃');
+    return NextResponse.json(
+      { error: 'Basic Auth Required' },
+      {
+        // eslint-disable-next-line quotes
+        headers: { 'WWW-Authenticate': 'Basic realm="Secure Area"' },
+        status: 401,
+      },
+    );
   }
 
   // 制限なしまたは許可されたIPの場合は通常処理を続行
