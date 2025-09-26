@@ -18,15 +18,15 @@ const PostDetail = () => {
       : skipToken,
   );
 
+  const ogImageUrl = useMemo(() => {
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(data?.post?.title!)}&user=${encodeURIComponent(JSON.stringify(data?.post?.user))}`;
+  }, [[data?.post?.title, data?.post?.user]]);
+
   if (!data?.post) {
     return <LoadingSpinner />;
   }
 
   const { post } = data;
-
-  const ogImageUrl = useMemo(() => {
-    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
-  }, [[post.title, post.user]]);
 
   return (
     <>
