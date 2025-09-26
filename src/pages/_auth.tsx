@@ -31,7 +31,6 @@ export default function AuthGuardPrivider({ children }: AuthGuardProps) {
       });
     }
 
-    console.log(router.pathname);
     if (
       router.pathname === '/post/create' ||
       /^\/post\/\d+\/edit$/.test(router.pathname)

@@ -36,8 +36,6 @@ export default async function handler(req: NextRequest) {
 
   const user = JSON.parse(searchParams.get('user') ?? '{}') ?? {};
 
-  console.log('user', user);
-
   return new ImageResponse(
     (
       <div
