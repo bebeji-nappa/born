@@ -22,6 +22,8 @@ const PostDetail = () => {
 
   const { post } = data;
 
+  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
+
   return (
     <div>
       <Head>
@@ -32,20 +34,14 @@ const PostDetail = () => {
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta
-          property="og:image"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${post.title}&user=${JSON.stringify(post.user)}`}
-        />
+        <meta property="og:image" content={ogImageUrl} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content="" />
         <meta name="twitter:image:type" content="image/png" />
         <meta name="twitter:image:width" content="1200" />
         <meta name="twitter:image:height" content="630" />
-        <meta
-          name="twitter:image"
-          content={`${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${post.title}&user=${JSON.stringify(post.user)}`}
-        />
+        <meta name="twitter:image" content={ogImageUrl} />
       </Head>
       <PostDetailTemplate post={post} />
     </div>
