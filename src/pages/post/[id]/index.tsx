@@ -22,7 +22,7 @@ const PostDetail = () => {
 
   const { post } = data;
 
-  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
+  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;
 
   return (
     <div>
