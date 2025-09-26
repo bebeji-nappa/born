@@ -23,7 +23,7 @@ const Posts = () => {
     return <LoadingSpinner />;
   }
 
-  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;
+  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/opengraph-image`;
 
   return (
     <>

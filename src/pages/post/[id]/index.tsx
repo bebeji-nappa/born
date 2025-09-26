@@ -19,7 +19,7 @@ const PostDetail = () => {
   );
 
   const ogImageUrl = useMemo(() => {
-    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(data?.post?.title!)}&user=${encodeURIComponent(JSON.stringify(data?.post?.user))}`;
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/opengraph-image?title=${encodeURIComponent(data?.post?.title!)}&user=${encodeURIComponent(JSON.stringify(data?.post?.user))}`;
   }, [[data?.post?.title, data?.post?.user]]);
 
   if (!data?.post) {
