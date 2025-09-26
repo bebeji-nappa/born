@@ -4,6 +4,13 @@ import { useRouter } from 'next/router';
 import { skipToken } from '@tanstack/react-query';
 import Head from 'next/head';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useMemo } from 'react';
+
+export async function generateStaticParams() {
+  return testPosts.map((post) => ({
+    slug: post.slug,
+  }));
+}
 
 const PostDetail = () => {
   const router = useRouter();
@@ -23,7 +30,9 @@ const PostDetail = () => {
 
   const { post } = data;
 
-  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
+  const ogImageUrl = useMemo(() => {
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
+  }, [[post.title, post.user]]);
 
   return (
     <>
