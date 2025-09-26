@@ -1,5 +1,7 @@
 // import { NextResponse, type NextRequest } from 'next/server';
 
+export const runtime = 'experimental-edge';
+
 // // ホワイトリストに登録されたIPリストを取得します。
 // const ipWhiteList = new Set(
 //   process.env.IP_WHITE_LIST?.split(',').map((item: string) => {

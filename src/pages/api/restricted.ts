@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' };
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { authOptions as nextAuthOptions } from './auth/[...nextauth]';
