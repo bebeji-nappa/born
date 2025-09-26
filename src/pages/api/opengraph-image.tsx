@@ -2,13 +2,11 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import { Noto_Sans_Javanese } from 'next/font/google';
 
-export const dynamic = 'force-static';
-
-export const dynamicParams = false;
-
 export const config = {
   runtime: 'edge',
 };
+
+export const contentType = 'image/png';
 
 const font = Noto_Sans_Javanese({
   weight: '700',
