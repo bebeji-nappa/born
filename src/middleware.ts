@@ -7,10 +7,15 @@ export function middleware(request: NextRequest) {
   const restrictedPaths = ['/signin', '/post/create'];
 
   // 動的ルート /post/[id]/edit のチェック
-  const isPostEditPath = /^\/post\/[^\/]+\/edit$/.test(pathname);
+  const isPostEditPath = /^\/post\/\d+\/edit$/.test(pathname);
+
+  console.log(isPostEditPath);
 
   // IP制限が必要かチェック
   const isRestricted = restrictedPaths.includes(pathname) || isPostEditPath;
+
+  console.log(pathname);
+  console.log(restrictedPaths.includes(pathname), isPostEditPath);
 
   if (isRestricted) {
     // BASIC認証のチェック
