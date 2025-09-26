@@ -3,7 +3,7 @@ import PostListTemplate from '@/components/templates/PostList';
 import { trpc } from '@/utils/trpc';
 import { skipToken } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
-import Head from 'next/head';
+import { Head } from 'next/document';
 
 const Posts = () => {
   const session = useSession();

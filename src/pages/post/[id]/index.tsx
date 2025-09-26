@@ -2,7 +2,7 @@ import PostDetailTemplate from '@/components/templates/PostDetail';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 import { skipToken } from '@tanstack/react-query';
-import Head from 'next/head';
+import { Head } from 'next/document';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const PostDetail = () => {
