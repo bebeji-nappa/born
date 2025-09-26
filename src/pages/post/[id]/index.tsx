@@ -26,7 +26,7 @@ const PostDetail = () => {
   const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(post.title)}&user=${encodeURIComponent(JSON.stringify(post.user))}`;
 
   return (
-    <div>
+    <>
       <Head>
         <title>{post.title}</title>
         <meta property="og:image" content={ogImageUrl} />
@@ -36,7 +36,7 @@ const PostDetail = () => {
         <meta name="twitter:image" content={ogImageUrl} />
       </Head>
       <PostDetailTemplate post={post} />
-    </div>
+    </>
   );
 };
 
