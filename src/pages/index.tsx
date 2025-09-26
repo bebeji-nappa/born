@@ -35,6 +35,8 @@ const Posts = () => {
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={ogImageUrl} />
+        <meta name="twitter:title" content="nappa's Blog" />
+        <meta name="twitter:description" content="nappa のブログ。" />
       </Head>
       <PostListTemplate posts={data} />
     </>
