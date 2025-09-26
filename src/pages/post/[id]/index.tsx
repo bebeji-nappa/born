@@ -6,12 +6,6 @@ import Head from 'next/head';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useMemo } from 'react';
 
-export async function generateStaticParams() {
-  return testPosts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-
 const PostDetail = () => {
   const router = useRouter();
   const { id } = router.query;
