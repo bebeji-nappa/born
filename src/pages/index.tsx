@@ -25,7 +25,7 @@ const Posts = () => {
   return (
     <div>
       <Head>
-        <title></title>
+        <title>nappa's Blog</title>
         <meta name="description" content="nappa のブログ" />
         <meta
           property="og:image"
