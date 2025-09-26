@@ -1,6 +1,6 @@
 // import { NextResponse, type NextRequest } from 'next/server';
 
-export const runtime = 'edge';
+export const runtime = 'experimental-edge';
 
 // // ホワイトリストに登録されたIPリストを取得します。
 // const ipWhiteList = new Set(
