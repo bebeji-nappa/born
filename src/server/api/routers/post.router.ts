@@ -54,7 +54,7 @@ export const postRouter = router({
       );
       return updatedPost;
     }),
-  deletePost: publicProcedure
+  deletePostById: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       const result = await deletePostHandler(input.id);

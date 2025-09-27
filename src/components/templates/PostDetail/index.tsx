@@ -4,9 +4,11 @@ import { Richmd } from '@richmd/react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { trpc } from '@/utils/trpc';
+import Link from 'next/link';
 // @ts-ignore-next-line
 import '@richmd/react/dist/richmd.css';
-import { useRouter } from 'next/router';
 
 const Background = styled.div`
   background: #ffd600;
@@ -53,12 +55,16 @@ const Header = styled.header`
   padding: 32px;
   border-bottom: 1px solid #f3f4f6;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
 
   @media (max-width: 768px) {
     padding: 24px 20px;
   }
+`;
+
+const HeaderContent = styled.header`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 const Title = styled.h1`
@@ -202,15 +208,33 @@ const RedirectButton = styled.button`
   padding: 0;
 `;
 
+const DeleteButton = styled.button`
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  margin-left: auto;
+  height: fit-content;
+
+  &:hover {
+    background-color: #dc2626;
+  }
+`;
+
 export type PostDetailTemplateProps = {
   post: Pick<Post, 'id' | 'title' | 'content'> & {
     createdAt: string;
     user: Omit<User, 'emailVerified'>;
   };
+  authUserEmail: string | null | undefined;
 };
 
 const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
-  post: { title, content, user, createdAt },
+  post: { id, title, content, user, createdAt },
+  authUserEmail,
 }) => {
   const router = useRouter();
   const getInitials = (name: string | null) => {
@@ -221,6 +245,20 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
       .join('')
       .slice(0, 2)
       .toUpperCase();
+  };
+  const deletePostMutation = trpc.deletePostById.useMutation();
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('本当に削除しますか？')) return;
+
+    try {
+      await deletePostMutation.mutateAsync({ id });
+      alert('削除しました');
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+      alert('削除に失敗しました');
+    }
   };
 
   return (
@@ -234,15 +272,17 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
             height: '50px',
           }}
         >
-          <Image
-            src="/logo.svg"
-            alt="logo"
-            sizes="100vw"
-            fill
-            style={{
-              width: '100%',
-            }}
-          />
+          <Link href="/">
+            <Image
+              src="/logo.svg"
+              alt="logo"
+              sizes="100vw"
+              fill
+              style={{
+                width: '100%',
+              }}
+            />
+          </Link>
         </div>
       </PageHeader>
       <Container>
@@ -251,23 +291,28 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
         </RedirectButton>
         <Article>
           <Header>
-            <Title>{title}</Title>
-            <AuthorSection>
-              <AuthorAvatar>
-                {user.image ? (
-                  <AuthorImage src={user.image} alt={user.name || 'Author'} />
-                ) : (
-                  getInitials(user.name)
-                )}
-              </AuthorAvatar>
-              <AuthorInfo>
-                <AuthorName>{user.name || 'Unknown Author'}</AuthorName>
-                {/* <AuthorLabel></AuthorLabel> */}
-              </AuthorInfo>
-            </AuthorSection>
-            <DateSetion>
-              公開日: {dayjs(createdAt).format('YYYY年MM月DD日')}
-            </DateSetion>
+            <HeaderContent>
+              <Title>{title}</Title>
+              <AuthorSection>
+                <AuthorAvatar>
+                  {user.image ? (
+                    <AuthorImage src={user.image} alt={user.name || 'Author'} />
+                  ) : (
+                    getInitials(user.name)
+                  )}
+                </AuthorAvatar>
+                <AuthorInfo>
+                  <AuthorName>{user.name || 'Unknown Author'}</AuthorName>
+                  {/* <AuthorLabel></AuthorLabel> */}
+                </AuthorInfo>
+              </AuthorSection>
+              <DateSetion>
+                公開日: {dayjs(createdAt).format('YYYY年MM月DD日')}
+              </DateSetion>
+            </HeaderContent>
+            {authUserEmail === user.email && (
+              <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
+            )}
           </Header>
           <Content>
             <Richmd text={content} />

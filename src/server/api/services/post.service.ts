@@ -1,4 +1,5 @@
 import { prisma } from '@/utils/prisma';
+import { TRPCError } from '@trpc/server';
 
 export const getPostById = async (id: number) => {
   const post = await prisma.post.findUnique({
@@ -9,6 +10,14 @@ export const getPostById = async (id: number) => {
       user: { select: { id: true, name: true, email: true, image: true } },
     },
   });
+
+  if (!post) {
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: `No post with id '${id}'`,
+    });
+  }
+
   return {
     post,
   };
