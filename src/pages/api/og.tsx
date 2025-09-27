@@ -50,7 +50,6 @@ export default async function handler(req: NextRequest) {
         }}
       >
         <div
-          className={font.className}
           style={{
             display: 'flex',
             background: title ? 'white' : 'black',
