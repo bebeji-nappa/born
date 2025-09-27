@@ -1,7 +1,7 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
-  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/opengraph-image`;
+  const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/og`;
 
   return (
     <Html lang="ja">

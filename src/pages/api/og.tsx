@@ -1,6 +1,5 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
-import { Noto_Sans_Javanese } from 'next/font/google';
 
 export const config = {
   runtime: 'edge',
@@ -8,10 +7,10 @@ export const config = {
 
 export const contentType = 'image/png';
 
-const font = Noto_Sans_Javanese({
-  weight: '700',
-  subsets: ['latin'],
-});
+// const font = Noto_Sans_Javanese({
+//   weight: '700',
+//   subsets: ['latin'],
+// });
 
 async function loadGoogleFont() {
   const url =
@@ -126,13 +125,13 @@ export default async function handler(req: NextRequest) {
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: 'NotoSansJP',
-          data: await loadGoogleFont(),
-          style: 'normal',
-        },
-      ],
+      // fonts: [
+      //   {
+      //     name: 'NotoSansJP',
+      //     data: await loadGoogleFont(),
+      //     style: 'normal',
+      //   },
+      // ],
     },
   );
 }
