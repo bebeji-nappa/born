@@ -39,6 +39,8 @@ const Container = styled.div`
 
   @media (max-width: 768px) {
     padding: 16px;
+    grid-template-columns: repeat(1, minmax(300px, 1fr));
+    gap: 16px;
   }
 `;
 
@@ -85,7 +87,7 @@ const Title = styled.h1`
   overflow: hidden;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 `;
 
