@@ -25,6 +25,11 @@ export const authOptions = {
       }
       return session;
     },
+    async signIn({ user }) {
+      if (!user?.email || user?.email !== process.env.NEXT_PUBLIC_EMAIL)
+        return false;
+      return true;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
