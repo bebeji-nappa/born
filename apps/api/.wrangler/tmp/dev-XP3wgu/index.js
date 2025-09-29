@@ -29765,9 +29765,14 @@ var getAuthUserId = /* @__PURE__ */ __name(async (email3, env2) => {
 var users = new Hono2();
 users.get("/", async (c) => {
   try {
+    console.log("Environment variables in production:", {
+      DATABASE_URL: c.env.DATABASE_URL ? "[SET]" : "[MISSING]",
+      hasEnv: !!c.env
+    });
     const result = await getAll(c.env);
     return c.json(result);
   } catch (error47) {
+    console.error("Users fetch error:", error47);
     return c.json({ error: "Failed to fetch users" }, 500);
   }
 });
