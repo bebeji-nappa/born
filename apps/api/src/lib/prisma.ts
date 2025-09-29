@@ -1,4 +1,3 @@
-import { PrismaClient as PrismaClientEdge } from '@prisma/client/edge';
 import { PrismaClient } from '../../prisma/generated/prisma';
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaPg } from '@prisma/adapter-pg'
@@ -23,7 +22,7 @@ export function getPrismaClient(env: any): PrismaClient | PrismaClientEdge {
   }
 
   if (env.NODE_ENV === 'production') {
-    global.prisma = new PrismaClientEdge({
+    global.prisma = new PrismaClient({
       datasourceUrl: env.DATABASE_URL,
     }).$extends(withAccelerate())
   }

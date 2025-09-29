@@ -1196,85 +1196,6 @@ var init_modules_watch_stub = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/.prisma/client/edge.js
-var require_edge = __commonJS({
-  "../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/.prisma/client/edge.js"(exports, module) {
-    "use strict";
-    init_modules_watch_stub();
-    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
-    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
-    init_performance2();
-    var __defProp3 = Object.defineProperty;
-    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-    var __getOwnPropNames2 = Object.getOwnPropertyNames;
-    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
-    var __export3 = /* @__PURE__ */ __name((target, all) => {
-      for (var name2 in all)
-        __defProp3(target, name2, { get: all[name2], enumerable: true });
-    }, "__export");
-    var __copyProps2 = /* @__PURE__ */ __name((to, from, except, desc) => {
-      if (from && typeof from === "object" || typeof from === "function") {
-        for (let key of __getOwnPropNames2(from))
-          if (!__hasOwnProp2.call(to, key) && key !== except)
-            __defProp3(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
-      }
-      return to;
-    }, "__copyProps");
-    var __toCommonJS = /* @__PURE__ */ __name((mod) => __copyProps2(__defProp3({}, "__esModule", { value: true }), mod), "__toCommonJS");
-    var default_index_exports = {};
-    __export3(default_index_exports, {
-      Prisma: /* @__PURE__ */ __name(() => Prisma, "Prisma"),
-      PrismaClient: /* @__PURE__ */ __name(() => PrismaClient2, "PrismaClient"),
-      default: /* @__PURE__ */ __name(() => default_index_default, "default")
-    });
-    module.exports = __toCommonJS(default_index_exports);
-    var prisma = {
-      enginesVersion: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
-    };
-    var version3 = "6.16.2";
-    var clientVersion = version3;
-    var PrismaClient2 = class {
-      static {
-        __name(this, "PrismaClient");
-      }
-      constructor() {
-        throw new Error('@prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.');
-      }
-    };
-    function defineExtension(ext) {
-      if (typeof ext === "function") {
-        return ext;
-      }
-      return (client) => client.$extends(ext);
-    }
-    __name(defineExtension, "defineExtension");
-    function getExtensionContext(that) {
-      return that;
-    }
-    __name(getExtensionContext, "getExtensionContext");
-    var Prisma = {
-      defineExtension,
-      getExtensionContext,
-      prismaVersion: { client: clientVersion, engine: prisma.enginesVersion }
-    };
-    var default_index_default = { Prisma };
-  }
-});
-
-// ../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/@prisma/client/edge.js
-var require_edge2 = __commonJS({
-  "../../node_modules/.pnpm/@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2/node_modules/@prisma/client/edge.js"(exports, module) {
-    init_modules_watch_stub();
-    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
-    init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
-    init_performance2();
-    module.exports = {
-      // https://github.com/prisma/prisma/pull/12907
-      ...require_edge()
-    };
-  }
-});
-
 // prisma/generated/prisma/runtime/wasm-engine-edge.js
 var require_wasm_engine_edge = __commonJS({
   "prisma/generated/prisma/runtime/wasm-engine-edge.js"(exports, module) {
@@ -13522,13 +13443,13 @@ var require_postgres_array2 = __commonJS({
   }
 });
 
-// .wrangler/tmp/bundle-FZRtXq/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-K6SPrh/middleware-loader.entry.ts
 init_modules_watch_stub();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
 init_performance2();
 
-// .wrangler/tmp/bundle-FZRtXq/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-K6SPrh/middleware-insertion-facade.js
 init_modules_watch_stub();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
@@ -28759,7 +28680,6 @@ init_modules_watch_stub();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_process();
 init_virtual_unenv_global_polyfill_cloudflare_unenv_preset_node_console();
 init_performance2();
-var import_edge = __toESM(require_edge2(), 1);
 var import_prisma = __toESM(require_default(), 1);
 
 // ../../node_modules/.pnpm/@prisma+extension-accelerate@1.3.0_@prisma+client@6.16.2_prisma@6.16.2_typescript@5.9.2__typescript@5.9.2_/node_modules/@prisma/extension-accelerate/dist/esm/entry.fetch.js
@@ -30158,7 +30078,7 @@ function getPrismaClient2(env2) {
     });
   }
   if (env2.NODE_ENV === "production") {
-    global.prisma = new import_edge.PrismaClient({
+    global.prisma = new import_prisma.PrismaClient({
       datasourceUrl: env2.DATABASE_URL
     }).$extends(withAccelerate());
   }
@@ -30770,7 +30690,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env2, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-FZRtXq/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-K6SPrh/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -30806,7 +30726,7 @@ function __facade_invoke__(request, env2, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-FZRtXq/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-K6SPrh/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
