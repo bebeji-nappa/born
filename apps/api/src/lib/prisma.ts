@@ -5,10 +5,10 @@ import { Pool } from 'pg'
 
 declare global {
   // eslint-disable-next-line no-var
-  var prisma: PrismaClient | PrismaClientEdge | undefined;
+  var prisma: any;
 }
 
-export function getPrismaClient(env: any): PrismaClient | PrismaClientEdge {
+export function getPrismaClient(env: any): any {
   if (!env?.DATABASE_URL) {
     throw new Error('DATABASE_URL is not defined in environment variables')
   }
