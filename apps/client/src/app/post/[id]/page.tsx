@@ -64,9 +64,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const post = await getPost(params.id);
+  const { id } = await params;
+  const post = await getPost(id);
 
   if (!post) {
     return {
@@ -82,7 +83,7 @@ export async function generateMetadata({
       description: post.content.slice(0, 160),
       images: [
         {
-          url: `/post/${params.id}/opengraph-image`,
+          url: `/post/${id}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -93,7 +94,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: post.title,
       description: post.content.slice(0, 160),
-      images: [`/post/${params.id}/opengraph-image`],
+      images: [`/post/${id}/opengraph-image`],
     },
   };
 }
@@ -101,9 +102,10 @@ export async function generateMetadata({
 export default async function PostDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const post = await getPost(params.id);
+  const { id } = await params;
+  const post = await getPost(id);
 
   if (!post) {
     notFound();

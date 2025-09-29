@@ -1,9 +1,8 @@
 import { ImageResponse } from "@vercel/og";
-import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
-export async function GET(req: NextRequest) {
+export default function Image() {
   return new ImageResponse(
     <div
       style={{

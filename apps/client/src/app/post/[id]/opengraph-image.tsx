@@ -37,18 +37,10 @@ async function getPost(id: string): Promise<Post | null> {
   }
 }
 
-export async function generateImageMetadata() {
-  return [
-    {
-      contentType: "image/png",
-      size: { width: 1200, height: 630 },
-      id: "og",
-    },
-  ];
-}
 
-export default async function Image({ params }: { params: { id: string } }) {
-  const post = await getPost(params.id);
+export default async function Image({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const post = await getPost(id);
 
   if (!post) {
     return new ImageResponse(
