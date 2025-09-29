@@ -1,5 +1,4 @@
-import { randomBytes } from 'crypto'
-import { prisma } from './prisma'
+import { getPrismaClient } from './prisma'
 
 export interface AuthUser {
   id: string
@@ -15,10 +14,13 @@ export interface SessionData {
 }
 
 export function generateSessionToken(): string {
-  return randomBytes(32).toString('hex')
+  const array = new Uint8Array(32)
+  crypto.getRandomValues(array)
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
-export async function createSession(userId: string): Promise<string> {
+export async function createSession(userId: string, env: any): Promise<string> {
+  const prisma = getPrismaClient(env)
   const sessionToken = generateSessionToken()
   const expires = new Date()
   expires.setDate(expires.getDate() + 7) // 7 days from now
@@ -34,7 +36,8 @@ export async function createSession(userId: string): Promise<string> {
   return sessionToken
 }
 
-export async function getSessionUser(sessionToken: string): Promise<AuthUser | null> {
+export async function getSessionUser(sessionToken: string, env: any): Promise<AuthUser | null> {
+  const prisma = getPrismaClient(env)
   const session = await prisma.session.findUnique({
     where: { sessionToken },
     include: {
@@ -59,7 +62,8 @@ export async function getSessionUser(sessionToken: string): Promise<AuthUser | n
   }
 }
 
-export async function deleteSession(sessionToken: string): Promise<void> {
+export async function deleteSession(sessionToken: string, env: any): Promise<void> {
+  const prisma = getPrismaClient(env)
   await prisma.session.delete({
     where: { sessionToken },
   }).catch(() => {
@@ -67,11 +71,11 @@ export async function deleteSession(sessionToken: string): Promise<void> {
   })
 }
 
-export function getGitHubOAuthConfig() {
+export function getGitHubOAuthConfig(env: any) {
   return {
-    clientId: process.env.AUTH_GITHUB_ID!,
-    clientSecret: process.env.AUTH_GITHUB_SECRET!,
-    redirectUri: `${process.env.API_BASE_URL || 'http://localhost:8000'}/api/auth/callback/github`,
+    clientId: env.AUTH_GITHUB_ID!,
+    clientSecret: env.AUTH_GITHUB_SECRET!,
+    redirectUri: `${env.API_BASE_URL || 'http://localhost:8000'}/api/auth/callback/github`,
     scope: 'user:email',
   }
 }

@@ -2,25 +2,24 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
-    "@hono/node-server": "^1.19.4",
-    "@hono/oauth-providers": "^0.8.5",
     "@hono/zod-validator": "^0.7.3",
+    "@prisma/adapter-pg": "^6.16.2",
     "@prisma/client": "6.16.2",
     "hono": "^4.9.9",
-    "jose": "^4.15.9",
-    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
     "prisma": "^6.16.2",
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.10",
+    "@cloudflare/workers-types": "^4.20240925.0",
     "@types/node": "^20.11.17",
-    "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "@types/pg": "^8.10.9",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.40.2"
   }
 }

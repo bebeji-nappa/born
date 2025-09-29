@@ -1,13 +1,15 @@
-import { prisma } from '../lib/prisma'
+import { getPrismaClient } from '../lib/prisma'
 
-export const getAll = async () => {
+export const getAll = async (env: any) => {
+  const prisma = getPrismaClient(env)
   const users = await prisma.user.findMany()
   return {
     users,
   }
 }
 
-export const getUserbyId = async (id: string) => {
+export const getUserbyId = async (id: string, env: any) => {
+  const prisma = getPrismaClient(env)
   const data = await prisma.user.findUnique({
     where: {
       id,
@@ -18,7 +20,8 @@ export const getUserbyId = async (id: string) => {
   }
 }
 
-export const getUserbyEmail = async (email: string) => {
+export const getUserbyEmail = async (email: string, env: any) => {
+  const prisma = getPrismaClient(env)
   const data = await prisma.user.findUnique({
     where: {
       email,
@@ -29,7 +32,8 @@ export const getUserbyEmail = async (email: string) => {
   }
 }
 
-export const getAuthUserId = async (email: string) => {
+export const getAuthUserId = async (email: string, env: any) => {
+  const prisma = getPrismaClient(env)
   const data = await prisma.user.findUnique({
     where: {
       email: email,

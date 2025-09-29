@@ -1,13 +1,25 @@
 import { Hono } from 'hono'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
-import { prisma } from '../lib/prisma'
+import { getPrismaClient } from '../lib/prisma'
 
-const auth = new Hono()
+type Bindings = {
+  DATABASE_URL: string
+  AUTH_GITHUB_ID: string
+  AUTH_GITHUB_SECRET: string
+  API_BASE_URL: string
+  FRONTEND_URL: string
+  ALLOW_EMAIL: string
+  NODE_ENV: string
+}
 
-const config = getGitHubOAuthConfig()
+const auth = new Hono<{ Bindings: Bindings }>()
 
 auth.get('/signin/github', async (c) => {
+  console.log('Environment variables:', c.env)
+  console.log('AUTH_GITHUB_ID:', c.env.AUTH_GITHUB_ID)
+  
+  const config = getGitHubOAuthConfig(c.env)
   const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=${Math.random().toString(36)}`
   
   return c.redirect(authUrl)
@@ -15,6 +27,8 @@ auth.get('/signin/github', async (c) => {
 
 auth.get('/callback/github', async (c) => {
   try {
+    const config = getGitHubOAuthConfig(c.env)
+    const prisma = getPrismaClient(c.env)
     const code = c.req.query('code')
     
     if (!code) {
@@ -60,7 +74,7 @@ auth.get('/callback/github', async (c) => {
     const emails = await emailResponse.json()
     const primaryEmail = emails.find((email: any) => email.primary)?.email || githubUser.email
 
-    if (!primaryEmail || primaryEmail !== process.env.ALLOW_EMAIL) {
+    if (!primaryEmail || primaryEmail !== c.env.ALLOW_EMAIL) {
       return c.json({ error: 'Unauthorized email address' }, 403)
     }
 
@@ -120,16 +134,16 @@ auth.get('/callback/github', async (c) => {
       })
     }
 
-    const sessionToken = await createSession(user.id)
+    const sessionToken = await createSession(user.id, c.env)
     
     setCookie(c, 'session-token', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true, // Always secure in Workers
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'
+    const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
     return c.redirect(frontendUrl)
   } catch (error) {
     console.error('GitHub OAuth error:', error)
@@ -141,7 +155,7 @@ auth.post('/signout', async (c) => {
   const sessionToken = getCookie(c, 'session-token')
   
   if (sessionToken) {
-    await deleteSession(sessionToken)
+    await deleteSession(sessionToken, c.env)
   }
   
   deleteCookie(c, 'session-token')
@@ -155,7 +169,7 @@ auth.get('/current_user', async (c) => {
     return c.json({ error: 'Not authenticated' }, 401)
   }
 
-  const user = await getSessionUser(sessionToken)
+  const user = await getSessionUser(sessionToken, c.env)
   
   if (!user) {
     return c.json({ error: 'Invalid session' }, 401)

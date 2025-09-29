@@ -1,6 +1,7 @@
-import { prisma } from '../lib/prisma'
+import { getPrismaClient } from '../lib/prisma'
 
-export const getPostById = async (id: number) => {
+export const getPostById = async (id: number, env: any) => {
+  const prisma = getPrismaClient(env)
   const post = await prisma.post.findUnique({
     where: {
       id: id,
@@ -19,7 +20,8 @@ export const getPostById = async (id: number) => {
   }
 }
 
-export const getAllPostsByUserId = async (userId: string) => {
+export const getAllPostsByUserId = async (userId: string, env: any) => {
+  const prisma = getPrismaClient(env)
   const posts = await prisma.post.findMany({
     where: { userId },
     include: {
@@ -38,7 +40,9 @@ export const updatePostById = async (
   id: number,
   title: string,
   content: string,
+  env: any
 ) => {
+  const prisma = getPrismaClient(env)
   const updatedPost = await prisma.post.update({
     where: {
       id: id,
@@ -53,7 +57,8 @@ export const updatePostById = async (
   }
 }
 
-export const deletePostById = async (id: number) => {
+export const deletePostById = async (id: number, env: any) => {
+  const prisma = getPrismaClient(env)
   await prisma.post.delete({
     where: {
       id: id,
@@ -64,7 +69,8 @@ export const deletePostById = async (id: number) => {
   }
 }
 
-export const getAllPosts = async () => {
+export const getAllPosts = async (env: any) => {
+  const prisma = getPrismaClient(env)
   const posts = await prisma.post.findMany({
     include: {
       user: { select: { id: true, name: true, email: true, image: true } },
@@ -82,7 +88,9 @@ export const createPost = async (
   title: string,
   content: string,
   userId: string,
+  env: any
 ) => {
+  const prisma = getPrismaClient(env)
   const newPost = await prisma.post.create({
     data: {
       title: title,

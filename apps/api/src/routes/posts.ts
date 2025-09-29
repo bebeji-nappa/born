@@ -11,11 +11,15 @@ import {
 } from '../services/posts.service'
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth'
 
-const posts = new Hono()
+type Bindings = {
+  DATABASE_URL: string
+}
+
+const posts = new Hono<{ Bindings: Bindings }>()
 
 posts.get('/', async (c) => {
   try {
-    const result = await getAllPosts()
+    const result = await getAllPosts(c.env)
     return c.json(result)
   } catch (error) {
     return c.json({ error: 'Failed to fetch posts' }, 500)
@@ -28,7 +32,7 @@ posts.get(
   async (c) => {
     try {
       const { id } = c.req.valid('param')
-      const result = await getPostById(id)
+      const result = await getPostById(id, c.env)
       return c.json(result)
     } catch (error) {
       if (error instanceof Error && error.message.includes('No post with id')) {
@@ -45,7 +49,7 @@ posts.get(
   async (c) => {
     try {
       const { userId } = c.req.valid('param')
-      const result = await getAllPostsByUserId(userId)
+      const result = await getAllPostsByUserId(userId, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch posts' }, 500)
@@ -67,7 +71,7 @@ posts.post(
     try {
       const user = c.get('user')
       const { title, content } = c.req.valid('json')
-      const result = await createPost(title, content, user.id)
+      const result = await createPost(title, content, user.id, c.env)
       return c.json(result, 201)
     } catch (error) {
       return c.json({ error: 'Failed to create post' }, 500)
@@ -90,7 +94,7 @@ posts.put(
     try {
       const { id } = c.req.valid('param')
       const { title, content } = c.req.valid('json')
-      const result = await updatePostById(id, title, content)
+      const result = await updatePostById(id, title, content, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to update post' }, 500)
@@ -105,7 +109,7 @@ posts.delete(
   async (c) => {
     try {
       const { id } = c.req.valid('param')
-      const result = await deletePostById(id)
+      const result = await deletePostById(id, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to delete post' }, 500)

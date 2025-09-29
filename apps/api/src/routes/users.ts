@@ -8,11 +8,15 @@ import {
   getUserbyId,
 } from '../services/users.service'
 
-const users = new Hono()
+type Bindings = {
+  DATABASE_URL: string
+}
+
+const users = new Hono<{ Bindings: Bindings }>()
 
 users.get('/', async (c) => {
   try {
-    const result = await getAll()
+    const result = await getAll(c.env)
     return c.json(result)
   } catch (error) {
     return c.json({ error: 'Failed to fetch users' }, 500)
@@ -25,7 +29,7 @@ users.get(
   async (c) => {
     try {
       const { email } = c.req.valid('query')
-      const result = await getAuthUserId(email)
+      const result = await getAuthUserId(email, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch user ID' }, 500)
@@ -39,7 +43,7 @@ users.get(
   async (c) => {
     try {
       const { email } = c.req.valid('query')
-      const result = await getUserbyEmail(email)
+      const result = await getUserbyEmail(email, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch user by email' }, 500)
@@ -53,7 +57,7 @@ users.get(
   async (c) => {
     try {
       const { id } = c.req.valid('param')
-      const result = await getUserbyId(id)
+      const result = await getUserbyId(id, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch user' }, 500)
