@@ -9,8 +9,9 @@ port = 8000
 
 # Environment variables from .dev.vars are automatically loaded
 
-# D1 Database bindings for development
-[[d1_databases]]
+# Development environment
+[env.development]
+[[env.development.d1_databases]]
 binding = "DB"
 database_name = "born-db-local"
 database_id = "local"
