@@ -17,11 +17,7 @@ const users = new Hono<{ Bindings: Bindings }>()
 users.get('/', async (c) => {
   try {
     const result = await getAll(c.env)
-    return c.json({
-      DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
-      hasEnv: !!c.env,
-      result: result
-    })
+    return c.json(result)
   } catch (error) {
     console.error('Users fetch error:', error)
     return c.json({ error: 'Failed to fetch users' }, 500)
@@ -63,7 +59,11 @@ users.get(
     try {
       const { id } = c.req.valid('param')
       const result = await getUserbyId(id, c.env)
-      return c.json(result)
+      return c.json({
+        DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
+        hasEnv: !!c.env,
+        result: result
+      })
     } catch (error) {
       return c.json({ error: 'Failed to fetch user' }, 500)
     }
