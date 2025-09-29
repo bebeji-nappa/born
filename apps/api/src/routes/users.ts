@@ -59,13 +59,14 @@ users.get(
     try {
       const { id } = c.req.valid('param')
       const result = await getUserbyId(id, c.env)
+      return c.json(result)
+    } catch (error) {
+      // return c.json({ error: 'Failed to fetch user' }, 500)
       return c.json({
         DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
         hasEnv: !!c.env,
-        result: result
-      })
-    } catch (error) {
-      return c.json({ error: 'Failed to fetch user' }, 500)
+        error: 'Failed to fetch user'
+       }, 500)
     }
   }
 )
