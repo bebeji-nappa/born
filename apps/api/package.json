@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "db:generate": "prisma generate"
+    "db:migrate": "dotenv -e .dev.vars -- pnpm prisma migrate dev",
+    "db:generate": "dotenv -e .dev.vars -- pnpm prisma generate --no-engine",
+    "db:studio": "dotenv -e .dev.vars -- pnpm prisma studio"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.3",
