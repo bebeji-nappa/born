@@ -47,7 +47,7 @@ users.get(
       const result = await getUserbyEmail(email, c.env)
       return c.json(result)
     } catch (error) {
-      return c.json({ error: 'Failed to fetch user by email' }, 500)
+      return c.json({ error: error }, 500)
     }
   }
 )
@@ -61,12 +61,7 @@ users.get(
       const result = await getUserbyId(id, c.env)
       return c.json(result)
     } catch (error) {
-      // return c.json({ error: 'Failed to fetch user' }, 500)
-      return c.json({
-        DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
-        hasEnv: !!c.env,
-        error: 'Failed to fetch user'
-       }, 500)
+      return c.json({ error: 'Failed to fetch user' }, 500)
     }
   }
 )
