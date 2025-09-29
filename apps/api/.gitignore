@@ -27,3 +27,8 @@ lerna-debug.log*
 # misc
 .DS_Store
 .dev.vars
+
+# D1 and Wrangler
+.wrangler/
+*.db
+*.db-journal

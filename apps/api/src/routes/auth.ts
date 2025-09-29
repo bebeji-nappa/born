@@ -16,9 +16,6 @@ type Bindings = {
 const auth = new Hono<{ Bindings: Bindings }>()
 
 auth.get('/signin/github', async (c) => {
-  console.log('Environment variables:', c.env)
-  console.log('AUTH_GITHUB_ID:', c.env.AUTH_GITHUB_ID)
-  
   const config = getGitHubOAuthConfig(c.env)
   const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=${Math.random().toString(36)}`
   
@@ -49,7 +46,21 @@ auth.get('/callback/github', async (c) => {
       }),
     })
 
-    const tokenData = await tokenResponse.json()
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text()
+      console.error('GitHub token response error:', tokenResponse.status, errorText)
+      return c.json({ error: 'Failed to get access token from GitHub' }, 400)
+    }
+
+    const tokenText = await tokenResponse.text()
+    
+    let tokenData
+    try {
+      tokenData = JSON.parse(tokenText)
+    } catch (error) {
+      console.error('Failed to parse GitHub token response as JSON:', tokenText)
+      return c.json({ error: 'Invalid response from GitHub' }, 400)
+    }
     
     if (!tokenData.access_token) {
       return c.json({ error: 'Failed to get access token' }, 400)
@@ -59,8 +70,15 @@ auth.get('/callback/github', async (c) => {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
         'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Born-API/1.0',
       },
     })
+
+    if (!userResponse.ok) {
+      const errorText = await userResponse.text()
+      console.error('GitHub user API error:', userResponse.status, errorText)
+      return c.json({ error: 'Failed to get user from GitHub' }, 400)
+    }
 
     const githubUser = await userResponse.json()
 
@@ -68,8 +86,15 @@ auth.get('/callback/github', async (c) => {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
         'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Born-API/1.0',
       },
     })
+
+    if (!emailResponse.ok) {
+      const errorText = await emailResponse.text()
+      console.error('GitHub email API error:', emailResponse.status, errorText)
+      return c.json({ error: 'Failed to get emails from GitHub' }, 400)
+    }
 
     const emails = await emailResponse.json()
     const primaryEmail = emails.find((email: any) => email.primary)?.email || githubUser.email

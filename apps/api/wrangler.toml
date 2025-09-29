@@ -9,13 +9,26 @@ port = 8000
 
 # Environment variables from .dev.vars are automatically loaded
 
+# D1 Database bindings for development
+[[d1_databases]]
+binding = "DB"
+database_name = "born-db-local"
+database_id = "local"
+migrations_dir = "prisma/migrations"
+
 # Production environment
 [env.production]
 name = "born-api"
 
+# D1 Database bindings for production
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "born-db"
+database_id = "e9fc0460-9d98-4beb-a516-e78ee8ebcfe9"
+migrations_dir = "prisma/migrations"
+
 # Environment variables (set via Dashboard or wrangler secret)
 [[env.production.vars]]
-DATABASE_URL = { binding = "DATABASE_URL" }
 AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
 AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
 API_BASE_URL = { binding = "API_BASE_URL" }
