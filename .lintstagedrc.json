@@ -1,3 +1,0 @@
-{
-  "*.{ts,tsx}": ["biome format --write", "prettier --write"]
-}
