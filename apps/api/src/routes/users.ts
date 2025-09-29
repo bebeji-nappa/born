@@ -16,7 +16,6 @@ const users = new Hono<{ Bindings: Bindings }>()
 
 users.get('/', async (c) => {
   try {
-    const debug = ;
     const result = await getAll(c.env)
     return c.json({
       DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
