@@ -12,3 +12,10 @@ port = 8000
 # Production environment
 [env.production]
 name = "born-api-prod"
+
+[observability.logs]
+enabled = true
+
+[[routes]]
+pattern = "api.bebeji-nappa.com"
+custom_domain = true
