@@ -8,15 +8,18 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.3",
+    "@prisma/adapter-pg": "^6.16.2",
     "@prisma/client": "6.16.2",
     "@prisma/extension-accelerate": "^1.1.0",
     "hono": "^4.9.9",
+    "pg": "^8.16.3",
     "prisma": "^6.16.2",
     "zod": "^4.1.11"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240925.0",
     "@types/node": "^20.11.17",
+    "@types/pg": "^8.15.5",
     "typescript": "^5.8.3",
     "wrangler": "^4.40.2"
   }

@@ -20,6 +20,9 @@ importers:
       '@hono/zod-validator':
         specifier: ^0.7.3
         version: 0.7.3(hono@4.9.9)(zod@4.1.11)
+      '@prisma/adapter-pg':
+        specifier: ^6.16.2
+        version: 6.16.2
       '@prisma/client':
         specifier: 6.16.2
         version: 6.16.2(prisma@6.16.2(typescript@5.9.2))(typescript@5.9.2)
@@ -29,6 +32,9 @@ importers:
       hono:
         specifier: ^4.9.9
         version: 4.9.9
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       prisma:
         specifier: ^6.16.2
         version: 6.16.2(typescript@5.9.2)
@@ -42,6 +48,9 @@ importers:
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.17
+      '@types/pg':
+        specifier: ^8.15.5
+        version: 8.15.5
       typescript:
         specifier: ^5.8.3
         version: 5.9.2
@@ -3067,6 +3076,9 @@ packages:
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
+
+  '@types/pg@8.15.5':
+    resolution: {integrity: sha512-LF7lF6zWEKxuT3/OR8wAZGzkg4ENGXFNyiV/JeOt9z5B+0ZVwbql9McqX5c/WStFq1GaGso7H1AzP/qSzmlCKQ==}
 
   '@types/raf@3.4.3':
     resolution: {integrity: sha512-c4YAvMedbPZ5tEyxzQdMoOhhJ4RD3rngZIdwC2/qDN3d7JpEhB6fiBRKVY1lg5B7Wk+uPBjn5f39j1/2MY1oOw==}
@@ -10727,6 +10739,12 @@ snapshots:
   '@types/pako@2.0.4': {}
 
   '@types/parse-json@4.0.2': {}
+
+  '@types/pg@8.15.5':
+    dependencies:
+      '@types/node': 24.5.2
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
 
   '@types/raf@3.4.3':
     optional: true
