@@ -13,6 +13,16 @@ port = 8000
 [env.production]
 name = "born-api-prod"
 
+# Environment variables (set via Dashboard or wrangler secret)
+[[env.production.vars]]
+DATABASE_URL = { binding = "DATABASE_URL" }
+AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
+AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
+API_BASE_URL = { binding = "API_BASE_URL" }
+FRONTEND_URL = { binding = "FRONTEND_URL" }
+ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
+NODE_ENV = "production"
+
 [observability.logs]
 enabled = true
 
