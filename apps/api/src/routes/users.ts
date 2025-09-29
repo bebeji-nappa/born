@@ -16,12 +16,13 @@ const users = new Hono<{ Bindings: Bindings }>()
 
 users.get('/', async (c) => {
   try {
-    console.log('Environment variables in production:', {
-      DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
-      hasEnv: !!c.env
-    })
+    const debug = ;
     const result = await getAll(c.env)
-    return c.json(result)
+    return c.json({
+      DATABASE_URL: c.env.DATABASE_URL ? '[SET]' : '[MISSING]',
+      hasEnv: !!c.env,
+      result: result
+    })
   } catch (error) {
     console.error('Users fetch error:', error)
     return c.json({ error: 'Failed to fetch users' }, 500)
