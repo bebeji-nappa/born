@@ -7,10 +7,12 @@
 - Framework
   - Next.js
 - API
+  - API Routes
   - tRPC
   - Prisma Client
 - DB
-  - Supabase
+  - PostgreSQL
+  - Prisma
 
 ## 事前準備
 
@@ -22,26 +24,20 @@ $ cp .env.sample .env
 
 2. [Homebrew 公式サイト](https://brew.sh/ja/)から、Homebrew をインストールします。
 
-3. Homebrew で Docker をインストールします。
-
-```
-$ brew install --cask docker
-```
-
-4. pnpm install を実行します
+3. pnpm install を実行します
 
 ```
 $ pnpm install
 ```
 
-5. DB を設定します。
-homebrew で mysql をインストールします。
+4. DB を設定します。
+homebrew で postgresql をインストールします。
 
 ```
-$ brew install mysql
+$ brew install postgresql
 ```
 
-mysql を起動して、以下の SQL born データベースを作成します。
+PostgreSQL を起動して、以下の SQL で born データベースを作成します。
 
 ```
 create database born;
@@ -50,7 +46,7 @@ create database born;
 設定が終わったら、以下の環境変数を設定します。
 
 ```
-DATABASE_URL=mysql://[username]:[password]@localhost:3306/born
+DATABASE_URL=postgresql://[username]:[password]@localhost:5432/born
 ```
 
 6. 環境変数設定後、Prisma で マイグレーションを実行します
@@ -59,7 +55,7 @@ DATABASE_URL=mysql://[username]:[password]@localhost:3306/born
 $ prisma migrate dev
 ```
 
-MySQL でテーブルが作成されているか確認します。
+データベースにテーブルが作成されているか確認します。
 
 設定完了したら、APIでデータを取得できるように、以下コマンドを実行します
 
@@ -71,13 +67,25 @@ $ pnpm prisma generate
 
 1. こちらの [GitHub 公式 Docs](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) に従って、開発用の OAuth App を作成します
 
-`homepage URL`, `Authorization callback URL` は `http://localhost:3000` で入力してください。
+開発用の場合、`homepage URL`, `Authorization callback URL` は `http://localhost:3000` で入力してください。
 
 2. Client ID と Client Secret Key が発行されるので、それぞれ、以下の環境変数に設定します
 
 ```
-GITHUB_ID=[Client ID]
-GITHUB_SECRET=[Client Secret Key]
+AUTH_GITHUB_ID=[Client ID]
+AUTH_GITHUB_SECRET=[Client Secret Key]
+```
+
+## その他環境変数の設定
+その他の環境変数を、以下のように設定します。
+
+```
+NEXT_PUBLIC_EMAIL=[GitHub Accountで登録されているメールアドレス]
+NEXTAUTH_URL=[クライアント側のURL(http://localhost:3000)]
+NEXTAUTH_SECRET=[NextAuth で使用する認証シークレット用ハッシュ文字列(適当に作成してOK)]
+NEXT_PUBLIC_BASIC_AUTH_USERNAME=[Basic認証用ユーザネーム]
+NEXT_PUBLIC_BASIC_AUTH_PASSWORD=[Basic認証用パスワード]
+NEXT_PUBLIC_BASE_URL=[クライアント側のURL(http://localhost:3000)]
 ```
 
 ## アプリ起動
@@ -88,7 +96,11 @@ GITHUB_SECRET=[Client Secret Key]
 $ pnpm dev
 ```
 
-http://localhost:3000/signin にアクセスして、Sign in of GitHub クリックして、ログインできるか確認してください。
+http://localhost:3000/signin にアクセスして、Basic認証後に Sign in of GitHub クリックして、ログインできるか確認してください。
+
+### 使用権限について
+現在は環境変数 NEXT_PUBLIC_EMAIL に設定してあるメールアドレスで登録された GitHub アカウントのみ、すべての機能を使用できるようにしております。
+それ以外については、プログ記事の閲覧のみ有効です。
 
 ## テストについて
 
@@ -96,7 +108,7 @@ http://localhost:3000/signin にアクセスして、Sign in of GitHub クリッ
 
 ### フォーマットテスト
 
-- ESLint
+- Biome
 - Prettier
 
 ### 単体テスト(コンポーネント/API)
