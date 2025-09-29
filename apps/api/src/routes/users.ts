@@ -47,7 +47,7 @@ users.get(
       const result = await getUserbyEmail(email, c.env)
       return c.json(result)
     } catch (error) {
-      return c.json({ error: error }, 500)
+      return c.json({ error: 'Failed to fetch user by email' }, 500)
     }
   }
 )
