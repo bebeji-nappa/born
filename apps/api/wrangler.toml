@@ -11,7 +11,7 @@ port = 8000
 
 # Production environment
 [env.production]
-name = "born-api-prod"
+name = "born-api"
 
 # Environment variables (set via Dashboard or wrangler secret)
 [[env.production.vars]]
