@@ -1,30 +1,14 @@
 import { PrismaClient } from '../../prisma/generated/prisma';
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool } from 'pg'
 
-declare global {
-  // eslint-disable-next-line no-var
-  var prisma: any;
-}
-
-export function getPrismaClient(env: any): any {
+export function getPrismaClient(env: any) {
   if (!env?.DATABASE_URL) {
     throw new Error('DATABASE_URL is not defined in environment variables')
   }
 
-  if (env.NODE_ENV === 'development') {
-    const pool = new Pool({ connectionString: env.DATABASE_URL })
-    const adapter = new PrismaPg(pool)
-    global.prisma = new PrismaClient({
-      adapter,
-    })
-  }
+  const prisma = new PrismaClient({
+    datasourceUrl: env.DATABASE_URL,
+  }).$extends(withAccelerate())
 
-  if (env.NODE_ENV === 'production') {
-    global.prisma = new PrismaClient({
-      datasourceUrl: env.DATABASE_URL,
-    }).$extends(withAccelerate())
-  }
-  return global.prisma
+  return prisma
 }
