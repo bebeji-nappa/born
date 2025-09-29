@@ -1,9 +1,16 @@
 import { ImageResponse } from "@vercel/og";
+import { Noto_Sans_Javanese } from 'next/font/google';
 
 export const runtime = "edge";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+
+
+const font = Noto_Sans_Javanese({
+  weight: '700',
+  subsets: ['latin'],
+});
 
 interface Post {
   id: number;
@@ -35,6 +42,24 @@ async function getPost(id: string): Promise<Post | null> {
     console.error("Failed to fetch post for OG image:", error);
     return null;
   }
+}
+
+async function loadGoogleFont() {
+  const url =
+    'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap';
+  const css = await (await fetch(url)).text();
+  const resource = css.match(
+    /src: url\((.+)\) format\('(opentype|truetype)'\)/,
+  );
+
+  if (resource) {
+    const response = await fetch(resource[1]);
+    if (response.status == 200) {
+      return await response.arrayBuffer();
+    }
+  }
+
+  throw new Error('failed to load font data');
 }
 
 
@@ -78,6 +103,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
       }}
     >
       <div
+        className={font.className}
         style={{
           display: "flex",
           background: "white",
@@ -145,6 +171,13 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: 'NotoSansJP',
+          data: await loadGoogleFont(),
+          style: 'normal',
+        },
+      ],
     },
   );
 }
