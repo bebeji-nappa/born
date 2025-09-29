@@ -4,6 +4,9 @@ import { cors } from 'hono/cors'
 import users from './routes/users'
 import posts from './routes/posts'
 import auth from './routes/auth'
+import { handle } from "hono/vercel";
+
+export const runtime = "edge";
 
 const app = new Hono()
 
@@ -34,9 +37,13 @@ app.route('/api/auth', auth)
 app.route('/api/users', users)
 app.route('/api/posts', posts)
 
-serve({
-  fetch: app.fetch,
-  port: 8000,
-}, (info) => {
-  console.log(`Server is running on http://localhost:${info.port}`)
-})
+if (process.env.NODE_ENV === 'development') {
+  serve({
+    fetch: app.fetch,
+    port: 8000,
+  }, (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`)
+  })
+} else {
+  handle(app);
+}
