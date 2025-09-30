@@ -29,6 +29,6 @@ lerna-debug.log*
 .dev.vars
 
 # D1 and Wrangler
-.wrangler/
+.wrangler
 *.db
 *.db-journal
