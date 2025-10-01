@@ -123,11 +123,17 @@ class ApiClient {
     return response.json();
   }
 
-  async getAllPostsByUserId(userId: string, published?: 1 | 0): Promise<{ posts: Post[] }> {
-    const response = await fetch(`${this.baseUrl}/api/posts/user/${userId}?published=${published}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
+  async getAllPostsByUserId(
+    userId: string,
+    published?: 1 | 0,
+  ): Promise<{ posts: Post[] }> {
+    const response = await fetch(
+      `${this.baseUrl}/api/posts/user/${userId}?published=${published}`,
+      {
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
@@ -136,7 +142,11 @@ class ApiClient {
     return response.json();
   }
 
-  async createPost(title: string, content: string, published: boolean = false): Promise<{ newPost: Post }> {
+  async createPost(
+    title: string,
+    content: string,
+    published: boolean = false,
+  ): Promise<{ newPost: Post }> {
     const response = await fetch(`${this.baseUrl}/api/posts`, {
       method: "POST",
       credentials: "include",

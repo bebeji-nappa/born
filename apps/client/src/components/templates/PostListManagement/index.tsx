@@ -13,6 +13,8 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
+  position: relative;
+  min-height: 100vh;
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -198,9 +200,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
   return (
     <Container>
       <Title>投稿管理</Title>
-
       <CreateButton onClick={handleCreate}>新規投稿</CreateButton>
-
       {posts.length === 0 ? (
         <EmptyState>
           <EmptyMessage>まだ投稿がありません</EmptyMessage>
@@ -208,8 +208,10 @@ const PostListManagement: FC<PostListManagementProps> = ({
         </EmptyState>
       ) : (
         <Virtuoso
-          style={{ height: "100%", minHeight: "60vh" }}
+          useWindowScroll
+          style={{ height: "100%", width: "100%", position: "absolute" }}
           data={posts}
+          components={{ Footer: () => <div style={{ height: 80 }} /> }}
           itemContent={(_, post) => (
             <PostCard key={post.id}>
               <PostInfo>

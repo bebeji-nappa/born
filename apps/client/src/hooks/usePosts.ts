@@ -19,7 +19,10 @@ export function usePosts(userId?: string, published?: boolean) {
 
     try {
       setIsLoading(true);
-      const response = await apiClient.getAllPostsByUserId(userId, published ? 1 : 0);
+      const response = await apiClient.getAllPostsByUserId(
+        userId,
+        published ? 1 : 0,
+      );
       setPosts(response.posts);
       setError(null);
     } catch (err) {
@@ -30,19 +33,44 @@ export function usePosts(userId?: string, published?: boolean) {
     }
   };
 
-  const createPost = async (title: string, content: string, published: boolean = false) => {
+  const fetchPostById = async (id: number) => {
     try {
-      await apiClient.createPost(title, content, published);
+      setIsLoading(true);
+      const response = await apiClient.getPostById(id);
+      setPosts(response.post ? [response.post] : []);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch post");
+      setPosts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createPost = async (
+    title: string,
+    content: string,
+    published: boolean = false,
+  ) => {
+    try {
+      const post = await apiClient.createPost(title, content, published);
       await fetchPosts(); // Refetch posts
+      return post.newPost;
     } catch (err) {
       throw err;
     }
   };
 
-  const updatePost = async (id: number, title: string, content: string, published: boolean) => {
+  const updatePost = async (
+    id: number,
+    title: string,
+    content: string,
+    published: boolean,
+  ) => {
     try {
-      await apiClient.updatePost(id, title, content, published);
+      const post = await apiClient.updatePost(id, title, content, published);
       await fetchPosts(); // Refetch posts
+      return post.updatedPost;
     } catch (err) {
       throw err;
     }

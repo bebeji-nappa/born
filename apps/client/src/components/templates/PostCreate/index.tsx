@@ -123,7 +123,7 @@ const SwitchInput = styled.input`
   }
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 20px;
     height: 20px;
@@ -164,8 +164,12 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
 
   const onSubmit = async (e: any) => {
     try {
-      await createPost(e.title, e.content, isPublished);
-      router.push("/");
+      const post = await createPost(e.title, e.content, isPublished);
+      if (isPublished) {
+        router.push(`/post/${post.id}`);
+      } else {
+        router.push("/post/list");
+      }
     } catch (error) {
       console.error("Failed to create post:", error);
       setAlertMessage("Failed to create post. Please try again.");

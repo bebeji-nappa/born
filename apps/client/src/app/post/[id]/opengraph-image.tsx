@@ -1,15 +1,14 @@
 import { ImageResponse } from "@vercel/og";
-import { Noto_Sans_Javanese } from 'next/font/google';
+import { Noto_Sans_Javanese } from "next/font/google";
 
 export const runtime = "edge";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
-
 const font = Noto_Sans_Javanese({
-  weight: '700',
-  subsets: ['latin'],
+  weight: "700",
+  subsets: ["latin"],
 });
 
 interface Post {
@@ -46,7 +45,7 @@ async function getPost(id: string): Promise<Post | null> {
 
 async function loadGoogleFont() {
   const url =
-    'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap';
+    "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap";
   const css = await (await fetch(url)).text();
   const resource = css.match(
     /src: url\((.+)\) format\('(opentype|truetype)'\)/,
@@ -59,11 +58,14 @@ async function loadGoogleFont() {
     }
   }
 
-  throw new Error('failed to load font data');
+  throw new Error("failed to load font data");
 }
 
-
-export default async function Image({ params }: { params: Promise<{ id: string }> }) {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const post = await getPost(id);
 
@@ -173,9 +175,9 @@ export default async function Image({ params }: { params: Promise<{ id: string }
       height: 630,
       fonts: [
         {
-          name: 'NotoSansJP',
+          name: "NotoSansJP",
           data: await loadGoogleFont(),
-          style: 'normal',
+          style: "normal",
         },
       ],
     },
