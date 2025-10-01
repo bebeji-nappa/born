@@ -24,7 +24,7 @@ interface Post {
 async function getPost(id: string): Promise<Post | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/posts/${id}`, {
-      next: { revalidate: 60, tags: [`post-${id}`] },
+      next: { revalidate: 1 },
     });
 
     if (!response.ok) {
@@ -42,7 +42,7 @@ async function getPost(id: string): Promise<Post | null> {
 export async function generateStaticParams() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/posts`, {
-      next: { revalidate: 3600, tags: ["posts"] },
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
