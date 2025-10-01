@@ -48,7 +48,7 @@ const Form = styled.form`
 `;
 
 const SubmitButton = styled.button`
-  width: 300px;
+  width: 150px;
   background-color: #0366d6;
   color: white;
   font-weight: 600;
@@ -56,7 +56,6 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 16px;
 `;
 
 const EditorWrapper = styled.div`
@@ -88,6 +87,58 @@ const Tab = styled.button<{ isActive: boolean }>`
   }
 `;
 
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+`;
+
+const PublishSwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SwitchLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const SwitchInput = styled.input`
+  width: 48px;
+  height: 24px;
+  position: relative;
+  appearance: none;
+  background-color: #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:checked {
+    background-color: #0366d6;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+  }
+
+  &:checked::before {
+    transform: translateX(24px);
+  }
+`;
+
 export type PostEditInputValues = {
   title: string;
   content: string;
@@ -100,8 +151,7 @@ export type PostCreateTemplateProps = {
 const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
   const router = useRouter();
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
-  const inputTextRef = useRef<HTMLTextAreaElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [isPublished, setIsPublished] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const { createPost } = usePosts(userId);
 
@@ -114,7 +164,7 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
 
   const onSubmit = async (e: any) => {
     try {
-      const result = await createPost(e.title, e.content);
+      await createPost(e.title, e.content, isPublished);
       router.push("/");
     } catch (error) {
       console.error("Failed to create post:", error);
@@ -142,7 +192,6 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
           {...register("title")}
           placeholder="タイトルを入力..."
         />
-
         <Label htmlFor="content">内容</Label>
         <EditorWrapper>
           <TabContainer>
@@ -171,7 +220,21 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
             <Preview text={getValues("content")} id="content" />
           )}
         </EditorWrapper>
-        <SubmitButton type="submit">送信</SubmitButton>
+        <Footer>
+          <SubmitButton type="submit">
+            {isPublished ? "公開する" : "下書き保存"}
+          </SubmitButton>
+          <PublishSwitchWrapper>
+            <SwitchLabel>
+              <SwitchInput
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+              />
+              <span>{isPublished ? "公開する" : "下書き保存"}</span>
+            </SwitchLabel>
+          </PublishSwitchWrapper>
+        </Footer>
       </Form>
     </Wrapper>
   );

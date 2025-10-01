@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 export default function HomePage() {
   const { isLoading: authLoading } = useAuth();
   const [userId, setUserId] = useState<string>();
-  const { posts, isLoading: postsLoading } = usePosts(userId);
+  const { posts, isLoading: postsLoading } = usePosts(userId, true);
 
   useEffect(() => {
     const fetchUserId = async () => {

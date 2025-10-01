@@ -123,8 +123,8 @@ class ApiClient {
     return response.json();
   }
 
-  async getAllPostsByUserId(userId: string): Promise<{ posts: Post[] }> {
-    const response = await fetch(`${this.baseUrl}/api/posts/user/${userId}`, {
+  async getAllPostsByUserId(userId: string, published?: 1 | 0): Promise<{ posts: Post[] }> {
+    const response = await fetch(`${this.baseUrl}/api/posts/user/${userId}?published=${published}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
@@ -136,12 +136,12 @@ class ApiClient {
     return response.json();
   }
 
-  async createPost(title: string, content: string): Promise<{ newPost: Post }> {
+  async createPost(title: string, content: string, published: boolean = false): Promise<{ newPost: Post }> {
     const response = await fetch(`${this.baseUrl}/api/posts`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
+      body: JSON.stringify({ title, content, published }),
     });
 
     if (!response.ok) {
@@ -155,12 +155,15 @@ class ApiClient {
     id: number,
     title: string,
     content: string,
+    published: boolean,
   ): Promise<{ updatedPost: Post }> {
+    const body: any = { title, content, published };
+
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {
       method: "PUT",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {

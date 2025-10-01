@@ -53,6 +53,9 @@ const PostTitle = styled.h2`
   font-weight: 600;
   margin-bottom: 8px;
   color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   a {
     color: inherit;
@@ -62,6 +65,18 @@ const PostTitle = styled.h2`
       color: #3b82f6;
     }
   }
+`;
+
+const DraftBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #92400e;
+  background-color: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 16px;
 `;
 
 const PostMeta = styled.div`
@@ -200,6 +215,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
               <PostInfo>
                 <PostTitle>
                   <Link href={`/post/${post.id}`}>{post.title}</Link>
+                  {!post.published && <DraftBadge>下書き</DraftBadge>}
                 </PostTitle>
                 <PostMeta>
                   作成日: {dayjs(post.createdAt).format("YYYY年MM月DD日 HH:mm")}
