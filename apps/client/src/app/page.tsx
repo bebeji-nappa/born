@@ -19,8 +19,6 @@ export default function HomePage() {
         if (email) {
           // 環境変数が既にエンコードされている場合はデコードする
           const decodedEmail = decodeURIComponent(email);
-          console.log("Original email:", email);
-          console.log("Decoded email:", decodedEmail);
           const response = await apiClient.getUserByEmail(decodedEmail);
           setUserId(response.user?.id);
         }
