@@ -172,7 +172,11 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
   const onSubmit = async (e: any) => {
     try {
       await updatePost(id, e.title, e.content, isPublished);
-      router.push(`/post/${id}`);
+      if (isPublished) {
+        router.push(`/post/${id}`);
+      } else {
+        router.push("/post/list");
+      }
     } catch (error) {
       console.error("Failed to update post:", error);
       setAlertMessage("Failed to update post. Please try again.");

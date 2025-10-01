@@ -30,10 +30,25 @@ export function usePosts(userId?: string, published?: boolean) {
     }
   };
 
+  const fetchPostById = async (id: number) => {
+    try {
+      setIsLoading(true);
+      const response = await apiClient.getPostById(id);
+      setPosts(response.post ? [response.post] : []);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch post");
+      setPosts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const createPost = async (title: string, content: string, published: boolean = false) => {
     try {
-      await apiClient.createPost(title, content, published);
+      const post = await apiClient.createPost(title, content, published);
       await fetchPosts(); // Refetch posts
+      return post.newPost;
     } catch (err) {
       throw err;
     }
@@ -41,8 +56,9 @@ export function usePosts(userId?: string, published?: boolean) {
 
   const updatePost = async (id: number, title: string, content: string, published: boolean) => {
     try {
-      await apiClient.updatePost(id, title, content, published);
+      const post = await apiClient.updatePost(id, title, content, published);
       await fetchPosts(); // Refetch posts
+      return post.updatedPost;
     } catch (err) {
       throw err;
     }
