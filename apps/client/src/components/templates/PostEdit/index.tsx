@@ -122,7 +122,7 @@ const SwitchInput = styled.input`
   }
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 20px;
     height: 20px;

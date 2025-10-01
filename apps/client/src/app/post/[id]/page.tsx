@@ -25,7 +25,7 @@ async function getPost(id: string): Promise<Post | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/posts/${id}`, {
       next: { revalidate: 60 },
-      cache: 'no-store',
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -44,7 +44,7 @@ export async function generateStaticParams() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/posts`, {
       next: { revalidate: 3600 },
-      cache: 'no-store',
+      cache: "no-store",
     });
 
     if (!response.ok) {

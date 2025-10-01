@@ -19,7 +19,10 @@ export function usePosts(userId?: string, published?: boolean) {
 
     try {
       setIsLoading(true);
-      const response = await apiClient.getAllPostsByUserId(userId, published ? 1 : 0);
+      const response = await apiClient.getAllPostsByUserId(
+        userId,
+        published ? 1 : 0,
+      );
       setPosts(response.posts);
       setError(null);
     } catch (err) {
@@ -44,7 +47,11 @@ export function usePosts(userId?: string, published?: boolean) {
     }
   };
 
-  const createPost = async (title: string, content: string, published: boolean = false) => {
+  const createPost = async (
+    title: string,
+    content: string,
+    published: boolean = false,
+  ) => {
     try {
       const post = await apiClient.createPost(title, content, published);
       await fetchPosts(); // Refetch posts
@@ -54,7 +61,12 @@ export function usePosts(userId?: string, published?: boolean) {
     }
   };
 
-  const updatePost = async (id: number, title: string, content: string, published: boolean) => {
+  const updatePost = async (
+    id: number,
+    title: string,
+    content: string,
+    published: boolean,
+  ) => {
     try {
       const post = await apiClient.updatePost(id, title, content, published);
       await fetchPosts(); // Refetch posts
