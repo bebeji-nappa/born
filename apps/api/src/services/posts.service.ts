@@ -20,10 +20,13 @@ export const getPostById = async (id: number, env: any) => {
   }
 }
 
-export const getAllPostsByUserId = async (userId: string, env: any) => {
+export const getAllPostsByUserId = async (userId: string, published: true | undefined, env: any) => {
   const prisma = getPrismaClient(env)
   const posts = await prisma.post.findMany({
-    where: { userId },
+    where: {
+      userId,
+      published,
+    },
     include: {
       user: { select: { id: true, name: true, email: true, image: true } },
     },
@@ -40,17 +43,22 @@ export const updatePostById = async (
   id: number,
   title: string,
   content: string,
-  env: any
+  published: boolean,
+  env: any,
 ) => {
   const prisma = getPrismaClient(env)
+  const data: any = {
+    title: title,
+    content: content,
+  }
+  if (published !== undefined) {
+    data.published = published
+  }
   const updatedPost = await prisma.post.update({
     where: {
       id: id,
     },
-    data: {
-      title: title,
-      content: content,
-    },
+    data: data,
   })
   return {
     updatedPost,
@@ -69,9 +77,13 @@ export const deletePostById = async (id: number, env: any) => {
   }
 }
 
-export const getAllPosts = async (env: any) => {
+export const getAllPosts = async (env: any, userId: string, published: boolean) => {
   const prisma = getPrismaClient(env)
   const posts = await prisma.post.findMany({
+    where: {
+      published,
+      userId,
+    },
     include: {
       user: { select: { id: true, name: true, email: true, image: true } },
     },
@@ -88,6 +100,7 @@ export const createPost = async (
   title: string,
   content: string,
   userId: string,
+  published: boolean,
   env: any
 ) => {
   const prisma = getPrismaClient(env)
@@ -96,7 +109,7 @@ export const createPost = async (
       title: title,
       content: content,
       userId: userId,
-      published: true,
+      published: published,
     },
   })
   return {

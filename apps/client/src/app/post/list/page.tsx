@@ -9,7 +9,7 @@ import PostListManagement from "@/components/templates/PostListManagement";
 
 export default function PostListPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const { posts, isLoading: postsLoading, deletePost } = usePosts(user?.id);
+  const { posts, isLoading: postsLoading, deletePost } = usePosts(user?.id, false);
   const router = useRouter();
 
   useEffect(() => {
