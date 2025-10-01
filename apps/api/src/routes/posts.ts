@@ -19,7 +19,8 @@ const posts = new Hono<{ Bindings: Bindings }>()
 
 posts.get('/', async (c) => {
   try {
-    const result = await getAllPosts(c.env)
+    const user = c.get('user')
+    const result = await getAllPosts(c.env, user.id, true)
     return c.json(result)
   } catch (error) {
     return c.json({ error: 'Failed to fetch posts' }, 500)
@@ -46,10 +47,12 @@ posts.get(
 posts.get(
   '/user/:userId',
   zValidator('param', z.object({ userId: z.string() })),
+  zValidator('query', z.object({ published: z.string().optional() })),
   async (c) => {
     try {
       const { userId } = c.req.valid('param')
-      const result = await getAllPostsByUserId(userId, c.env)
+      const { published } = c.req.valid('query')
+      const result = await getAllPostsByUserId(userId, published === '1' ? true : undefined, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch posts' }, 500)
@@ -65,13 +68,14 @@ posts.post(
     z.object({
       title: z.string(),
       content: z.string(),
+      published: z.boolean().default(false),
     })
   ),
   async (c) => {
     try {
       const user = c.get('user')
-      const { title, content } = c.req.valid('json')
-      const result = await createPost(title, content, user.id, c.env)
+      const { title, content, published } = c.req.valid('json')
+      const result = await createPost(title, content, user.id, published, c.env)
       return c.json(result, 201)
     } catch (error) {
       return c.json({ error: 'Failed to create post' }, 500)
@@ -88,13 +92,14 @@ posts.put(
     z.object({
       title: z.string(),
       content: z.string(),
+      published: z.boolean(),
     })
   ),
   async (c) => {
     try {
       const { id } = c.req.valid('param')
-      const { title, content } = c.req.valid('json')
-      const result = await updatePostById(id, title, content, c.env)
+      const { title, content, published } = c.req.valid('json')
+      const result = await updatePostById(id, title, content, published, c.env)
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to update post' }, 500)

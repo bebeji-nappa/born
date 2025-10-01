@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { apiClient, type Post } from "@/lib/api";
 
-export function usePosts(userId?: string) {
+export function usePosts(userId?: string, published?: boolean) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +19,7 @@ export function usePosts(userId?: string) {
 
     try {
       setIsLoading(true);
-      const response = await apiClient.getAllPostsByUserId(userId);
+      const response = await apiClient.getAllPostsByUserId(userId, published ? 1 : 0);
       setPosts(response.posts);
       setError(null);
     } catch (err) {
@@ -30,18 +30,18 @@ export function usePosts(userId?: string) {
     }
   };
 
-  const createPost = async (title: string, content: string) => {
+  const createPost = async (title: string, content: string, published: boolean = false) => {
     try {
-      await apiClient.createPost(title, content);
+      await apiClient.createPost(title, content, published);
       await fetchPosts(); // Refetch posts
     } catch (err) {
       throw err;
     }
   };
 
-  const updatePost = async (id: number, title: string, content: string) => {
+  const updatePost = async (id: number, title: string, content: string, published: boolean) => {
     try {
-      await apiClient.updatePost(id, title, content);
+      await apiClient.updatePost(id, title, content, published);
       await fetchPosts(); // Refetch posts
     } catch (err) {
       throw err;

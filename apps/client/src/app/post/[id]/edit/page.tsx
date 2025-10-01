@@ -23,6 +23,11 @@ export default function PostEditPage({
   if (!user) return <div>Unauthorized</div>;
 
   return (
-    <PostEditTemplate id={post.id} title={post.title} content={post.content} />
+    <PostEditTemplate
+      id={post.id}
+      title={post.title}
+      content={post.content}
+      published={post.published}
+    />
   );
 }

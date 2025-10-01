@@ -47,7 +47,7 @@ const Form = styled.form`
 `;
 
 const SubmitButton = styled.button`
-  width: 300px;
+  width: 150px;
   background-color: #0366d6;
   color: white;
   font-weight: 600;
@@ -55,13 +55,19 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 16px;
 `;
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
   border-radius: 4px;
   margin-bottom: 16px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
 `;
 
 const TabContainer = styled.div`
@@ -87,6 +93,51 @@ const Tab = styled.button<{ isActive: boolean }>`
   }
 `;
 
+const PublishSwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SwitchLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const SwitchInput = styled.input`
+  width: 48px;
+  height: 24px;
+  position: relative;
+  appearance: none;
+  background-color: #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:checked {
+    background-color: #0366d6;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+  }
+
+  &:checked::before {
+    transform: translateX(24px);
+  }
+`;
+
 export type PostEditInputValues = {
   title: string;
   content: string;
@@ -96,16 +147,19 @@ export type PostEditTemplateProps = {
   id: number;
   title: string;
   content: string;
+  published: boolean;
 };
 
 const PostEditTemplate: FC<PostEditTemplateProps> = ({
   id,
   title,
   content,
+  published,
 }) => {
   const router = useRouter();
   const [alertMessage, setAlertMessage] = useState("");
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
+  const [isPublished, setIsPublished] = useState(published);
   const { updatePost } = usePosts();
 
   const { handleSubmit, register, getValues } = useForm({
@@ -117,7 +171,7 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
 
   const onSubmit = async (e: any) => {
     try {
-      await updatePost(id, e.title, e.content);
+      await updatePost(id, e.title, e.content, isPublished);
       router.push(`/post/${id}`);
     } catch (error) {
       console.error("Failed to update post:", error);
@@ -167,7 +221,21 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
             <Preview text={getValues("content")} />
           )}
         </EditorWrapper>
-        <SubmitButton type="submit">送信</SubmitButton>
+        <Footer>
+          <SubmitButton type="submit">
+            {isPublished ? "公開する" : "下書き保存"}
+          </SubmitButton>
+          <PublishSwitchWrapper>
+            <SwitchLabel>
+              <SwitchInput
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+              />
+              <span>{isPublished ? "公開する" : "下書き保存"}</span>
+            </SwitchLabel>
+          </PublishSwitchWrapper>
+        </Footer>
       </Form>
     </Wrapper>
   );
