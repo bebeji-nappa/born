@@ -107,7 +107,7 @@ export default async function PostDetailPage({
   const { id } = await params;
   const post = await getPost(id);
 
-  if (!post) {
+  if (!post || !post.published) {
     notFound();
   }
 
