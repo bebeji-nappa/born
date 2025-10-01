@@ -263,8 +263,6 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
     }
   };
 
-  console.log(authUserEmail, user.email);
-
   return (
     <Background>
       <PageHeader>
