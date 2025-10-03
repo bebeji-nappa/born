@@ -33,5 +33,5 @@ lerna-debug.log*
 *.db
 *.db-journal
 
-# D1 migrations (managed separately)
-prisma/migrations/d1
+# Database backups
+db/backup/

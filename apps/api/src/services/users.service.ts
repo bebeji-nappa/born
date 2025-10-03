@@ -1,44 +1,33 @@
-import { getPrismaClient } from '../lib/prisma'
+import { eq } from 'drizzle-orm'
+import { getDB, users } from '../db'
 
 export const getAll = async (env: any) => {
-  const prisma = getPrismaClient(env)
-  const users = await prisma.user.findMany()
+  const db = getDB(env.DB)
+  const allUsers = await db.select().from(users)
   return {
-    users,
+    users: allUsers,
   }
 }
 
 export const getUserbyId = async (id: string, env: any) => {
-  const prisma = getPrismaClient(env)
-  const data = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-  })
+  const db = getDB(env.DB)
+  const data = await db.select().from(users).where(eq(users.id, id)).get()
   return {
-    user: data,
+    user: data ?? null,
   }
 }
 
 export const getUserbyEmail = async (email: string, env: any) => {
-  const prisma = getPrismaClient(env)
-  const data = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  })
+  const db = getDB(env.DB)
+  const data = await db.select().from(users).where(eq(users.email, email)).get()
   return {
-    user: data,
+    user: data ?? null,
   }
 }
 
 export const getAuthUserId = async (email: string, env: any) => {
-  const prisma = getPrismaClient(env)
-  const data = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  })
+  const db = getDB(env.DB)
+  const data = await db.select().from(users).where(eq(users.email, email)).get()
   return {
     userId: data?.id ?? '',
   }
