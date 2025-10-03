@@ -129,7 +129,7 @@ auth.get('/callback/github', async (c) => {
         name: githubUser.name || githubUser.login,
         image: githubUser.avatar_url,
         screen_name: userId,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       }).returning().get()
 
       user = newUser
@@ -140,8 +140,8 @@ auth.get('/callback/github', async (c) => {
         title: null,
         description: null,
         theme: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
     } else {
       const updatedUser = await db.update(users)

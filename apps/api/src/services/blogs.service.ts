@@ -38,7 +38,7 @@ export const updateBlog = async (
       title,
       description,
       theme,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(blogs.id, id))
     .returning()
@@ -63,7 +63,7 @@ export const updateBlogBackgroundImage = async (
     .set({
       backgroundImage,
       backgroundImageKey,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(blogs.id, id))
     .returning()
@@ -96,7 +96,7 @@ export const deleteBlogBackgroundImage = async (
     .set({
       backgroundImage: null,
       backgroundImageKey: null,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(blogs.id, id))
     .returning()
