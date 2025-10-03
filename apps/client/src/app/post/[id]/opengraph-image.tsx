@@ -17,6 +17,7 @@ interface Post {
   content: string;
   published: boolean;
   userId: string;
+  blogId: number;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -25,6 +26,14 @@ interface Post {
     name: string;
     image?: string;
   };
+}
+
+interface Blog {
+  id: number;
+  title: string | null;
+  description: string | null;
+  theme: string | null;
+  userId: string;
 }
 
 async function getPost(id: string): Promise<Post | null> {
@@ -39,6 +48,22 @@ async function getPost(id: string): Promise<Post | null> {
     return data.post;
   } catch (error) {
     console.error("Failed to fetch post for OG image:", error);
+    return null;
+  }
+}
+
+async function getBlog(id: number): Promise<Blog | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blogs/${id}`);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.blog;
+  } catch (error) {
+    console.error("Failed to fetch blog for OG image:", error);
     return null;
   }
 }
@@ -93,6 +118,18 @@ export default async function Image({
     );
   }
 
+  const blog = await getBlog(post.blogId);
+
+  let bgColor = "#dae2e6";
+  if (blog?.theme) {
+    try {
+      const theme = JSON.parse(blog.theme);
+      bgColor = theme.backgroundColor || "#dae2e6";
+    } catch {
+      // JSONパースに失敗した場合はデフォルト値を使用
+    }
+  }
+
   return new ImageResponse(
     <div
       style={{
@@ -101,7 +138,7 @@ export default async function Image({
         justifyContent: "center",
         width: "100%",
         height: "100%",
-        background: "#ffd600",
+        background: bgColor,
       }}
     >
       <div

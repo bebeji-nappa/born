@@ -4,6 +4,7 @@ import users from './routes/users'
 import posts from './routes/posts'
 import auth from './routes/auth'
 import upload from './routes/upload'
+import blogs from './routes/blogs'
 
 type Bindings = {
   DATABASE_URL: string
@@ -51,5 +52,6 @@ app.route('/api/auth', auth)
 app.route('/api/users', users)
 app.route('/api/posts', posts)
 app.route('/api/upload', upload)
+app.route('/api/blogs', blogs)
 
 export default app

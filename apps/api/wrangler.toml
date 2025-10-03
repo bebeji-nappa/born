@@ -28,6 +28,9 @@ migrations_dir = "db/migrations"
 binding = "STORAGE"
 bucket_name = "born-storage-dev"
 
+[env.development.vars]
+STORAGE_URL = "https://storage-dev.bebeji-nappa.com"
+
 # Staging environment
 [env.staging]
 name = "born-api-staging"
@@ -44,13 +47,14 @@ binding = "STORAGE"
 bucket_name = "born-storage-staging"
 
 # Environment variables (set via Dashboard or wrangler secret)
-[[env.staging.vars]]
+[env.staging.vars]
 AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
 AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
 API_BASE_URL = { binding = "API_BASE_URL" }
 FRONTEND_URL = { binding = "FRONTEND_URL" }
 ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
 NODE_ENV = "staging"
+STORAGE_URL = "https://storage-staging.bebeji-nappa.com"
 
 # Production environment
 [env.production]
@@ -68,13 +72,14 @@ binding = "STORAGE"
 bucket_name = "born-storage"
 
 # Environment variables (set via Dashboard or wrangler secret)
-[[env.production.vars]]
+[env.production.vars]
 AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
 AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
 API_BASE_URL = { binding = "API_BASE_URL" }
 FRONTEND_URL = { binding = "FRONTEND_URL" }
 ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
 NODE_ENV = "production"
+STORAGE_URL = "https://storage.bebeji-nappa.com"
 
 [observability.logs]
 enabled = true
