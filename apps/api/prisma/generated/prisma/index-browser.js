@@ -142,9 +142,12 @@ exports.Prisma.SessionScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  screen_name: 'screen_name',
   email: 'email',
   emailVerified: 'emailVerified',
-  image: 'image'
+  image: 'image',
+  description: 'description',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {

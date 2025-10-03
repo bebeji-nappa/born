@@ -17,7 +17,10 @@ interface Post {
     id: string;
     email: string;
     name: string;
+    screen_name: string | null;
     image?: string;
+    description?: string | null;
+    createdAt: string;
   };
 }
 

@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
 import { getPrismaClient } from '../lib/prisma'
+import { createId } from '@paralleldrive/cuid2'
 
 type Bindings = {
   DATABASE_URL: string
@@ -11,6 +12,20 @@ type Bindings = {
   FRONTEND_URL: string
   ALLOW_EMAIL: string
   NODE_ENV: string
+}
+
+type GitHubUser = {
+  id: number
+  login: string
+  name: string | null
+  email: string | null
+  avatar_url: string
+}
+
+type GitHubEmail = {
+  email: string
+  primary: boolean
+  verified: boolean
 }
 
 const auth = new Hono<{ Bindings: Bindings }>()
@@ -80,7 +95,7 @@ auth.get('/callback/github', async (c) => {
       return c.json({ error: 'Failed to get user from GitHub' }, 400)
     }
 
-    const githubUser = await userResponse.json()
+    const githubUser = await userResponse.json() as GitHubUser
 
     const emailResponse = await fetch('https://api.github.com/user/emails', {
       headers: {
@@ -96,8 +111,8 @@ auth.get('/callback/github', async (c) => {
       return c.json({ error: 'Failed to get emails from GitHub' }, 400)
     }
 
-    const emails = await emailResponse.json()
-    const primaryEmail = emails.find((email: any) => email.primary)?.email || githubUser.email
+    const emails = await emailResponse.json() as GitHubEmail[]
+    const primaryEmail = emails.find((email) => email.primary)?.email || githubUser.email
 
     if (!primaryEmail || primaryEmail !== c.env.ALLOW_EMAIL) {
       return c.json({ error: 'Unauthorized email address' }, 403)
@@ -108,11 +123,14 @@ auth.get('/callback/github', async (c) => {
     })
 
     if (!user) {
+      const userId = createId()
       user = await prisma.user.create({
         data: {
+          id: userId,
           email: primaryEmail,
           name: githubUser.name || githubUser.login,
           image: githubUser.avatar_url,
+          screen_name: userId,
         }
       })
     } else {
@@ -189,15 +207,24 @@ auth.post('/signout', async (c) => {
 
 auth.get('/current_user', async (c) => {
   const sessionToken = getCookie(c, 'session-token')
-  
+
   if (!sessionToken) {
     return c.json({ error: 'Not authenticated' }, 401)
   }
 
-  const user = await getSessionUser(sessionToken, c.env)
-  
+  let user = await getSessionUser(sessionToken, c.env)
+
   if (!user) {
     return c.json({ error: 'Invalid session' }, 401)
+  }
+
+  // If screen_name is null, set it to user.id
+  if (!user.screen_name) {
+    const prisma = getPrismaClient(c.env)
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { screen_name: user.id }
+    })
   }
 
   return c.json({ user })
