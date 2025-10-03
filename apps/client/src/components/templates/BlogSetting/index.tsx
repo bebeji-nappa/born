@@ -57,10 +57,10 @@ const FormGroup = styled.div`
   gap: 8px;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ textColor?: string }>`
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: ${(props) => props.textColor || "#374151"};
 `;
 
 const Input = styled.input`
@@ -270,10 +270,11 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const NoteText = styled.p`
+const NoteText = styled.p<{ textColor?: string }>`
   font-size: 0.875rem;
-  color: #6b7280;
+  color: ${(props) => props.textColor || "#6b7280"};
   margin: 0;
+  opacity: 0.8;
 `;
 
 const OpacitySlider = styled.input`
@@ -281,12 +282,13 @@ const OpacitySlider = styled.input`
   cursor: pointer;
 `;
 
-const OpacityLabel = styled.div`
+const OpacityLabel = styled.div<{ textColor?: string }>`
   display: flex;
   justify-content: space-between;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: ${(props) => props.textColor || "#6b7280"};
   margin-top: 4px;
+  opacity: 0.8;
 `;
 
 type BlogSettingTemplateProps = {
@@ -472,11 +474,14 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       );
 
       if (res.ok) {
+        // セクション背景色の処理（背景画像がある場合のみ不透明度を含める）
+        const sectionBgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+        const { color } = rgbaToHex(sectionBgColor!);
+
+        setTheme({ ...theme, sectionBackgroundColor: color });
         setBackgroundImagePreview(null);
         setBackgroundImageFile(null);
         alert("背景画像を削除しました");
-        // Reload blog data
-        window.location.reload();
       } else {
         alert("削除に失敗しました");
       }
@@ -513,15 +518,25 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         setUploading(false);
       }
 
-      // セクション背景色を不透明度込みの16進数形式に変換
+      // セクション背景色の処理（背景画像がある場合のみ不透明度を含める）
       const sectionBgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
       const { color } = rgbaToHex(sectionBgColor!);
-      const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
-      const sectionBackgroundColorWithAlpha = `${color}${alphaHex}`;
+
+      // 背景画像が設定されている場合は不透明度込み、ない場合は不透明度100%
+      const hasBackgroundImage = backgroundImageFile || backgroundImagePreview;
+      let finalSectionBackgroundColor: string;
+
+      if (hasBackgroundImage) {
+        const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
+        finalSectionBackgroundColor = `${color}${alphaHex}`;
+      } else {
+        // 背景画像がない場合は不透明度100%（ff）を設定
+        finalSectionBackgroundColor = `${color}ff`;
+      }
 
       const themeToSave = {
         ...theme,
-        sectionBackgroundColor: sectionBackgroundColorWithAlpha,
+        sectionBackgroundColor: finalSectionBackgroundColor,
       };
 
       // ブログ情報の更新
@@ -544,6 +559,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       if (res.ok) {
         alert("保存しました");
         setBackgroundImageFile(null);
+        setTheme(themeToSave);
       } else {
         alert("保存に失敗しました");
       }
@@ -600,7 +616,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
           <Title textColor={theme.textColor}>ブログ設定</Title>
           <Form onSubmit={handleSave}>
             <FormGroup>
-              <Label htmlFor="title">ブログタイトル</Label>
+              <Label htmlFor="title" textColor={theme.textColor}>ブログタイトル</Label>
               <Input
                 id="title"
                 type="text"
@@ -611,7 +627,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="description">ブログ説明</Label>
+              <Label htmlFor="description" textColor={theme.textColor}>ブログ説明</Label>
               <Textarea
                 id="description"
                 value={description}
@@ -621,7 +637,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label>背景画像</Label>
+              <Label textColor={theme.textColor}>背景画像</Label>
               <ImageUploadSection>
                 {backgroundImagePreview && (
                   <ImagePreview>
@@ -649,16 +665,16 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                         setTheme({ ...theme, backgroundRepeat: e.target.checked })
                       }
                     />
-                    背景画像を繰り返し表示する
+                    <span style={{ color: theme.textColor || "#374151" }}>背景画像を繰り返し表示する</span>
                   </CheckboxLabel>
                 )}
               </ImageUploadSection>
             </FormGroup>
 
             <FormGroup>
-              <Label>背景色</Label>
+              <Label textColor={theme.textColor}>背景色</Label>
               {backgroundImagePreview && (
-                <NoteText>※ 背景画像が設定されている場合、背景画像が優先されます</NoteText>
+                <NoteText textColor={theme.textColor}>※ 背景画像が設定されている場合、背景画像が優先されます</NoteText>
               )}
               <ColorSection>
                 <ColorInputGroup>
@@ -695,7 +711,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label>テキストカラー</Label>
+              <Label textColor={theme.textColor}>テキストカラー</Label>
               <ColorInputGroup>
                 <ColorInput
                   type="color"
@@ -716,7 +732,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label>リンクカラー</Label>
+              <Label textColor={theme.textColor}>リンクカラー</Label>
               <ColorInputGroup>
                 <ColorInput
                   type="color"
@@ -737,7 +753,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label>ページ内コンテンツの背景色</Label>
+              <Label textColor={theme.textColor}>ページ内コンテンツの背景色</Label>
               <ColorInputGroup>
                 <ColorInput
                   type="color"
@@ -748,7 +764,8 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                   })()}
                   onChange={(e) => {
                     const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
-                    setTheme({ ...theme, sectionBackgroundColor: `${e.target.value}${alphaHex}` });
+                    const bgImage = backgroundImageFile || backgroundImagePreview;
+                    setTheme({ ...theme, sectionBackgroundColor: `${e.target.value}${bgImage ? alphaHex : ''}` });
                   }}
                 />
                 <ColorHexInput
@@ -756,8 +773,13 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                   value={(() => {
                     const bgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
                     const { color } = rgbaToHex(bgColor!);
-                    const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
-                    return `${color}${alphaHex}`;
+                    const bgImage = backgroundImageFile || backgroundImagePreview;
+
+                    if (bgImage) {
+                      const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
+                      return `${color}${alphaHex}`;
+                    }
+                    return color;
                   })()}
                   onChange={(e) => {
                     setTheme({ ...theme, sectionBackgroundColor: e.target.value });
@@ -772,7 +794,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
               </ColorInputGroup>
               {backgroundImagePreview && (
                 <div style={{ marginTop: "12px" }}>
-                  <Label>不透明度: {Math.round(sectionBgOpacity * 100)}%</Label>
+                  <Label textColor={theme.textColor}>不透明度: {Math.round(sectionBgOpacity * 100)}%</Label>
                   <OpacitySlider
                     type="range"
                     min="0.2"
@@ -788,7 +810,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                       setTheme({ ...theme, sectionBackgroundColor: `${color}${alphaHex}` });
                     }}
                   />
-                  <OpacityLabel>
+                  <OpacityLabel textColor={theme.textColor}>
                     <span>透明</span>
                     <span>不透明</span>
                   </OpacityLabel>

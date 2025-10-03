@@ -124,12 +124,12 @@ const UserDescription = styled.p<{ textColor?: string }>`
 `;
 
 const SettingsButton = styled.button`
-  padding: 8px 16px;
+  padding: 8px 20px;
   background: #f5f5f5;
   color: #000;
   border: none;
-  border-radius: 20px;
-  font-size: 1rem;
+  border-radius: 30px;
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
@@ -182,7 +182,6 @@ const Article = styled.article<{ bgColor?: string; textColor?: string }>`
 
 const Header = styled.header`
   padding: 32px;
-  border-bottom: 1px solid #f3f4f6;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -239,13 +238,13 @@ const AuthorInfo = styled.div`
   flex-direction: column;
 `;
 
-const AuthorName = styled.span`
+const AuthorName = styled.span<{ textColor?: string }>`
   font-weight: 500;
-  color: #374151;
+  color: ${(props) => props.textColor || "#374151"};
   font-size: 1rem;
 `;
 
-const DateSetion = styled.div<{ textColor?: string }>`
+const DateSection = styled.div<{ textColor?: string }>`
   font-size: 0.75rem;
   color: ${(props) => props.textColor || "#9ca3af"};
   margin-bottom: 12px;
@@ -302,6 +301,8 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
   };
 
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
+
+  console.log(firstPostUser);
 
   // 環境に応じて背景画像URLを変換
   const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
@@ -371,12 +372,12 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
                       )}
                     </AuthorAvatar>
                     <AuthorInfo>
-                      <AuthorName>{user.name || "Unknown Author"}</AuthorName>
+                      <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
                     </AuthorInfo>
                   </AuthorSection>
-                  <DateSetion textColor={theme.textColor}>
+                  <DateSection textColor={theme.textColor}>
                     公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
-                  </DateSetion>
+                  </DateSection>
                 </Header>
               </Article>
             );
