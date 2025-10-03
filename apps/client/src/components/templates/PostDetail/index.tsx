@@ -101,6 +101,12 @@ const AuthorProfile = styled.aside`
   height: fit-content;
   position: sticky;
   top: 79px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
 
   @media (max-width: 768px) {
     padding: 24px;
@@ -305,7 +311,7 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
               <Richmd text={content} />
             </Content>
           </Article>
-          <AuthorProfile>
+          <AuthorProfile onClick={() => router.push("/")}>
             <AuthorAvatar>
               {user.image ? (
                 <AuthorImage src={user.image} alt={user.name || "Author"} />
