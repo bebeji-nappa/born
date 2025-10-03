@@ -22,7 +22,7 @@ migrations_dir = "prisma/migrations/d1"
 binding = "DB"
 database_name = "born-db-local"
 database_id = "local"
-migrations_dir = "prisma/migrations/d1"
+migrations_dir = "db/migrations"
 
 [[env.development.r2_buckets]]
 binding = "STORAGE"
