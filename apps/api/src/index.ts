@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 import users from './routes/users'
 import posts from './routes/posts'
 import auth from './routes/auth'
+import upload from './routes/upload'
 
 type Bindings = {
   DATABASE_URL: string
@@ -12,6 +13,7 @@ type Bindings = {
   FRONTEND_URL: string
   ALLOW_EMAIL: string
   NODE_ENV: string
+  STORAGE: R2Bucket
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -48,5 +50,6 @@ app.get('/', (c) => {
 app.route('/api/auth', auth)
 app.route('/api/users', users)
 app.route('/api/posts', posts)
+app.route('/api/upload', upload)
 
 export default app

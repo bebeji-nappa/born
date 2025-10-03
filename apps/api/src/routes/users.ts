@@ -1,6 +1,9 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { getCookie } from 'hono/cookie'
+import { PrismaClient } from '../../prisma/generated/prisma'
+import { PrismaD1 } from '@prisma/adapter-d1'
 import {
   getAll,
   getAuthUserId,
@@ -10,6 +13,8 @@ import {
 
 type Bindings = {
   DATABASE_URL: string
+  DB: D1Database
+  STORAGE: R2Bucket
 }
 
 const users = new Hono<{ Bindings: Bindings }>()
@@ -65,5 +70,200 @@ users.get(
     }
   }
 )
+
+// ユーザー情報更新
+users.put('/profile', async (c) => {
+  try {
+    const sessionToken = getCookie(c, 'session-token')
+    if (!sessionToken) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    // セッションからユーザーを取得
+    const adapter = new PrismaD1(c.env.DB)
+    const prisma = new PrismaClient({ adapter })
+
+    const session = await prisma.session.findUnique({
+      where: { sessionToken },
+      include: { user: true },
+    })
+
+    if (!session || !session.user) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    const body = await c.req.json()
+    const { name, description } = body
+
+    // 更新データの準備
+    const updateData: { name?: string; description?: string | null } = {}
+    if (name !== undefined) updateData.name = name
+    if (description !== undefined) updateData.description = description
+
+    // ユーザー情報を更新
+    const updatedUser = await prisma.user.update({
+      where: { id: session.user.id },
+      data: updateData,
+    })
+
+    return c.json({
+      success: true,
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        screen_name: updatedUser.screen_name,
+        image: updatedUser.image,
+        description: updatedUser.description,
+        createdAt: updatedUser.createdAt.toISOString(),
+      },
+    })
+  } catch (error) {
+    console.error('Profile update error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// ユーザID（screen_name）更新
+users.put('/screen-name', async (c) => {
+  try {
+    const sessionToken = getCookie(c, 'session-token')
+    if (!sessionToken) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    // セッションからユーザーを取得
+    const adapter = new PrismaD1(c.env.DB)
+    const prisma = new PrismaClient({ adapter })
+
+    const session = await prisma.session.findUnique({
+      where: { sessionToken },
+      include: { user: true },
+    })
+
+    if (!session || !session.user) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    const body = await c.req.json()
+    const { screen_name } = body
+
+    if (screen_name === undefined) {
+      return c.json({ error: 'screen_name is required' }, 400)
+    }
+
+    // ユーザIDを更新
+    const updatedUser = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { screen_name: screen_name || null },
+    })
+
+    return c.json({
+      success: true,
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        screen_name: updatedUser.screen_name,
+        image: updatedUser.image,
+        description: updatedUser.description,
+        createdAt: updatedUser.createdAt.toISOString(),
+      },
+    })
+  } catch (error) {
+    console.error('Screen name update error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// アバター画像更新
+users.put('/avatar/image', async (c) => {
+  try {
+    const sessionToken = getCookie(c, 'session-token')
+    if (!sessionToken) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    // セッションからユーザーを取得
+    const adapter = new PrismaD1(c.env.DB)
+    const prisma = new PrismaClient({ adapter })
+
+    const session = await prisma.session.findUnique({
+      where: { sessionToken },
+      include: { user: true },
+    })
+
+    if (!session || !session.user) {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+
+    const formData = await c.req.formData()
+    const file = formData.get('file') as File | null
+
+    if (!file) {
+      return c.json({ error: 'No file provided' }, 400)
+    }
+
+    // ファイルタイプのチェック
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      return c.json({ error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.' }, 400)
+    }
+
+    // ファイルサイズのチェック（2MB制限）
+    const maxSize = 2 * 1024 * 1024 // 2MB
+    if (file.size > maxSize) {
+      return c.json({ error: 'File size exceeds 2MB limit' }, 400)
+    }
+
+    // 既存のアバターがあれば削除
+    if (session.user.image) {
+      try {
+        const oldKey = session.user.image.replace('https://storage.bebeji-nappa.com/', '')
+        await c.env.STORAGE.delete(oldKey)
+      } catch (error) {
+        console.error('Failed to delete old avatar:', error)
+      }
+    }
+
+    // ユニークなファイル名を生成
+    const timestamp = Date.now()
+    const ext = file.name.split('.').pop()
+    const key = `avatars/${session.user.id}/${timestamp}.${ext}`
+
+    // R2にアップロード
+    await c.env.STORAGE.put(key, await file.arrayBuffer(), {
+      httpMetadata: {
+        contentType: file.type,
+      },
+    })
+
+    // 公開URLを生成
+    const url = `https://storage.bebeji-nappa.com/${key}`
+
+    // ユーザーのimageフィールドを更新
+    const updatedUser = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { image: url },
+    })
+
+    return c.json({
+      success: true,
+      url,
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        screen_name: updatedUser.screen_name,
+        image: updatedUser.image,
+        description: updatedUser.description,
+        createdAt: updatedUser.createdAt.toISOString(),
+      },
+    })
+  } catch (error) {
+    console.error('Avatar update error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
 
 export default users
