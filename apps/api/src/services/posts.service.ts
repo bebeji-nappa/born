@@ -26,6 +26,8 @@ export const getPostById = async (id: number, env: any) => {
   return {
     post: {
       ...result.post,
+      createdAt: result.post.createdAt.toISOString(),
+      updatedAt: result.post.updatedAt.toISOString(),
       user: result.user,
     },
   }
@@ -55,7 +57,12 @@ export const getAllPostsByUserId = async (userId: string, published: true | unde
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      createdAt: r.post.createdAt.toISOString(),
+      updatedAt: r.post.updatedAt.toISOString(),
+      user: r.user
+    })),
   }
 }
 
@@ -116,7 +123,12 @@ export const getAllPosts = async (env: any, userId: string, published: boolean) 
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      createdAt: r.post.createdAt.toISOString(),
+      updatedAt: r.post.updatedAt.toISOString(),
+      user: r.user
+    })),
   }
 }
 
