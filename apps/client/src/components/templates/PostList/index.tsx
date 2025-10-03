@@ -13,20 +13,6 @@ const Background = styled.div`
   position: relative;
 `;
 
-const PageHeader = styled.header`
-  background: #000;
-  padding: 16px 24px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-  width: 100vw;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-
-  @media (max-width: 768px) {
-    padding: 12px 16px;
-  }
-`;
-
 const Container = styled.div`
   max-width: 1200px;
   margin: 20px auto;
@@ -159,26 +145,6 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
 
   return (
     <Background>
-      <PageHeader>
-        <div
-          style={{
-            display: "block",
-            position: "relative",
-            width: "200px",
-            height: "50px",
-          }}
-        >
-          <Image
-            src="/logo.svg"
-            alt="logo"
-            sizes="100vw"
-            fill
-            style={{
-              width: "100%",
-            }}
-          />
-        </div>
-      </PageHeader>
       {posts.length ? (
         <VirtuosoGrid
           style={{ height: "calc(100vh - 82px)" }}
