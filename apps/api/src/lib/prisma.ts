@@ -15,11 +15,13 @@ export function getPrismaClient(env: any) {
 
   // 開発環境では通常のPrismaClient、本番環境ではEdge用を使用
   if (env.NODE_ENV === 'development') {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { PrismaClient } = require('../../prisma/generated/prisma');
     return new PrismaClient({
       datasourceUrl: env.DATABASE_URL,
     });
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { PrismaClient } = require('../../prisma/generated/edge');
     return new PrismaClient({
       datasourceUrl: env.DATABASE_URL,

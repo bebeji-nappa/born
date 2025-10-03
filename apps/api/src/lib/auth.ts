@@ -4,7 +4,10 @@ export interface AuthUser {
   id: string
   email: string
   name: string
+  screen_name: string | null
   image?: string | null
+  description?: string | null
+  createdAt: Date
 }
 
 export interface SessionData {
@@ -58,7 +61,10 @@ export async function getSessionUser(sessionToken: string, env: any): Promise<Au
     id: session.user.id,
     email: session.user.email!,
     name: session.user.name!,
+    screen_name: session.user.screen_name,
     image: session.user.image,
+    description: session.user.description,
+    createdAt: session.user.createdAt,
   }
 }
 

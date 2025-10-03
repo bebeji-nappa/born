@@ -24,6 +24,10 @@ database_name = "born-db-local"
 database_id = "local"
 migrations_dir = "prisma/migrations"
 
+[[env.development.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "born-storage-dev"
+
 # Production environment
 [env.production]
 name = "born-api"
@@ -34,6 +38,10 @@ binding = "DB"
 database_name = "born-db"
 database_id = "e9fc0460-9d98-4beb-a516-e78ee8ebcfe9"
 migrations_dir = "prisma/migrations"
+
+[[env.production.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "born-storage"
 
 # Environment variables (set via Dashboard or wrangler secret)
 [[env.production.vars]]
