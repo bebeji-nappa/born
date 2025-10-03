@@ -16,33 +16,18 @@ CREATE TABLE `Account` (
 --> statement-breakpoint
 CREATE INDEX `Account_userId_idx` ON `Account` (`userId`);--> statement-breakpoint
 CREATE UNIQUE INDEX `Account_provider_providerAccountId_key` ON `Account` (`provider`,`providerAccountId`);--> statement-breakpoint
-CREATE TABLE `Blog` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`title` text,
-	`description` text,
-	`theme` text,
-	`userId` text NOT NULL,
-	`createdAt` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updatedAt` integer NOT NULL,
-	FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON UPDATE no action ON DELETE cascade
-);
---> statement-breakpoint
-CREATE INDEX `Blog_userId_idx` ON `Blog` (`userId`);--> statement-breakpoint
 CREATE TABLE `Post` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`title` text NOT NULL,
 	`content` text NOT NULL,
 	`published` integer DEFAULT false NOT NULL,
 	`userId` text NOT NULL,
-	`blogId` integer NOT NULL,
 	`createdAt` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`updatedAt` integer NOT NULL,
-	FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`blogId`) REFERENCES `Blog`(`id`) ON UPDATE no action ON DELETE cascade
+	FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE INDEX `Post_userId_idx` ON `Post` (`userId`);--> statement-breakpoint
-CREATE INDEX `Post_blogId_idx` ON `Post` (`blogId`);--> statement-breakpoint
 CREATE TABLE `Session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`sessionToken` text NOT NULL,
