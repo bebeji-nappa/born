@@ -2,8 +2,8 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { getCookie } from 'hono/cookie'
-import { PrismaClient } from '../../prisma/generated/prisma'
-import { PrismaD1 } from '@prisma/adapter-d1'
+import { eq } from 'drizzle-orm'
+import { getDB, users as usersTable, sessions } from '../db'
 import {
   getAll,
   getAuthUserId,
@@ -80,15 +80,15 @@ users.put('/profile', async (c) => {
     }
 
     // セッションからユーザーを取得
-    const adapter = new PrismaD1(c.env.DB)
-    const prisma = new PrismaClient({ adapter })
+    const db = getDB(c.env.DB)
+    const result = await db
+      .select({ session: sessions, user: usersTable })
+      .from(sessions)
+      .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+      .where(eq(sessions.sessionToken, sessionToken))
+      .get()
 
-    const session = await prisma.session.findUnique({
-      where: { sessionToken },
-      include: { user: true },
-    })
-
-    if (!session || !session.user) {
+    if (!result || !result.user) {
       return c.json({ error: 'Unauthorized' }, 401)
     }
 
@@ -101,10 +101,11 @@ users.put('/profile', async (c) => {
     if (description !== undefined) updateData.description = description
 
     // ユーザー情報を更新
-    const updatedUser = await prisma.user.update({
-      where: { id: session.user.id },
-      data: updateData,
-    })
+    const updatedUser = await db.update(usersTable)
+      .set(updateData)
+      .where(eq(usersTable.id, result.user.id))
+      .returning()
+      .get()
 
     return c.json({
       success: true,
@@ -115,7 +116,7 @@ users.put('/profile', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: updatedUser.createdAt.toISOString(),
+        createdAt: new Date(updatedUser.createdAt!).toISOString(),
       },
     })
   } catch (error) {
@@ -133,15 +134,15 @@ users.put('/screen-name', async (c) => {
     }
 
     // セッションからユーザーを取得
-    const adapter = new PrismaD1(c.env.DB)
-    const prisma = new PrismaClient({ adapter })
+    const db = getDB(c.env.DB)
+    const result = await db
+      .select({ session: sessions, user: usersTable })
+      .from(sessions)
+      .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+      .where(eq(sessions.sessionToken, sessionToken))
+      .get()
 
-    const session = await prisma.session.findUnique({
-      where: { sessionToken },
-      include: { user: true },
-    })
-
-    if (!session || !session.user) {
+    if (!result || !result.user) {
       return c.json({ error: 'Unauthorized' }, 401)
     }
 
@@ -153,10 +154,11 @@ users.put('/screen-name', async (c) => {
     }
 
     // ユーザIDを更新
-    const updatedUser = await prisma.user.update({
-      where: { id: session.user.id },
-      data: { screen_name: screen_name || null },
-    })
+    const updatedUser = await db.update(usersTable)
+      .set({ screen_name: screen_name || null })
+      .where(eq(usersTable.id, result.user.id))
+      .returning()
+      .get()
 
     return c.json({
       success: true,
@@ -167,7 +169,7 @@ users.put('/screen-name', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: updatedUser.createdAt.toISOString(),
+        createdAt: new Date(updatedUser.createdAt!).toISOString(),
       },
     })
   } catch (error) {
@@ -185,15 +187,15 @@ users.put('/avatar/image', async (c) => {
     }
 
     // セッションからユーザーを取得
-    const adapter = new PrismaD1(c.env.DB)
-    const prisma = new PrismaClient({ adapter })
+    const db = getDB(c.env.DB)
+    const result = await db
+      .select({ session: sessions, user: usersTable })
+      .from(sessions)
+      .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+      .where(eq(sessions.sessionToken, sessionToken))
+      .get()
 
-    const session = await prisma.session.findUnique({
-      where: { sessionToken },
-      include: { user: true },
-    })
-
-    if (!session || !session.user) {
+    if (!result || !result.user) {
       return c.json({ error: 'Unauthorized' }, 401)
     }
 
@@ -217,9 +219,9 @@ users.put('/avatar/image', async (c) => {
     }
 
     // 既存のアバターがあれば削除
-    if (session.user.image) {
+    if (result.user.image) {
       try {
-        const oldKey = session.user.image.replace('https://storage.bebeji-nappa.com/', '')
+        const oldKey = result.user.image.replace('https://storage.bebeji-nappa.com/', '')
         await c.env.STORAGE.delete(oldKey)
       } catch (error) {
         console.error('Failed to delete old avatar:', error)
@@ -229,7 +231,7 @@ users.put('/avatar/image', async (c) => {
     // ユニークなファイル名を生成
     const timestamp = Date.now()
     const ext = file.name.split('.').pop()
-    const key = `avatars/${session.user.id}/${timestamp}.${ext}`
+    const key = `avatars/${result.user.id}/${timestamp}.${ext}`
 
     // R2にアップロード
     await c.env.STORAGE.put(key, await file.arrayBuffer(), {
@@ -242,10 +244,11 @@ users.put('/avatar/image', async (c) => {
     const url = `https://storage.bebeji-nappa.com/${key}`
 
     // ユーザーのimageフィールドを更新
-    const updatedUser = await prisma.user.update({
-      where: { id: session.user.id },
-      data: { image: url },
-    })
+    const updatedUser = await db.update(usersTable)
+      .set({ image: url })
+      .where(eq(usersTable.id, result.user.id))
+      .returning()
+      .get()
 
     return c.json({
       success: true,
@@ -257,7 +260,7 @@ users.put('/avatar/image', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: updatedUser.createdAt.toISOString(),
+        createdAt: new Date(updatedUser.createdAt!).toISOString(),
       },
     })
   } catch (error) {

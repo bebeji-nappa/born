@@ -1,35 +1,105 @@
 import { Post } from "@/lib/api";
 import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import dayjs from "dayjs";
-import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
+import { VirtuosoGrid } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 
 const Background = styled.div`
-  background: #ffd600;
-  min-height: 100vh;
+  background: #dae2e6;
+  min-height: calc(100vh - 55px);
   position: relative;
 `;
 
-const PageHeader = styled.header`
-  background: #000;
-  padding: 16px 24px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-  width: 100vw;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+const PageContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
 
   @media (max-width: 768px) {
-    padding: 12px 16px;
+    padding: 16px 16px 0;
+  }
+`;
+
+const UserProfileSection = styled.div`
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+`;
+
+const UserAvatar = styled.div`
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    font-size: 1.25rem;
+  }
+`;
+
+const UserImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+`;
+
+const UserName = styled.h2`
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.75rem;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+`;
+
+const UserDescription = styled.p`
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
   }
 `;
 
 const Container = styled.div`
   max-width: 1200px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 24px;
   display: grid;
   gap: 24px;
@@ -75,11 +145,11 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
   color: #111827;
-  margin: 0 0 14px 0;
+  margin: 0 0 8px 0;
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -157,31 +227,36 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
     Item: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   };
 
+  const firstPostUser = posts.length > 0 ? posts[0].user : null;
+
   return (
     <Background>
-      <PageHeader>
-        <div
-          style={{
-            display: "block",
-            position: "relative",
-            width: "200px",
-            height: "50px",
-          }}
-        >
-          <Image
-            src="/logo.svg"
-            alt="logo"
-            sizes="100vw"
-            fill
-            style={{
-              width: "100%",
-            }}
-          />
-        </div>
-      </PageHeader>
+      {firstPostUser && (
+        <PageContainer>
+          <UserProfileSection>
+            <UserAvatar>
+              {firstPostUser.image ? (
+                <UserImage
+                  src={firstPostUser.image}
+                  alt={firstPostUser.name || "User"}
+                />
+              ) : (
+                getInitials(firstPostUser.name)
+              )}
+            </UserAvatar>
+            <UserInfo>
+              <UserName>{firstPostUser.name || "Unknown User"}</UserName>
+              <UserDescription>
+                {firstPostUser.description || ""}
+              </UserDescription>
+            </UserInfo>
+          </UserProfileSection>
+        </PageContainer>
+      )}
       {posts.length ? (
         <VirtuosoGrid
-          style={{ height: "calc(100vh - 82px)" }}
+          useWindowScroll
+          style={{ height: "100%", width: "100%", position: "absolute" }}
           data={posts}
           components={gridComponents}
           itemContent={(_, post) => {

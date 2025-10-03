@@ -13,7 +13,10 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: #ffd600;
+  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
 `;
 
 const spin = keyframes`
@@ -24,15 +27,15 @@ const spin = keyframes`
 const Spinner = styled.div<{ size: number; color: string }>`
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
-  border: 15px solid transparent;
-  border-top: 15px solid ${(props) => props.color};
+  border: 8px solid transparent;
+  border-top: 8px solid ${(props) => props.color};
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
 `;
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  size = 200,
-  color = "#000000",
+  size = 80,
+  color = "#9ca3af",
 }) => {
   return (
     <Wrapper>

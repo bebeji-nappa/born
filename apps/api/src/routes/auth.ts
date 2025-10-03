@@ -1,11 +1,12 @@
 import { Hono } from 'hono'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
-import { getPrismaClient } from '../lib/prisma'
 import { createId } from '@paralleldrive/cuid2'
+import { eq, and } from 'drizzle-orm'
+import { getDB, users, accounts, blogs } from '../db'
 
 type Bindings = {
-  DATABASE_URL: string
+  DB: D1Database
   AUTH_GITHUB_ID: string
   AUTH_GITHUB_SECRET: string
   API_BASE_URL: string
@@ -40,9 +41,9 @@ auth.get('/signin/github', async (c) => {
 auth.get('/callback/github', async (c) => {
   try {
     const config = getGitHubOAuthConfig(c.env)
-    const prisma = getPrismaClient(c.env)
+    const db = getDB(c.env.DB)
     const code = c.req.query('code')
-    
+
     if (!code) {
       return c.json({ error: 'Authorization code not found' }, 400)
     }
@@ -68,7 +69,7 @@ auth.get('/callback/github', async (c) => {
     }
 
     const tokenText = await tokenResponse.text()
-    
+
     let tokenData
     try {
       tokenData = JSON.parse(tokenText)
@@ -76,7 +77,7 @@ auth.get('/callback/github', async (c) => {
       console.error('Failed to parse GitHub token response as JSON:', tokenText)
       return c.json({ error: 'Invalid response from GitHub' }, 400)
     }
-    
+
     if (!tokenData.access_token) {
       return c.json({ error: 'Failed to get access token' }, 400)
     }
@@ -118,67 +119,75 @@ auth.get('/callback/github', async (c) => {
       return c.json({ error: 'Unauthorized email address' }, 403)
     }
 
-    let user = await prisma.user.findUnique({
-      where: { email: primaryEmail }
-    })
+    let user = await db.select().from(users).where(eq(users.email, primaryEmail)).get()
 
     if (!user) {
       const userId = createId()
-      user = await prisma.user.create({
-        data: {
-          id: userId,
-          email: primaryEmail,
-          name: githubUser.name || githubUser.login,
-          image: githubUser.avatar_url,
-          screen_name: userId,
-        }
+      const newUser = await db.insert(users).values({
+        id: userId,
+        email: primaryEmail,
+        name: githubUser.name || githubUser.login,
+        image: githubUser.avatar_url,
+        screen_name: userId,
+        createdAt: new Date(),
+      }).returning().get()
+
+      user = newUser
+
+      // ユーザー登録時にBlogを作成
+      await db.insert(blogs).values({
+        userId: user.id,
+        title: null,
+        description: null,
+        theme: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
     } else {
-      user = await prisma.user.update({
-        where: { email: primaryEmail },
-        data: {
+      const updatedUser = await db.update(users)
+        .set({
           name: githubUser.name || githubUser.login,
           image: githubUser.avatar_url,
-        }
-      })
+        })
+        .where(eq(users.email, primaryEmail))
+        .returning()
+        .get()
+
+      user = updatedUser
     }
 
     // Check if GitHub account already exists
-    let account = await prisma.account.findUnique({
-      where: {
-        provider_providerAccountId: {
-          provider: 'github',
-          providerAccountId: githubUser.id.toString(),
-        }
-      }
-    })
+    let account = await db.select().from(accounts)
+      .where(and(
+        eq(accounts.provider, 'github'),
+        eq(accounts.providerAccountId, githubUser.id.toString())
+      ))
+      .get()
 
     if (!account) {
-      account = await prisma.account.create({
-        data: {
-          userId: user.id,
-          type: 'oauth',
-          provider: 'github',
-          providerAccountId: githubUser.id.toString(),
-          access_token: tokenData.access_token,
-          token_type: tokenData.token_type,
-          scope: tokenData.scope,
-        }
+      await db.insert(accounts).values({
+        id: createId(),
+        userId: user.id,
+        type: 'oauth',
+        provider: 'github',
+        providerAccountId: githubUser.id.toString(),
+        access_token: tokenData.access_token,
+        token_type: tokenData.token_type,
+        scope: tokenData.scope,
       })
     } else {
       // Update access token
-      account = await prisma.account.update({
-        where: { id: account.id },
-        data: {
+      await db.update(accounts)
+        .set({
           access_token: tokenData.access_token,
           token_type: tokenData.token_type,
           scope: tokenData.scope,
-        }
-      })
+        })
+        .where(eq(accounts.id, account.id))
     }
 
     const sessionToken = await createSession(user.id, c.env)
-    
+
     setCookie(c, 'session-token', sessionToken, {
       httpOnly: true,
       secure: true, // Always secure in Workers
@@ -220,11 +229,17 @@ auth.get('/current_user', async (c) => {
 
   // If screen_name is null, set it to user.id
   if (!user.screen_name) {
-    const prisma = getPrismaClient(c.env)
-    user = await prisma.user.update({
-      where: { id: user.id },
-      data: { screen_name: user.id }
-    })
+    const db = getDB(c.env.DB)
+    const updatedUser = await db.update(users)
+      .set({ screen_name: user.id })
+      .where(eq(users.id, user.id))
+      .returning()
+      .get()
+
+    user = {
+      ...user,
+      screen_name: updatedUser.screen_name,
+    }
   }
 
   return c.json({ user })
