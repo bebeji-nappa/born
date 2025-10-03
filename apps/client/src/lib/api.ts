@@ -5,7 +5,10 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  screen_name: string | null;
   image?: string;
+  description?: string | null;
+  createdAt: string;
 }
 
 export interface Post {
@@ -100,6 +103,56 @@ class ApiClient {
     const response = await fetch(`${url}?email=${encodeURIComponent(email)}`, {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async updateUserProfile(data: {
+    name?: string;
+    description?: string | null;
+  }): Promise<{ success: boolean; user: User }> {
+    const response = await fetch(`${this.baseUrl}/api/users/profile`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async updateUserAvatar(file: File): Promise<{ success: boolean; url: string; user: User }> {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(`${this.baseUrl}/api/users/avatar/image`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async updateUserScreenName(screen_name: string): Promise<{ success: boolean; user: User }> {
+    const response = await fetch(`${this.baseUrl}/api/users/screen-name`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ screen_name }),
     });
 
     if (!response.ok) {
