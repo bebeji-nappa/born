@@ -1,6 +1,15 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
+// Helper function to normalize date fields
+function normalizeDate(value: any): string {
+  if (!value) return new Date().toISOString();
+  if (typeof value === 'string') return value;
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === 'number') return new Date(value).toISOString();
+  return new Date(value).toISOString();
+}
+
 export interface User {
   id: string;
   email: string;
@@ -8,7 +17,7 @@ export interface User {
   screen_name: string | null;
   image?: string;
   description?: string | null;
-  createdAt: string;
+  createdAt: string | Date | number;
 }
 
 export interface Post {
@@ -17,8 +26,8 @@ export interface Post {
   content: string;
   published: boolean;
   userId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date | number;
+  updatedAt: string | Date | number;
   user: User;
 }
 
@@ -252,3 +261,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
+
