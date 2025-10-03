@@ -73,7 +73,7 @@ export const updatePostById = async (
   const data: any = {
     title,
     content,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
   }
   if (published !== undefined) {
     data.published = published
@@ -150,8 +150,8 @@ export const createPost = async (
       userId,
       blogId: blog.id,
       published,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .returning()
     .get()

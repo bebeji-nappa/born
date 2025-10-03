@@ -8,6 +8,8 @@ type Bindings = {
   DB: any
   STORAGE: R2Bucket
   STORAGE_URL: string
+  NODE_ENV: string
+  API_BASE_URL: string
 }
 
 const blogs = new Hono<{ Bindings: Bindings }>()

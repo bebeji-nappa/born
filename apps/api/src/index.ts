@@ -26,16 +26,17 @@ app.use('*', cors({
       'http://localhost:3000',
       'http://127.0.0.1:3000',
       'https://blog.bebeji-nappa.com',
+      'https://staging.bebeji-nappa.com',
       frontendUrl
     ]
-    
+
     return allowedOrigins.includes(origin || '') ? origin : null
   },
   credentials: true,
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowHeaders: [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'Cookie',
     'X-Requested-With',
     'Accept',
