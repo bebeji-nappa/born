@@ -144,11 +144,18 @@ export type PostEditInputValues = {
   content: string;
 };
 
+interface ThemeConfig {
+  backgroundColor: string;
+  textColor: string;
+  linkColor: string;
+}
+
 export type PostCreateTemplateProps = {
   userId: string;
+  theme: ThemeConfig;
 };
 
-const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
+const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
   const router = useRouter();
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
   const [isPublished, setIsPublished] = useState(false);
@@ -221,7 +228,7 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId }) => {
               placeholder="記事の内容を入力..."
             />
           ) : (
-            <Preview text={getValues("content")} id="content" />
+            <Preview text={getValues("content")} id="content" textColor={theme.textColor} linkColor={theme.linkColor} />
           )}
         </EditorWrapper>
         <Footer>

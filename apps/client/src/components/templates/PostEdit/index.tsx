@@ -143,11 +143,18 @@ export type PostEditInputValues = {
   content: string;
 };
 
+interface ThemeConfig {
+  backgroundColor: string;
+  textColor: string;
+  linkColor: string;
+}
+
 export type PostEditTemplateProps = {
   id: number;
   title: string;
   content: string;
   published: boolean;
+  theme: ThemeConfig;
 };
 
 const PostEditTemplate: FC<PostEditTemplateProps> = ({
@@ -155,6 +162,7 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
   title,
   content,
   published,
+  theme,
 }) => {
   const router = useRouter();
   const [alertMessage, setAlertMessage] = useState("");
@@ -222,7 +230,7 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
           {isEdit ? (
             <Textarea defaultValue={content} {...register("content")} />
           ) : (
-            <Preview text={getValues("content")} />
+            <Preview text={getValues("content")} textColor={theme.textColor} linkColor={theme.linkColor} />
           )}
         </EditorWrapper>
         <Footer>

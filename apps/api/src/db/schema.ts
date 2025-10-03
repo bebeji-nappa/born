@@ -37,10 +37,10 @@ export const users = sqliteTable('User', {
   name: text('name').notNull(),
   screen_name: text('screen_name'),
   email: text('email').unique(),
-  emailVerified: integer('emailVerified', { mode: 'timestamp' }),
+  emailVerified: text('emailVerified'),
   image: text('image'),
   description: text('description'),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => ({
   emailIdx: uniqueIndex('User_email_key').on(table.email),
 }));
@@ -61,9 +61,11 @@ export const blogs = sqliteTable('Blog', {
   title: text('title'),
   description: text('description'),
   theme: text('theme'),
+  backgroundImage: text('backgroundImage'),
+  backgroundImageKey: text('backgroundImageKey'),
   userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updatedAt').notNull(),
 }, (table) => ({
   userIdIdx: index('Blog_userId_idx').on(table.userId),
 }));
@@ -76,8 +78,8 @@ export const posts = sqliteTable('Post', {
   published: integer('published', { mode: 'boolean' }).notNull().default(false),
   userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
   blogId: integer('blogId').notNull().references(() => blogs.id, { onDelete: 'cascade' }),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text('updatedAt').notNull(),
 }, (table) => ({
   userIdIdx: index('Post_userId_idx').on(table.userId),
   blogIdIdx: index('Post_blogId_idx').on(table.blogId),

@@ -4,6 +4,7 @@ import users from './routes/users'
 import posts from './routes/posts'
 import auth from './routes/auth'
 import upload from './routes/upload'
+import blogs from './routes/blogs'
 
 type Bindings = {
   DATABASE_URL: string
@@ -25,16 +26,17 @@ app.use('*', cors({
       'http://localhost:3000',
       'http://127.0.0.1:3000',
       'https://blog.bebeji-nappa.com',
+      'https://staging-blog.bebeji-nappa.com',
       frontendUrl
     ]
-    
+
     return allowedOrigins.includes(origin || '') ? origin : null
   },
   credentials: true,
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowHeaders: [
-    'Content-Type', 
-    'Authorization', 
+    'Content-Type',
+    'Authorization',
     'Cookie',
     'X-Requested-With',
     'Accept',
@@ -51,5 +53,6 @@ app.route('/api/auth', auth)
 app.route('/api/users', users)
 app.route('/api/posts', posts)
 app.route('/api/upload', upload)
+app.route('/api/blogs', blogs)
 
 export default app

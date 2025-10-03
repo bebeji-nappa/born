@@ -55,7 +55,10 @@ export const getAllPostsByUserId = async (userId: string, published: true | unde
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      user: r.user
+    })),
   }
 }
 
@@ -70,7 +73,7 @@ export const updatePostById = async (
   const data: any = {
     title,
     content,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
   }
   if (published !== undefined) {
     data.published = published
@@ -116,7 +119,10 @@ export const getAllPosts = async (env: any, userId: string, published: boolean) 
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      user: r.user
+    })),
   }
 }
 
@@ -144,8 +150,8 @@ export const createPost = async (
       userId,
       blogId: blog.id,
       published,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .returning()
     .get()
