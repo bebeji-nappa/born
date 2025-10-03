@@ -116,7 +116,7 @@ users.put('/profile', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: new Date(updatedUser.createdAt!).toISOString(),
+        createdAt: updatedUser.createdAt,
       },
     })
   } catch (error) {
@@ -169,7 +169,7 @@ users.put('/screen-name', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: new Date(updatedUser.createdAt!).toISOString(),
+        createdAt: updatedUser.createdAt,
       },
     })
   } catch (error) {
@@ -260,7 +260,7 @@ users.put('/avatar/image', async (c) => {
         screen_name: updatedUser.screen_name,
         image: updatedUser.image,
         description: updatedUser.description,
-        createdAt: new Date(updatedUser.createdAt!).toISOString(),
+        createdAt: updatedUser.createdAt,
       },
     })
   } catch (error) {

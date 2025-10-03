@@ -55,7 +55,10 @@ export const getAllPostsByUserId = async (userId: string, published: true | unde
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      user: r.user
+    })),
   }
 }
 
@@ -116,7 +119,10 @@ export const getAllPosts = async (env: any, userId: string, published: boolean) 
     .all()
 
   return {
-    posts: results.map(r => ({ ...r.post, user: r.user })),
+    posts: results.map(r => ({
+      ...r.post,
+      user: r.user
+    })),
   }
 }
 

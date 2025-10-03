@@ -41,7 +41,7 @@ const RightSection = styled.div`
 
 const CreatePostButton = styled.button`
   padding: 8px 16px;
-  background: #6366f1;
+  background: #f97316;
   color: white;
   border: none;
   border-radius: 20px;
@@ -51,7 +51,7 @@ const CreatePostButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #4f46e5;
+    background: #ea580c;
   }
 
   &:focus {
@@ -221,10 +221,10 @@ export const PageHeader = () => {
               </AvatarButton>
 
               <DropdownMenu isOpen={isMenuOpen}>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/account/setting")}>
+                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
                   アカウント設定
                 </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/management")}>
+                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>
                   記事の管理
                 </MenuItem>
                 <MenuItem

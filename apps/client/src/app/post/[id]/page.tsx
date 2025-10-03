@@ -11,6 +11,7 @@ interface Post {
   content: string;
   published: boolean;
   userId: string;
+  blogId: number;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -22,6 +23,15 @@ interface Post {
     description?: string | null;
     createdAt: string;
   };
+}
+
+interface Blog {
+  id: number;
+  title: string | null;
+  description: string | null;
+  theme: string | null;
+  backgroundImage: string | null;
+  userId: string;
 }
 
 async function getPost(id: string): Promise<Post | null> {
@@ -38,6 +48,24 @@ async function getPost(id: string): Promise<Post | null> {
     return data.post;
   } catch (error) {
     console.error("Failed to fetch post:", error);
+    return null;
+  }
+}
+
+async function getBlog(id: number): Promise<Blog | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/blogs/${id}`, {
+      next: { revalidate: 1 },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.blog;
+  } catch (error) {
+    console.error("Failed to fetch blog:", error);
     return null;
   }
 }
@@ -114,5 +142,7 @@ export default async function PostDetailPage({
     notFound();
   }
 
-  return <PostDetailTemplate post={post} authUserEmail={undefined} />;
+  const blog = await getBlog(post.blogId);
+
+  return <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />;
 }

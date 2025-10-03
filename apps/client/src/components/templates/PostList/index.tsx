@@ -5,9 +5,34 @@ import dayjs from "dayjs";
 import { VirtuosoGrid } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
+import { create } from "domain";
 
-const Background = styled.div`
-  background: #dae2e6;
+type Blog = {
+  id: number;
+  title: string | null;
+  description: string | null;
+  theme: string | null;
+  backgroundImage: string | null;
+  userId: string;
+};
+
+type ThemeConfig = {
+  backgroundColor?: string;
+  textColor?: string;
+  linkColor?: string;
+  sectionBackgroundColor?: string;
+  backgroundRepeat?: boolean;
+};
+
+const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: boolean }>`
+  background: ${(props) => {
+    if (props.bgImage) {
+      const repeat = props.bgRepeat ? 'repeat' : 'no-repeat';
+      const size = props.bgRepeat ? 'auto' : 'cover';
+      return `url(${props.bgImage}) center/${size} ${repeat}`;
+    }
+    return props.bgColor || "#dae2e6";
+  }};
   min-height: calc(100vh - 55px);
   position: relative;
 `;
@@ -22,8 +47,8 @@ const PageContainer = styled.div`
   }
 `;
 
-const UserProfileSection = styled.div`
-  background-color: #fff;
+const UserProfileSection = styled.div<{ bgColor?: string }>`
+  background-color: ${(props) => props.bgColor || "#fff"};
   border-radius: 12px;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
@@ -75,9 +100,9 @@ const UserInfo = styled.div`
   flex: 1;
 `;
 
-const UserName = styled.h2`
+const UserName = styled.h2<{ textColor?: string }>`
   font-weight: 600;
-  color: #111827;
+  color: ${(props) => props.textColor || "#111827"};
   font-size: 1.75rem;
   margin: 0;
 
@@ -86,14 +111,36 @@ const UserName = styled.h2`
   }
 `;
 
-const UserDescription = styled.p`
+const UserDescription = styled.p<{ textColor?: string }>`
   font-size: 1rem;
-  color: #6b7280;
+  color: ${(props) => props.textColor || "#6b7280"};
   line-height: 1.5;
   margin: 0;
+  opacity: 0.8;
 
   @media (max-width: 768px) {
     font-size: 0.8125rem;
+  }
+`;
+
+const SettingsButton = styled.button`
+  padding: 8px 16px;
+  background: #f5f5f5;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e5e5e5;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: 0.75rem;
   }
 `;
 
@@ -122,8 +169,9 @@ const EmptyMessage = styled.div`
   font-size: 1.5rem;
 `;
 
-const Article = styled.article`
-  background-color: #fff;
+const Article = styled.article<{ bgColor?: string; textColor?: string }>`
+  background-color: ${(props) => props.bgColor || "#fff"};
+  color: ${(props) => props.textColor || "#374151"};
   border-radius: 12px;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
@@ -148,7 +196,6 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #111827;
   margin: 0 0 8px 0;
   width: 100%;
   text-overflow: ellipsis;
@@ -198,17 +245,19 @@ const AuthorName = styled.span`
   font-size: 1rem;
 `;
 
-const DateSetion = styled.div`
+const DateSetion = styled.div<{ textColor?: string }>`
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: ${(props) => props.textColor || "#9ca3af"};
   margin-bottom: 12px;
+  opacity: 0.7;
 `;
 
 export type PostListTemplateProps = {
   posts: Post[];
+  blog: Blog | null;
 };
 
-const PostListTemplate = ({ posts }: PostListTemplateProps) => {
+const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
   const router = useRouter();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -220,6 +269,31 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
       .toUpperCase();
   };
 
+  const defaultTheme: ThemeConfig = {
+    backgroundColor: "#dae2e6",
+    textColor: "#374151",
+    linkColor: "#3b82f6",
+    sectionBackgroundColor: "#ffffff",
+    backgroundRepeat: false,
+  };
+
+  let theme: ThemeConfig = { ...defaultTheme };
+
+  if (blog?.theme) {
+    try {
+      const parsedTheme = JSON.parse(blog.theme) as ThemeConfig;
+      theme = {
+        backgroundColor: parsedTheme.backgroundColor || defaultTheme.backgroundColor,
+        textColor: parsedTheme.textColor || defaultTheme.textColor,
+        linkColor: parsedTheme.linkColor || defaultTheme.linkColor,
+        sectionBackgroundColor: parsedTheme.sectionBackgroundColor || defaultTheme.sectionBackgroundColor,
+        backgroundRepeat: parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
+      };
+    } catch {
+      // JSONパースに失敗した場合はデフォルト値を使用
+    }
+  }
+
   const gridComponents = {
     List: ({ children, ...props }: any) => (
       <Container {...props}>{children}</Container>
@@ -229,11 +303,26 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
 
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
 
+  // 環境に応じて背景画像URLを変換
+  const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
+    if (!url) return undefined;
+
+    // ローカル開発環境の場合、APIサーバー経由のURLに変換
+    if (process.env.NODE_ENV === 'development' && url.includes('storage-dev.bebeji-nappa.com')) {
+      const key = url.split('.com/')[1];
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image/${key}`;
+    }
+
+    return url;
+  };
+
+  const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
+
   return (
-    <Background>
+    <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
       {firstPostUser && (
         <PageContainer>
-          <UserProfileSection>
+          <UserProfileSection bgColor={theme.sectionBackgroundColor}>
             <UserAvatar>
               {firstPostUser.image ? (
                 <UserImage
@@ -245,11 +334,16 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
               )}
             </UserAvatar>
             <UserInfo>
-              <UserName>{firstPostUser.name || "Unknown User"}</UserName>
-              <UserDescription>
+              <UserName textColor={theme.textColor}>{firstPostUser.name || "Unknown User"}</UserName>
+              <UserDescription textColor={theme.textColor}>
                 {firstPostUser.description || ""}
               </UserDescription>
             </UserInfo>
+            {blog && (
+              <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
+                設定
+              </SettingsButton>
+            )}
           </UserProfileSection>
         </PageContainer>
       )}
@@ -262,7 +356,7 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
           itemContent={(_, post) => {
             const { id, title, user, createdAt } = post;
             return (
-              <Article key={id} onClick={() => router.push(`/post/${id}`)}>
+              <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
                 <Header>
                   <Title>{title}</Title>
                   <AuthorSection>
@@ -280,8 +374,8 @@ const PostListTemplate = ({ posts }: PostListTemplateProps) => {
                       <AuthorName>{user.name || "Unknown Author"}</AuthorName>
                     </AuthorInfo>
                   </AuthorSection>
-                  <DateSetion>
-                    公開日: {dayjs(createdAt).format("YYYY年MM月DD日")}
+                  <DateSetion textColor={theme.textColor}>
+                    公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
                   </DateSetion>
                 </Header>
               </Article>

@@ -5,23 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Background = styled.div`
-  background: #ffd600;
+  background: #ffffff;
   min-height: 100vh;
   position: relative;
-`;
-
-const PageHeader = styled.header`
-  background: #000;
-  padding: 16px 24px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-  width: 100vw;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-
-  @media (max-width: 768px) {
-    padding: 12px 16px;
-  }
 `;
 
 const Container = styled.div`
@@ -36,70 +22,65 @@ const Container = styled.div`
 `;
 
 const Article = styled.article`
-  background-color: #fff;
-  border-radius: 12px;
   min-height: calc(80vh - 48px);
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
-  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const Title = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #111827;
-  margin: 0 0 20px 0;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
 `;
 
 const Content = styled.div`
   padding: 32px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 24px;
 
   @media (max-width: 768px) {
     padding: 24px 20px;
   }
 `;
 
+const LogoContainer = styled.div`
+  position: relative;
+  width: 400px;
+  height: 200px;
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 200px;
+  }
+`;
+
+const ErrorText = styled.h1`
+  font-size: 3rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+`;
+
 export default function NotFound() {
   return (
     <Background>
-      <PageHeader>
-        <div
-          style={{
-            display: "block",
-            position: "relative",
-            width: "200px",
-            height: "50px",
-          }}
-        >
-          <Link href="/">
-            <Image
-              src="/logo.svg"
-              alt="logo"
-              sizes="100vw"
-              fill
-              style={{
-                width: "100%",
-              }}
-            />
-          </Link>
-        </div>
-      </PageHeader>
       <Container>
         <Article>
           <Content>
-            <Title>404 - Page Not Found</Title>
+            <LogoContainer>
+              <Image
+                src="/born_logo.svg"
+                alt="born logo"
+                fill
+                style={{
+                  objectFit: "contain",
+                }}
+              />
+            </LogoContainer>
+            <ErrorText>404 Not Found</ErrorText>
           </Content>
         </Article>
       </Container>
