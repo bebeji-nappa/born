@@ -28,6 +28,30 @@ migrations_dir = "prisma/migrations"
 binding = "STORAGE"
 bucket_name = "born-storage-dev"
 
+# Staging environment
+[env.staging]
+name = "born-api-staging"
+
+# D1 Database bindings for staging
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "born-db-staging"
+database_id = "43ca1a97-455b-4ff1-9cec-002ab5b17492"
+migrations_dir = "prisma/migrations"
+
+[[env.staging.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "born-storage-staging"
+
+# Environment variables (set via Dashboard or wrangler secret)
+[[env.staging.vars]]
+AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
+AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
+API_BASE_URL = { binding = "API_BASE_URL" }
+FRONTEND_URL = { binding = "FRONTEND_URL" }
+ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
+NODE_ENV = "staging"
+
 # Production environment
 [env.production]
 name = "born-api"
@@ -57,4 +81,8 @@ enabled = true
 
 [[routes]]
 pattern = "api.bebeji-nappa.com"
+custom_domain = true
+
+[[env.staging.routes]]
+pattern = "staging-api.bebeji-nappa.com"
 custom_domain = true
