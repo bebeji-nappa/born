@@ -1,4 +1,6 @@
-import { getPrismaClient } from './prisma'
+import { eq } from 'drizzle-orm'
+import { getDB, sessions, users } from '../db'
+import { createId } from '@paralleldrive/cuid2'
 
 export interface AuthUser {
   id: string
@@ -23,58 +25,59 @@ export function generateSessionToken(): string {
 }
 
 export async function createSession(userId: string, env: any): Promise<string> {
-  const prisma = getPrismaClient(env)
+  const db = getDB(env.DB)
   const sessionToken = generateSessionToken()
   const expires = new Date()
   expires.setDate(expires.getDate() + 7) // 7 days from now
 
-  await prisma.session.create({
-    data: {
-      sessionToken,
-      userId,
-      expires,
-    },
+  await db.insert(sessions).values({
+    id: createId(),
+    sessionToken,
+    userId,
+    expires,
   })
 
   return sessionToken
 }
 
 export async function getSessionUser(sessionToken: string, env: any): Promise<AuthUser | null> {
-  const prisma = getPrismaClient(env)
-  const session = await prisma.session.findUnique({
-    where: { sessionToken },
-    include: {
-      user: true,
-    },
-  })
+  const db = getDB(env.DB)
 
-  if (!session || session.expires < new Date()) {
-    if (session) {
-      await prisma.session.delete({
-        where: { sessionToken },
-      })
+  const result = await db
+    .select({
+      session: sessions,
+      user: users,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.userId, users.id))
+    .where(eq(sessions.sessionToken, sessionToken))
+    .get()
+
+  if (!result || result.session.expires < new Date()) {
+    if (result) {
+      await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
     }
     return null
   }
 
   return {
-    id: session.user.id,
-    email: session.user.email!,
-    name: session.user.name!,
-    screen_name: session.user.screen_name,
-    image: session.user.image,
-    description: session.user.description,
-    createdAt: session.user.createdAt,
+    id: result.user.id,
+    email: result.user.email!,
+    name: result.user.name!,
+    screen_name: result.user.screen_name,
+    image: result.user.image,
+    description: result.user.description,
+    createdAt: new Date(result.user.createdAt!),
   }
 }
 
 export async function deleteSession(sessionToken: string, env: any): Promise<void> {
-  const prisma = getPrismaClient(env)
-  await prisma.session.delete({
-    where: { sessionToken },
-  }).catch(() => {
+  const db = getDB(env.DB)
+  try {
+    await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
+  } catch {
     // Ignore errors if session doesn't exist
-  })
+  }
 }
 
 export function getGitHubOAuthConfig(env: any) {
