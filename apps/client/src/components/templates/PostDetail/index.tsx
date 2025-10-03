@@ -93,11 +93,11 @@ const HeaderContent = styled.div`
   flex: 1;
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<{ textColor?: string }>`
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #111827;
+  color: ${(props) => props.textColor || "#111827"};
   margin: 0;
 
   @media (max-width: 768px) {
@@ -365,7 +365,7 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
           <Article bgColor={theme.sectionBackgroundColor}>
             <Header>
               <HeaderContent>
-                <Title>{title}</Title>
+                <Title textColor={theme.textColor}>{title}</Title>
                 <DateSection textColor={theme.textColor}>
                   公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
                 </DateSection>
