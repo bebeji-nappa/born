@@ -32,3 +32,6 @@ lerna-debug.log*
 .wrangler
 *.db
 *.db-journal
+
+# D1 migrations (managed separately)
+prisma/migrations/d1

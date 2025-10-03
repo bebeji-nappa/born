@@ -5,37 +5,21 @@ import { User, Post } from "@/lib/api";
 import { Richmd } from "@richmd/react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { usePosts } from "@/hooks/usePosts";
-import Link from "next/link";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 
 const Background = styled.div`
-  background: #ffd600;
-  min-height: 100vh;
+  background: #dae2e6;
+  min-height: calc(100vh - 55px);
   position: relative;
-`;
-
-const PageHeader = styled.header`
-  background: #000;
-  padding: 16px 24px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
-  width: 100vw;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-
-  @media (max-width: 768px) {
-    padding: 12px 16px;
-  }
 `;
 
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 40px 24px;
   min-height: 100%;
 
   @media (max-width: 768px) {
@@ -43,10 +27,23 @@ const Container = styled.div`
   }
 `;
 
+const TwoColumnLayout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  min-height: calc(80vh - 48px);
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+`;
+
 const Article = styled.article`
+  height: 100%;
   background-color: #fff;
   border-radius: 12px;
-  min-height: calc(80vh - 48px);
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -57,16 +54,19 @@ const Header = styled.header`
   padding: 32px;
   border-bottom: 1px solid #f3f4f6;
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 
   @media (max-width: 768px) {
     padding: 24px 20px;
   }
 `;
 
-const HeaderContent = styled.header`
+const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+  flex: 1;
 `;
 
 const Title = styled.h1`
@@ -74,23 +74,51 @@ const Title = styled.h1`
   font-weight: 700;
   line-height: 1.2;
   color: #111827;
-  margin: 0 0 20px 0;
+  margin: 0;
 
   @media (max-width: 768px) {
     font-size: 2rem;
   }
 `;
 
-const AuthorSection = styled.div`
+const DateSection = styled.div`
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-top: 8px;
+`;
+
+const AuthorProfile = styled.aside`
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 32px;
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 12px;
-  color: #6b7280;
+  gap: 18px;
+  height: fit-content;
+  position: sticky;
+  top: 79px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    position: static;
+  }
 `;
 
 const AuthorAvatar = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 100%;
+  max-width: 70px;
+  min-width: 60px;
+  height: 100%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -98,7 +126,7 @@ const AuthorAvatar = styled.div`
   justify-content: center;
   color: white;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 2rem;
   overflow: hidden;
 `;
 
@@ -108,26 +136,26 @@ const AuthorImage = styled.img`
   object-fit: cover;
 `;
 
-const AuthorInfo = styled.div`
-  display: flex;
-  flex-direction: column;
+const AuthorName = styled.h2`
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.25rem;
+  margin: 0;
 `;
 
-const AuthorName = styled.span`
-  font-weight: 500;
-  color: #374151;
-  font-size: 1rem;
-`;
-
-const AuthorLabel = styled.span`
+const AuthorBio = styled.p`
   font-size: 0.875rem;
   color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
 `;
 
-const DateSetion = styled.div`
-  font-size: 0.75rem;
-  color: #9ca3af;
-  margin-bottom: 12px;
+
+const AuthorProfileDetail = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 `;
 
 const Content = styled.div`
@@ -265,61 +293,40 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
   return (
     <Background>
-      <PageHeader>
-        <div
-          style={{
-            display: "block",
-            position: "relative",
-            width: "200px",
-            height: "50px",
-          }}
-        >
-          <Link href="/">
-            <Image
-              src="/logo.svg"
-              alt="logo"
-              sizes="100vw"
-              fill
-              style={{
-                width: "100%",
-              }}
-            />
-          </Link>
-        </div>
-      </PageHeader>
       <Container>
-        <RedirectButton onClick={() => router.push("/")}>
-          {"< 一覧に戻る"}
-        </RedirectButton>
-        <Article>
-          <Header>
-            <HeaderContent>
-              <Title>{title}</Title>
-              <AuthorSection>
-                <AuthorAvatar>
-                  {user.image ? (
-                    <AuthorImage src={user.image} alt={user.name || "Author"} />
-                  ) : (
-                    getInitials(user.name)
-                  )}
-                </AuthorAvatar>
-                <AuthorInfo>
-                  <AuthorName>{user.name || "Unknown Author"}</AuthorName>
-                  {/* <AuthorLabel></AuthorLabel> */}
-                </AuthorInfo>
-              </AuthorSection>
-              <DateSetion>
-                公開日: {dayjs(createdAt).format("YYYY年MM月DD日")}
-              </DateSetion>
-            </HeaderContent>
-            {authUserEmail === user.email && (
-              <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
-            )}
-          </Header>
-          <Content>
-            <Richmd text={content} />
-          </Content>
-        </Article>
+        <TwoColumnLayout>
+          <Article>
+            <Header>
+              <HeaderContent>
+                <Title>{title}</Title>
+                <DateSection>
+                  公開日: {dayjs(createdAt).format("YYYY年MM月DD日")}
+                </DateSection>
+              </HeaderContent>
+              {authUserEmail === user.email && (
+                <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
+              )}
+            </Header>
+            <Content>
+              <Richmd text={content} />
+            </Content>
+          </Article>
+          <AuthorProfile onClick={() => router.push("/")}>
+            <AuthorAvatar>
+              {user.image ? (
+                <AuthorImage src={user.image} alt={user.name || "Author"} />
+              ) : (
+                getInitials(user.name)
+              )}
+            </AuthorAvatar>
+            <AuthorProfileDetail>
+              <AuthorName>{user.name || "Unknown Author"}</AuthorName>
+              <AuthorBio>
+                {user.description || ""}
+              </AuthorBio>
+            </AuthorProfileDetail>
+          </AuthorProfile>
+        </TwoColumnLayout>
       </Container>
     </Background>
   );

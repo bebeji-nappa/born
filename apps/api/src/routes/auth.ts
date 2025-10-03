@@ -133,6 +133,15 @@ auth.get('/callback/github', async (c) => {
           screen_name: userId,
         }
       })
+
+      // ユーザー登録時にBlogを作成
+      await prisma.blog.create({
+        data: {
+          userId: user.id,
+          title: null,
+          description: null,
+        }
+      })
     } else {
       user = await prisma.user.update({
         where: { email: primaryEmail },

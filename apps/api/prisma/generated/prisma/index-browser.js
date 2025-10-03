@@ -156,12 +156,22 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.BlogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PostScalarFieldEnum = {
   id: 'id',
   title: 'title',
   content: 'content',
   published: 'published',
   userId: 'userId',
+  blogId: 'blogId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -182,6 +192,7 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   User: 'User',
   VerificationToken: 'VerificationToken',
+  Blog: 'Blog',
   Post: 'Post'
 };
 

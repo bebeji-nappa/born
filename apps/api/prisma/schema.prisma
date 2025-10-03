@@ -51,6 +51,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Post          Post[]
+  Blog          Blog[]
 }
 
 model VerificationToken {
@@ -61,6 +62,20 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ブログ
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String?
+  description String?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  Post        Post[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
 // 投稿
 model Post {
   id        Int      @id @default(autoincrement())
@@ -69,6 +84,11 @@ model Post {
   published Boolean  @default(false)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([blogId])
 }

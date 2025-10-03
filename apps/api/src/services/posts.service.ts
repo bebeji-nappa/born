@@ -104,11 +104,22 @@ export const createPost = async (
   env: any
 ) => {
   const prisma = getPrismaClient(env)
+
+  // ユーザーのBlogを取得
+  const blog = await prisma.blog.findFirst({
+    where: { userId },
+  })
+
+  if (!blog) {
+    throw new Error('Blog not found for user')
+  }
+
   const newPost = await prisma.post.create({
     data: {
       title: title,
       content: content,
       userId: userId,
+      blogId: blog.id,
       published: published,
     },
   })
