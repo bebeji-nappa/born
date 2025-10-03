@@ -1,21 +1,19 @@
 import { Post } from "@/lib/api";
 import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import dayjs from "dayjs";
-import { Virtuoso, VirtuosoGrid } from "react-virtuoso";
+import { VirtuosoGrid } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 
 const Background = styled.div`
-  background: #ffd600;
-  min-height: 100vh;
+  background: #dae2e6;
+  min-height: calc(100vh - 55px);
   position: relative;
 `;
 
 const Container = styled.div`
   max-width: 1200px;
-  margin: 20px auto;
   padding: 24px;
   display: grid;
   gap: 24px;
@@ -61,11 +59,11 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
   color: #111827;
-  margin: 0 0 14px 0;
+  margin: 0 0 8px 0;
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
