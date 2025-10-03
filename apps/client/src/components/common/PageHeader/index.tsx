@@ -221,11 +221,14 @@ export const PageHeader = () => {
               </AvatarButton>
 
               <DropdownMenu isOpen={isMenuOpen}>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
-                  アカウント設定
+                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/")}>
+                  自分のブログを確認
                 </MenuItem>
                 <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>
                   記事の管理
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
+                  アカウント設定
                 </MenuItem>
                 <MenuItem
                   hasBorderTop
