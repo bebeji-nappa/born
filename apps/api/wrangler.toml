@@ -54,7 +54,7 @@ API_BASE_URL = { binding = "API_BASE_URL" }
 FRONTEND_URL = { binding = "FRONTEND_URL" }
 ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
 NODE_ENV = "staging"
-STORAGE_URL = "https://storage-staging.bebeji-nappa.com"
+STORAGE_URL = "https://staging-storage.born-docs.com"
 
 # Production environment
 [env.production]
@@ -89,5 +89,5 @@ pattern = "api.bebeji-nappa.com"
 custom_domain = true
 
 [[env.staging.routes]]
-pattern = "staging-api.bebeji-nappa.com"
+pattern = "staging-api.born-docs.com"
 custom_domain = true

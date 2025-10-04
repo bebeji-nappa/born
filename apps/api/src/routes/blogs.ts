@@ -118,7 +118,7 @@ blogs.post(
         storageUrl = `${c.env.API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image`
       } else if (nodeEnv === 'staging') {
         // Staging: カスタムドメイン
-        storageUrl = c.env.STORAGE_URL || 'https://storage-staging.bebeji-nappa.com'
+        storageUrl = c.env.STORAGE_URL || 'https://staging-storage.born-docs.com'
       } else {
         // Production: カスタムドメイン
         storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
