@@ -171,8 +171,7 @@ export const PageHeader = () => {
     <StyledPageHeader>
       <HeaderContent>
         <LogoContainer>
-          {/* TODO: サービスのトップページが完成したら、コメントアウト外す */}
-          {/* <Link href="/">
+          <Link href="/">
             <Image
               src="/born_logo.svg"
               alt="logo"
@@ -182,16 +181,7 @@ export const PageHeader = () => {
                 width: "100%",
               }}
             />
-          </Link> */}
-          <Image
-            src="/born_logo.svg"
-            alt="logo"
-            sizes="100vw"
-            fill
-            style={{
-              width: "100%",
-            }}
-          />
+          </Link>
         </LogoContainer>
 
         {isAuthenticated && user?.name && (
@@ -221,7 +211,7 @@ export const PageHeader = () => {
               </AvatarButton>
 
               <DropdownMenu isOpen={isMenuOpen}>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/")}>
+                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = `/${user.screen_name}`)}>
                   自分のブログを確認
                 </MenuItem>
                 <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>

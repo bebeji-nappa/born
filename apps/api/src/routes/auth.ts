@@ -199,7 +199,8 @@ auth.get('/callback/github', async (c) => {
     })
 
     const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
-    return c.redirect(frontendUrl)
+    // ユーザーのブログページにリダイレクト
+    return c.redirect(`${frontendUrl}/${user.screen_name || user.id}`)
   } catch (error) {
     console.error('GitHub OAuth error:', error)
     return c.json({ error: 'Authentication failed' }, 500)
