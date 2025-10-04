@@ -47,12 +47,24 @@ posts.get(
 posts.get(
   '/user/:userId',
   zValidator('param', z.object({ userId: z.string() })),
-  zValidator('query', z.object({ published: z.string().optional() })),
+  zValidator('query', z.object({
+    published: z.string().optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
+  })),
   async (c) => {
     try {
       const { userId } = c.req.valid('param')
-      const { published } = c.req.valid('query')
-      const result = await getAllPostsByUserId(userId, published === '1' ? true : undefined, c.env)
+      const { published, page, limit } = c.req.valid('query')
+      const pageNum = page ? parseInt(page) : 1
+      const limitNum = limit ? parseInt(limit) : 10
+      const result = await getAllPostsByUserId(
+        userId,
+        published === '1' ? true : undefined,
+        c.env,
+        pageNum,
+        limitNum
+      )
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch posts' }, 500)

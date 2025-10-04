@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { usePosts } from "@/hooks/usePosts";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
+import Link from "next/link";
 
 type Blog = {
   id: number;
@@ -36,14 +37,72 @@ const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: b
     }
     return props.bgColor || "#dae2e6";
   }};
-  min-height: calc(100vh - 55px);
+  min-height: calc(100vh - 60px);
   position: relative;
+`;
+
+const PageContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+
+  @media (max-width: 768px) {
+    padding: 16px 16px 0;
+  }
+`;
+
+const BlogInfoSection = styled.div<{ bgColor?: string }>`
+  background-color: ${(props) => props.bgColor || "#fff"};
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+`;
+
+const BlogInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+`;
+
+const BlogTitle = styled.h2<{ textColor?: string }>`
+  font-weight: 600;
+  color: ${(props) => props.textColor || "#111827"};
+  font-size: 1.75rem;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+`;
+
+const BlogDescription = styled.p<{ textColor?: string }>`
+  font-size: 1rem;
+  color: ${(props) => props.textColor || "#6b7280"};
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.8;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+  }
 `;
 
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 24px;
   min-height: 100%;
 
   @media (max-width: 768px) {
@@ -360,6 +419,20 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
   return (
     <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+      <PageContainer>
+        <BlogInfoSection bgColor={theme.sectionBackgroundColor}>
+          <BlogInfo>
+            <Link href={`/${user.screen_name}`} style={{ textDecoration: 'none' }}>
+              <BlogTitle textColor={theme.textColor}>
+                {blog?.title || `${user.name}のページ`}
+              </BlogTitle>
+            </Link>
+            <BlogDescription textColor={theme.textColor}>
+              {blog?.description || `${user.name}のページです。`}
+            </BlogDescription>
+          </BlogInfo>
+        </BlogInfoSection>
+      </PageContainer>
       <Container>
         <TwoColumnLayout>
           <Article bgColor={theme.sectionBackgroundColor}>
@@ -378,7 +451,7 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
               <Richmd text={content} />
             </Content>
           </Article>
-          <AuthorProfile bgColor={theme.sectionBackgroundColor} onClick={() => router.push("/")}>
+          <AuthorProfile bgColor={theme.sectionBackgroundColor}>
             <AuthorAvatar>
               {user.image ? (
                 <AuthorImage src={user.image} alt={user.name || "Author"} />

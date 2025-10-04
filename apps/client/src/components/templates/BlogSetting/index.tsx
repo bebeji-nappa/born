@@ -6,7 +6,7 @@ import { User } from "@/lib/api";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};
-  min-height: calc(100vh - 55px);
+  min-height: calc(100vh - 60px);
   transition: background 0.3s ease;
 `;
 
@@ -416,8 +416,8 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         );
         const data = await res.json();
         setBlog(data.blog);
-        setTitle(data.blog.title || "");
-        setDescription(data.blog.description || "");
+        setTitle(data.blog.title || `${user.name}のページ`);
+        setDescription(data.blog.description || `${user.name}のページです。`);
 
         if (data.blog.theme) {
           try {
@@ -447,7 +447,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
     };
 
     fetchBlog();
-  }, [blogId]);
+  }, [blogId, user.name]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

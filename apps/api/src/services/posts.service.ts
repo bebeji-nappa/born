@@ -10,6 +10,7 @@ export const getPostById = async (id: number, env: any) => {
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
@@ -32,19 +33,36 @@ export const getPostById = async (id: number, env: any) => {
   }
 }
 
-export const getAllPostsByUserId = async (userId: string, published: true | undefined, env: any) => {
+export const getAllPostsByUserId = async (
+  userId: string,
+  published: true | undefined,
+  env: any,
+  page: number = 1,
+  limit: number = 10
+) => {
   const db = getDB(env.DB)
 
   const conditions = published !== undefined
     ? and(eq(posts.userId, userId), eq(posts.published, published))
     : eq(posts.userId, userId)
 
+  // 総数を取得
+  const totalResult = await db
+    .select({ count: posts.id })
+    .from(posts)
+    .where(conditions)
+    .all()
+  const total = totalResult.length
+
+  // ページネーションを適用してデータを取得
+  const offset = (page - 1) * limit
   const results = await db
     .select({
       post: posts,
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
@@ -54,6 +72,8 @@ export const getAllPostsByUserId = async (userId: string, published: true | unde
     .innerJoin(users, eq(posts.userId, users.id))
     .where(conditions)
     .orderBy(desc(posts.createdAt))
+    .limit(limit)
+    .offset(offset)
     .all()
 
   return {
@@ -61,6 +81,14 @@ export const getAllPostsByUserId = async (userId: string, published: true | unde
       ...r.post,
       user: r.user
     })),
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      hasNext: page < Math.ceil(total / limit),
+      hasPrev: page > 1,
+    },
   }
 }
 
@@ -110,6 +138,7 @@ export const getAllPosts = async (env: any, userId: string, published: boolean) 
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
