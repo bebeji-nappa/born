@@ -161,13 +161,54 @@ const Container = styled.div`
   }
 `;
 
-const EmptyMessage = styled.div`
-  width: 100%;
-  height: 80vh;
+const EmptyStateContainer = styled.div<{ bgColor?: string }>`
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  text-align: center;
+`;
+
+const EmptyStateCard = styled.div<{ bgColor?: string }>`
+  background-color: ${(props) => props.bgColor || "#fff"};
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 48px 32px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 24px;
+`;
+
+const EmptyStateTitle = styled.h2<{ textColor?: string }>`
   font-size: 1.5rem;
+  font-weight: 600;
+  color: ${(props) => props.textColor || "#111827"};
+  margin: 0;
+`;
+
+const EmptyStateMessage = styled.p<{ textColor?: string }>`
+  font-size: 1rem;
+  color: ${(props) => props.textColor || "#6b7280"};
+  line-height: 1.6;
+  margin: 0;
+`;
+
+const CreatePostButtonLarge = styled.button`
+  padding: 12px 32px;
+  background: #000000;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #333333;
+  }
 `;
 
 const Article = styled.article<{ bgColor?: string; textColor?: string }>`
@@ -319,28 +360,31 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
 
   const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
 
+  const showUserProfile = posts.length > 0 || (blog && posts.length === 0);
+  const profileUser = firstPostUser || (blog && user);
+
   return (
     <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
-      {firstPostUser && (
+      {showUserProfile && profileUser && (
         <PageContainer>
           <UserProfileSection bgColor={theme.sectionBackgroundColor}>
             <UserAvatar>
-              {firstPostUser.image ? (
+              {profileUser.image ? (
                 <UserImage
-                  src={firstPostUser.image}
-                  alt={firstPostUser.name || "User"}
+                  src={profileUser.image}
+                  alt={profileUser.name || "User"}
                 />
               ) : (
-                getInitials(firstPostUser.name)
+                getInitials(profileUser.name)
               )}
             </UserAvatar>
             <UserInfo>
-              <UserName textColor={theme.textColor}>{firstPostUser.name || "Unknown User"}</UserName>
+              <UserName textColor={theme.textColor}>{profileUser.name || "Unknown User"}</UserName>
               <UserDescription textColor={theme.textColor}>
-                {firstPostUser.description || ""}
+                {profileUser.description || ""}
               </UserDescription>
             </UserInfo>
-            {blog && user && user.id === firstPostUser.id && (
+            {blog && user && user.id === profileUser.id && (
               <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
                 ブログ設定
               </SettingsButton>
@@ -384,9 +428,25 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
           }}
         />
       ) : (
-        <Container>
-          <EmptyMessage>投稿がありません。</EmptyMessage>
-        </Container>
+        <EmptyStateContainer>
+          <EmptyStateCard bgColor={theme.sectionBackgroundColor}>
+            <EmptyStateTitle textColor={theme.textColor}>
+              まだ投稿がありません
+            </EmptyStateTitle>
+            {user && profileUser && user.id === profileUser.id && (
+              <>
+                <EmptyStateMessage textColor={theme.textColor}>
+                  最初の記事を書いて、あなたの考えや知識を共有しましょう。
+                  <br />
+                  記事を投稿することで、多くの人にあなたの情報を届けることができます。
+                </EmptyStateMessage>
+                <CreatePostButtonLarge onClick={() => router.push("/post/create")}>
+                  記事を作成
+                </CreatePostButtonLarge>
+              </>
+            )}
+          </EmptyStateCard>
+        </EmptyStateContainer>
       )}
     </Background>
   );

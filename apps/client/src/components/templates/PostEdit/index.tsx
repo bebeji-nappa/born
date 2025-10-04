@@ -1,10 +1,66 @@
-import React, { useState, useCallback, FC } from "react";
+import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { useBoolean } from "ahooks";
 import { useForm } from "react-hook-form";
 import Preview from "./parts/Preview";
 import { usePosts } from "@/hooks/usePosts";
 import { useRouter } from "next/navigation";
+import { FiArrowLeft } from "react-icons/fi";
+import MarkdownEditor from "@/components/common/MarkdownEditor";
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const CustomHeader = styled.header`
+  background: #ffffff;
+  padding: 12px 24px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: #374151;
+  }
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,15 +87,6 @@ const Label = styled.label`
   font-size: 14px;
 `;
 
-const Textarea = styled.textarea`
-  padding: 8px;
-  resize: none;
-  height: 25rem;
-  border: none;
-  width: 100%;
-  outline: none;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -47,49 +94,18 @@ const Form = styled.form`
 `;
 
 const SubmitButton = styled.button`
-  width: 150px;
-  background-color: #0366d6;
+  width: 100px;
+  background-color: #000000;
   color: white;
   font-weight: 600;
   padding: 12px 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-`;
-
-const EditorWrapper = styled.div`
-  border: 1px solid #e1e5e9;
-  border-radius: 4px;
-  margin-bottom: 16px;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 16px;
-`;
-
-const TabContainer = styled.div`
-  display: flex;
-  border-bottom: 1px solid #e1e5e9;
-  margin-bottom: 16px;
-`;
-
-const Tab = styled.button<{ isActive: boolean }>`
-  padding: 12px 24px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid
-    ${(props) => (props.isActive ? "#0366d6" : "transparent")};
-  color: ${(props) => (props.isActive ? "#0366d6" : "#586069")};
-  font-weight: ${(props) => (props.isActive ? "600" : "400")};
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 
   &:hover {
-    color: #0366d6;
-    background-color: #f6f8fa;
+    background-color: #333333;
   }
 `;
 
@@ -118,7 +134,7 @@ const SwitchInput = styled.input`
   transition: background-color 0.2s;
 
   &:checked {
-    background-color: #0366d6;
+    background-color: #10b981;
   }
 
   &::before {
@@ -170,12 +186,14 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
   const [isPublished, setIsPublished] = useState(published);
   const { updatePost } = usePosts();
 
-  const { handleSubmit, register, getValues } = useForm({
+  const { handleSubmit, register, getValues, setValue, watch } = useForm({
     defaultValues: {
       title: title,
       content: content,
     },
   });
+
+  const contentValue = watch("content");
 
   const onSubmit = async (e: any) => {
     try {
@@ -191,52 +209,19 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
     }
   };
 
-  const handleTabClick = useCallback(
-    (isEditMode: boolean) => {
-      if (isEdit !== isEditMode) {
-        handleIsEdit();
-      }
-    },
-    [isEdit, handleIsEdit],
-  );
+  const handleBack = () => {
+    router.back();
+  };
 
   return (
-    <Wrapper>
-      <h1>投稿編集</h1>
-      {alertMessage && <p style={{ color: "red" }}>{alertMessage}</p>}
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Label htmlFor="title">タイトル</Label>
-        <Input type="text" defaultValue={title} {...register("title")} />
-
-        <Label htmlFor="content">内容</Label>
-        <EditorWrapper id="content">
-          <TabContainer>
-            <Tab
-              type="button"
-              isActive={isEdit}
-              onClick={() => handleTabClick(true)}
-            >
-              Edit
-            </Tab>
-            <Tab
-              type="button"
-              isActive={!isEdit}
-              onClick={() => handleTabClick(false)}
-            >
-              Preview
-            </Tab>
-          </TabContainer>
-
-          {isEdit ? (
-            <Textarea defaultValue={content} {...register("content")} />
-          ) : (
-            <Preview text={getValues("content")} textColor={theme.textColor} linkColor={theme.linkColor} />
-          )}
-        </EditorWrapper>
-        <Footer>
-          <SubmitButton type="submit">
-            {isPublished ? "公開する" : "下書き保存"}
-          </SubmitButton>
+    <PageWrapper>
+      <CustomHeader>
+        <HeaderLeft>
+          <BackButton type="button" onClick={handleBack} aria-label="戻る">
+            <FiArrowLeft />
+          </BackButton>
+        </HeaderLeft>
+        <HeaderRight>
           <PublishSwitchWrapper>
             <SwitchLabel>
               <SwitchInput
@@ -247,9 +232,32 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
               <span>{isPublished ? "公開する" : "下書き保存"}</span>
             </SwitchLabel>
           </PublishSwitchWrapper>
-        </Footer>
-      </Form>
-    </Wrapper>
+          <SubmitButton type="button" onClick={handleSubmit(onSubmit)}>
+            {isPublished ? "公開する" : "下書き保存"}
+          </SubmitButton>
+        </HeaderRight>
+      </CustomHeader>
+      <Wrapper>
+        {alertMessage && <p style={{ color: "red" }}>{alertMessage}</p>}
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Label htmlFor="title">タイトル</Label>
+          <Input type="text" defaultValue={title} {...register("title")} />
+
+          <Label htmlFor="content">内容</Label>
+          <MarkdownEditor
+            value={contentValue || ""}
+            onChange={(value) => {
+              setValue("content", value, { shouldValidate: false, shouldDirty: true });
+            }}
+            isEdit={isEdit}
+            onToggleEdit={handleIsEdit}
+            previewComponent={
+              <Preview text={contentValue || ""} textColor={theme.textColor} linkColor={theme.linkColor} />
+            }
+          />
+        </Form>
+      </Wrapper>
+    </PageWrapper>
   );
 };
 
