@@ -2,10 +2,9 @@ import { Post } from "@/lib/api";
 import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import { VirtuosoGrid } from "react-virtuoso";
+import { Virtuoso } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
-import { create } from "domain";
 import { useAuth } from "@/hooks/useAuth";
 
 type Blog = {
@@ -34,7 +33,7 @@ const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: b
     }
     return props.bgColor || "#dae2e6";
   }};
-  min-height: calc(100vh - 55px);
+  min-height: calc(100vh - 60px);
   position: relative;
 `;
 
@@ -101,18 +100,18 @@ const UserInfo = styled.div`
   flex: 1;
 `;
 
-const UserName = styled.h2<{ textColor?: string }>`
+const BlogTitle = styled.h2<{ textColor?: string }>`
   font-weight: 600;
   color: ${(props) => props.textColor || "#111827"};
   font-size: 1.75rem;
   margin: 0;
 
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
 `;
 
-const UserDescription = styled.p<{ textColor?: string }>`
+const BlogDescription = styled.p<{ textColor?: string }>`
   font-size: 1rem;
   color: ${(props) => props.textColor || "#6b7280"};
   line-height: 1.5;
@@ -120,7 +119,7 @@ const UserDescription = styled.p<{ textColor?: string }>`
   opacity: 0.8;
 
   @media (max-width: 768px) {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -145,18 +144,30 @@ const SettingsButton = styled.button`
   }
 `;
 
-const Container = styled.div`
+const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
-  display: grid;
+  display: flex;
   gap: 24px;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
-  grid-template-rows: auto;
 
   @media (max-width: 768px) {
+    flex-direction: column;
     padding: 16px;
-    grid-template-columns: repeat(1, minmax(300px, 1fr));
+  }
+`;
+
+const MainContent = styled.main`
+  flex: 2;
+  min-width: 0;
+`;
+
+const PostListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (max-width: 768px) {
     gap: 16px;
   }
 `;
@@ -293,12 +304,123 @@ const DateSection = styled.div<{ textColor?: string }>`
   opacity: 0.7;
 `;
 
+const Sidebar = styled.aside`
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const ProfileCard = styled.div<{ bgColor?: string }>`
+  background-color: ${(props) => props.bgColor || "#fff"};
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 79px;
+  padding: 24px 36px;
+
+  @media (max-width: 768px) {
+    position: static;
+  }
+`;
+
+const ProfileAvatar = styled.div`
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 2rem;
+  overflow: hidden;
+`;
+
+const ProfileImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ProfileWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const ProfileName = styled.h2<{ textColor?: string }>`
+  font-weight: 600;
+  color: ${(props) => props.textColor || "#111827"};
+  font-size: 1.25rem;
+  margin: 0;
+  text-align: center;
+`;
+
+const ProfileBio = styled.p<{ textColor?: string }>`
+  font-size: 0.875rem;
+  color: ${(props) => props.textColor || "#6b7280"};
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+`;
+
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-bottom: 32px;
+`;
+
+const PaginationButton = styled.button<{ disabled?: boolean }>`
+  padding: 12px 24px;
+  background: ${(props) => props.disabled ? "#e5e7eb" : "#000000"};
+  color: ${(props) => props.disabled ? "#9ca3af" : "white"};
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: ${(props) => props.disabled ? "not-allowed" : "pointer"};
+  transition: background 0.2s;
+
+  &:hover {
+    background: ${(props) => props.disabled ? "#e5e7eb" : "#333333"};
+  }
+`;
+
+const PaginationInfo = styled.span<{ textColor?: string }>`
+  font-size: 0.875rem;
+  color: ${(props) => props.textColor || "#6b7280"};
+  font-weight: 500;
+`;
+
+type Pagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+};
+
 export type PostListTemplateProps = {
   posts: Post[];
   blog: Blog | null;
+  pagination: Pagination | null;
+  onPageChange: (page: number) => void;
 };
 
-const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
+const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTemplateProps) => {
   const router = useRouter();
   const { user } = useAuth();
   const getInitials = (name: string | null) => {
@@ -336,13 +458,6 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
     }
   }
 
-  const gridComponents = {
-    List: ({ children, ...props }: any) => (
-      <Container {...props}>{children}</Container>
-    ),
-    Item: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  };
-
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
 
   // 環境に応じて背景画像URLを変換
@@ -360,31 +475,23 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
 
   const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
 
-  const showUserProfile = posts.length > 0 || (blog && posts.length === 0);
+  const showBlogInfo = blog !== null;
   const profileUser = firstPostUser || (blog && user);
 
   return (
     <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
-      {showUserProfile && profileUser && (
+      {showBlogInfo && blog && (
         <PageContainer>
           <UserProfileSection bgColor={theme.sectionBackgroundColor}>
-            <UserAvatar>
-              {profileUser.image ? (
-                <UserImage
-                  src={profileUser.image}
-                  alt={profileUser.name || "User"}
-                />
-              ) : (
-                getInitials(profileUser.name)
-              )}
-            </UserAvatar>
             <UserInfo>
-              <UserName textColor={theme.textColor}>{profileUser.name || "Unknown User"}</UserName>
-              <UserDescription textColor={theme.textColor}>
-                {profileUser.description || ""}
-              </UserDescription>
+              <BlogTitle textColor={theme.textColor}>
+                {blog.title || `${profileUser?.name || ""}のブログ`}
+              </BlogTitle>
+              <BlogDescription textColor={theme.textColor}>
+                {blog.description || `${profileUser?.name || ""}のブログです。`}
+              </BlogDescription>
             </UserInfo>
-            {blog && user && user.id === profileUser.id && (
+            {user && profileUser && user.id === profileUser.id && (
               <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
                 ブログ設定
               </SettingsButton>
@@ -393,40 +500,84 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
         </PageContainer>
       )}
       {posts.length ? (
-        <VirtuosoGrid
-          useWindowScroll
-          style={{ height: "100%", width: "100%", position: "absolute" }}
-          data={posts}
-          components={gridComponents}
-          itemContent={(_, post) => {
-            const { id, title, user, createdAt } = post;
-            return (
-              <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
-                <Header>
-                  <Title>{title}</Title>
-                  <AuthorSection>
-                    <AuthorAvatar>
-                      {user.image ? (
-                        <AuthorImage
-                          src={user.image}
-                          alt={user.name || "Author"}
-                        />
-                      ) : (
-                        getInitials(user.name)
-                      )}
-                    </AuthorAvatar>
-                    <AuthorInfo>
-                      <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
-                    </AuthorInfo>
-                  </AuthorSection>
-                  <DateSection textColor={theme.textColor}>
-                    公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
-                  </DateSection>
-                </Header>
-              </Article>
-            );
-          }}
-        />
+        <ContentWrapper>
+          <MainContent>
+            <PostListContainer>
+              {posts.map((post) => {
+                const { id, title, user, createdAt } = post;
+                return (
+                  <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
+                    <Header>
+                      <Title>{title}</Title>
+                      <AuthorSection>
+                        <AuthorAvatar>
+                          {user.image ? (
+                            <AuthorImage
+                              src={user.image}
+                              alt={user.name || "Author"}
+                            />
+                          ) : (
+                            getInitials(user.name)
+                          )}
+                        </AuthorAvatar>
+                        <AuthorInfo>
+                          <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                        </AuthorInfo>
+                      </AuthorSection>
+                      <DateSection textColor={theme.textColor}>
+                        公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                      </DateSection>
+                    </Header>
+                  </Article>
+                );
+              })}
+            </PostListContainer>
+            {pagination && (
+              <PaginationContainer>
+                {pagination.page > 1 &&(
+                   <PaginationButton
+                    disabled={!pagination.hasPrev}
+                    onClick={() => onPageChange(pagination.page - 1)}
+                  >
+                    前の10件
+                  </PaginationButton>
+                )}
+                {pagination.page < pagination.totalPages && (
+                  <PaginationButton
+                    disabled={!pagination.hasNext}
+                    onClick={() => onPageChange(pagination.page + 1)}
+                  >
+                    次の10件
+                  </PaginationButton>
+                )}
+              </PaginationContainer>
+            )}
+          </MainContent>
+          {profileUser && (
+            <Sidebar>
+              <ProfileCard bgColor={theme.sectionBackgroundColor}>
+                <ProfileAvatar>
+                  {profileUser.image ? (
+                    <ProfileImage
+                      src={profileUser.image}
+                      alt={profileUser.name || "User"}
+                    />
+                  ) : (
+                    getInitials(profileUser.name)
+                  )}
+                </ProfileAvatar>
+                <ProfileWrapper>
+                  <ProfileName textColor={theme.textColor}>
+                    {profileUser.name || "Unknown User"}
+                  </ProfileName>
+                  <ProfileBio textColor={theme.textColor}>
+                    {profileUser.description || ""}
+                  </ProfileBio>
+                </ProfileWrapper>
+              </ProfileCard>
+            </Sidebar>
+          )}
+        </ContentWrapper>
       ) : (
         <EmptyStateContainer>
           <EmptyStateCard bgColor={theme.sectionBackgroundColor}>
