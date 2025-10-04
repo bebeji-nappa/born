@@ -171,6 +171,25 @@ class ApiClient {
     return response.json();
   }
 
+  async updatePassword(data: {
+    password: string;
+    passwordConfirmation: string;
+  }): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/users/password`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   // Post APIs
   async getPostById(id: number): Promise<{ post: Post }> {
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {

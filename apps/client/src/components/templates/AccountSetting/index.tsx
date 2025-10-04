@@ -4,6 +4,7 @@ import { User, apiClient } from "@/lib/api";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 import ScreenNameForm from "./parts/ScreenNameForm";
+import PasswordForm from "./parts/PasswordForm";
 
 const Wrapper = styled.div`
   display: flex;
@@ -81,6 +82,8 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
       </ProfileFormWrapper>
 
       <ScreenNameForm user={user} />
+
+      <PasswordForm />
     </Wrapper>
   );
 };

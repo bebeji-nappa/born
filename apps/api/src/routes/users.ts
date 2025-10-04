@@ -10,6 +10,7 @@ import {
   getUserbyEmail,
   getUserbyId,
 } from '../services/users.service'
+import * as bcrypt from 'bcryptjs'
 
 type Bindings = {
   DATABASE_URL: string
@@ -268,5 +269,60 @@ users.put('/avatar/image', async (c) => {
     return c.json({ error: 'Internal server error' }, 500)
   }
 })
+
+// パスワード更新
+users.put(
+  '/password',
+  zValidator('json', z.object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    passwordConfirmation: z.string()
+  })),
+  async (c) => {
+    try {
+      const sessionToken = getCookie(c, 'session-token')
+      if (!sessionToken) {
+        return c.json({ error: 'Unauthorized' }, 401)
+      }
+
+      // セッションからユーザーを取得
+      const db = getDB(c.env.DB)
+      const result = await db
+        .select({ session: sessions, user: usersTable })
+        .from(sessions)
+        .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+        .where(eq(sessions.sessionToken, sessionToken))
+        .get()
+
+      if (!result || !result.user) {
+        return c.json({ error: 'Unauthorized' }, 401)
+      }
+
+      const { password, passwordConfirmation } = c.req.valid('json')
+
+      // パスワード確認チェック
+      if (password !== passwordConfirmation) {
+        return c.json({ error: 'Passwords do not match' }, 400)
+      }
+
+      // パスワードをハッシュ化
+      const saltRounds = 10
+      const hash = await bcrypt.hash(password, saltRounds)
+
+      // ユーザーのhashフィールドを更新
+      await db.update(usersTable)
+        .set({ hash })
+        .where(eq(usersTable.id, result.user.id))
+        .run()
+
+      return c.json({
+        success: true,
+        message: 'Password updated successfully'
+      })
+    } catch (error) {
+      console.error('Password update error:', error)
+      return c.json({ error: 'Internal server error' }, 500)
+    }
+  }
+)
 
 export default users
