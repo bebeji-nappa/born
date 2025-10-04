@@ -10,6 +10,7 @@ export const getPostById = async (id: number, env: any) => {
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
@@ -61,6 +62,7 @@ export const getAllPostsByUserId = async (
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
@@ -136,6 +138,7 @@ export const getAllPosts = async (env: any, userId: string, published: boolean) 
       user: {
         id: users.id,
         name: users.name,
+        screen_name: users.screen_name,
         description: users.description,
         email: users.email,
         image: users.image,
