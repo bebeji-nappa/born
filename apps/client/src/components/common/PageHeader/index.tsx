@@ -27,10 +27,23 @@ const HeaderContent = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  display: block;
+  display: flex;
+  align-items: center;
+`;
+
+const LogoImageWrapper = styled.div`
   position: relative;
-  width: 140px;
+  width: 120px;
   height: 35px;
+`;
+
+const BetaBadge = styled.span`
+  padding: 2px 8px;
+  background-color: #9effdf;
+  color: #10b981;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  font-size: 12px;
 `;
 
 const RightSection = styled.div`
@@ -171,17 +184,20 @@ export const PageHeader = () => {
     <StyledPageHeader>
       <HeaderContent>
         <LogoContainer>
-          <Link href="/">
-            <Image
-              src="/born_logo.svg"
-              alt="logo"
-              sizes="100vw"
-              fill
-              style={{
-                width: "100%",
-              }}
-            />
-          </Link>
+          <LogoImageWrapper>
+            <Link href="/">
+              <Image
+                src="/born_logo.svg"
+                alt="logo"
+                sizes="100vw"
+                fill
+                style={{
+                  width: "100%",
+                }}
+              />
+            </Link>
+          </LogoImageWrapper>
+          <BetaBadge>ベータ版</BetaBadge>
         </LogoContainer>
 
         <RightSection>
