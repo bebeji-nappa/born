@@ -69,13 +69,13 @@ bucket_name = "born-storage"
 # Environment variables (set via Dashboard or wrangler secret)
 [env.production.vars]
 NODE_ENV = "production"
-STORAGE_URL = "https://storage.bebeji-nappa.com"
+STORAGE_URL = "https://storage.born-docs.com"
 
 [observability.logs]
 enabled = true
 
 [[routes]]
-pattern = "api.bebeji-nappa.com"
+pattern = "api.born-docs.com"
 custom_domain = true
 
 [[env.staging.routes]]
