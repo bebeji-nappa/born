@@ -124,12 +124,12 @@ const Button = styled.button`
 `;
 
 const PrimaryButton = styled(Button)`
-  background-color: #f97316;
+  background-color: #000000;
   color: #ffffff;
   margin-top: 8px;
 
   &:hover {
-    background-color: #ea580c;
+    background-color: #333333;
   }
 
   &:active {
@@ -178,7 +178,7 @@ const LinkText = styled.p`
   margin-top: 16px;
 
   a {
-    color: #f97316;
+    color: #000000;
     text-decoration: none;
     font-weight: 500;
 

@@ -54,7 +54,7 @@ const RightSection = styled.div`
 
 const CreatePostButton = styled.button`
   padding: 8px 16px;
-  background: #f97316;
+  background: #000000;
   color: white;
   border: none;
   border-radius: 20px;
@@ -64,12 +64,12 @@ const CreatePostButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #ea580c;
+    background: #333333;
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
   }
 `;
 

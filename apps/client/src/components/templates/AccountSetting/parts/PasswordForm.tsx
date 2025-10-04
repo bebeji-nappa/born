@@ -56,7 +56,7 @@ const Input = styled.input`
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: #f97316;
+    border-color: #000000;
   }
 
   &::placeholder {
@@ -97,7 +97,7 @@ const Button = styled.button`
   padding: 12px 24px;
   font-size: 14px;
   font-weight: 600;
-  background-color: #f97316;
+  background-color: #000000;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -106,7 +106,7 @@ const Button = styled.button`
   align-self: flex-start;
 
   &:hover {
-    background-color: #ea580c;
+    background-color: #333333;
   }
 
   &:active {

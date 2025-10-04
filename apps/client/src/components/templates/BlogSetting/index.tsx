@@ -156,7 +156,7 @@ const ButtonGroup = styled.div`
 
 const SaveButton = styled.button`
   padding: 12px 24px;
-  background: #f97316;
+  background: #000000;
   color: white;
   border: none;
   border-radius: 6px;
@@ -166,7 +166,7 @@ const SaveButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: #ea580c;
+    background: #333333;
   }
 
   &:disabled {
