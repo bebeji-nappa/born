@@ -41,6 +41,7 @@ export const users = sqliteTable('User', {
   image: text('image'),
   description: text('description'),
   hash: text('hash'),
+  github_id: text('github_id'),
   createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => ({
   emailIdx: uniqueIndex('User_email_key').on(table.email),

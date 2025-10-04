@@ -17,6 +17,7 @@ export interface User {
   screen_name: string | null;
   image?: string;
   description?: string | null;
+  github_id?: string | null;
   createdAt: string | Date | number;
 }
 
@@ -45,6 +46,7 @@ class ApiClient {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
+
 
       if (!response.ok) {
         return null;

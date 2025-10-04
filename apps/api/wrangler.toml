@@ -48,11 +48,6 @@ bucket_name = "born-storage-staging"
 
 # Environment variables (set via Dashboard or wrangler secret)
 [env.staging.vars]
-AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
-AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
-API_BASE_URL = { binding = "API_BASE_URL" }
-FRONTEND_URL = { binding = "FRONTEND_URL" }
-ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
 NODE_ENV = "staging"
 STORAGE_URL = "https://staging-storage.born-docs.com"
 
@@ -73,11 +68,6 @@ bucket_name = "born-storage"
 
 # Environment variables (set via Dashboard or wrangler secret)
 [env.production.vars]
-AUTH_GITHUB_ID = { binding = "AUTH_GITHUB_ID" }
-AUTH_GITHUB_SECRET = { binding = "AUTH_GITHUB_SECRET" }
-API_BASE_URL = { binding = "API_BASE_URL" }
-FRONTEND_URL = { binding = "FRONTEND_URL" }
-ALLOW_EMAIL = { binding = "ALLOW_EMAIL" }
 NODE_ENV = "production"
 STORAGE_URL = "https://storage.bebeji-nappa.com"
 
