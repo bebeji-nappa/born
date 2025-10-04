@@ -22,7 +22,8 @@ export default function UserBlogPage() {
   const screenName = params.id as string; // params.idはscreen_name
   const [userId, setUserId] = useState<string | null>(null);
   const [blog, setBlog] = useState<Blog | null>(null);
-  const { posts, isLoading: postsLoading } = usePosts(userId || undefined, true);
+  const [page, setPage] = useState(1);
+  const { posts, pagination, isLoading: postsLoading } = usePosts(userId || undefined, true, page, 10);
 
   useEffect(() => {
     const fetchUserAndBlog = async () => {
@@ -59,5 +60,12 @@ export default function UserBlogPage() {
     return <LoadingSpinner />;
   }
 
-  return <PostListTemplate posts={posts} blog={blog} />;
+  return (
+    <PostListTemplate
+      posts={posts}
+      blog={blog}
+      pagination={pagination}
+      onPageChange={setPage}
+    />
+  );
 }
