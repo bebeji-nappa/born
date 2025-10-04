@@ -49,13 +49,18 @@ const Form = styled.form`
 
 const SubmitButton = styled.button`
   width: 150px;
-  background-color: #0366d6;
+  background-color: #000000;
   color: white;
   font-weight: 600;
   padding: 12px 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #333333;
+  }
 `;
 
 const EditorWrapper = styled.div`
@@ -75,14 +80,14 @@ const Tab = styled.button<{ isActive: boolean }>`
   background: none;
   border: none;
   border-bottom: 2px solid
-    ${(props) => (props.isActive ? "#0366d6" : "transparent")};
-  color: ${(props) => (props.isActive ? "#0366d6" : "#586069")};
+    ${(props) => (props.isActive ? "#000000" : "transparent")};
+  color: ${(props) => (props.isActive ? "#000000" : "#586069")};
   font-weight: ${(props) => (props.isActive ? "600" : "400")};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    color: #0366d6;
+    color: #000000;
     background-color: #f6f8fa;
   }
 `;
@@ -119,7 +124,7 @@ const SwitchInput = styled.input`
   transition: background-color 0.2s;
 
   &:checked {
-    background-color: #0366d6;
+    background-color: #10b981;
   }
 
   &::before {

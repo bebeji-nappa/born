@@ -31,7 +31,7 @@ const Input = styled.input`
   font-size: 14px;
 
   &:focus {
-    border-color: #0366d6;
+    border-color: #000000;
   }
 `;
 
@@ -47,7 +47,7 @@ const Textarea = styled.textarea`
   font-size: 14px;
 
   &:focus {
-    border-color: #0366d6;
+    border-color: #000000;
   }
 `;
 
@@ -60,7 +60,7 @@ const Form = styled.form`
 const SaveButton = styled.button`
   align-self: center;
   width: 120px;
-  background-color: #0366d6;
+  background-color: #000000;
   color: white;
   font-weight: 600;
   padding: 8px 16px;
@@ -70,11 +70,11 @@ const SaveButton = styled.button`
   font-size: 14px;
 
   &:hover {
-    background-color: #0256c7;
+    background-color: #333333;
   }
 
   &:disabled {
-    background-color: #94d3a2;
+    background-color: #ccc;
     cursor: not-allowed;
   }
 `;
