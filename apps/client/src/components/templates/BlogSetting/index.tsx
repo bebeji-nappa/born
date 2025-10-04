@@ -416,8 +416,8 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         );
         const data = await res.json();
         setBlog(data.blog);
-        setTitle(data.blog.title || "");
-        setDescription(data.blog.description || "");
+        setTitle(data.blog.title || `${user.name}のブログ`);
+        setDescription(data.blog.description || `${user.name}のブログです。`);
 
         if (data.blog.theme) {
           try {
@@ -447,7 +447,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
     };
 
     fetchBlog();
-  }, [blogId]);
+  }, [blogId, user.name]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
