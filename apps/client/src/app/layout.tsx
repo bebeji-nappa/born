@@ -16,11 +16,13 @@ export default function RootLayout({
   const pathname = usePathname();
   const isAuthPage = pathname === "/signin" || pathname === "/signup";
   const isHomePage = pathname === "/";
+  const isPostEditPage = pathname?.match(/^\/post\/[^/]+\/edit$/);
+  const isPostCreatePage = pathname === "/post/create";
 
   return (
     <html lang="ja">
       <body className={inter.className}>
-        {!isAuthPage && !isHomePage && <PageHeader />}
+        {!isAuthPage && !isHomePage && !isPostEditPage && !isPostCreatePage && <PageHeader />}
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
