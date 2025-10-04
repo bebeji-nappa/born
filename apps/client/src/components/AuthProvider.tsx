@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { useLoading } from "@/contexts/LoadingContext";
 import LoadingSpinner from "./common/LoadingSpinner";
 
 export type AuthGuardProps = {
@@ -17,10 +18,12 @@ export default function AuthProvider({ children }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
+  const { setIsGlobalLoading } = useLoading();
 
   useEffect(() => {
     // 認証状態の確認が完了するまで待機
     if (isLoading) {
+      setIsGlobalLoading(true);
       return;
     }
 
@@ -42,7 +45,8 @@ export default function AuthProvider({ children }: AuthGuardProps) {
     }
 
     setLoading(false);
-  }, [router, pathname, user, isLoading]);
+    setIsGlobalLoading(false);
+  }, [router, pathname, user, isLoading, setIsGlobalLoading]);
 
   // ローディング中はスピナーを表示
   if (loading || isLoading) {
