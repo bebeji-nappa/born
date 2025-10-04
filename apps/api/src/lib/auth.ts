@@ -9,6 +9,7 @@ export interface AuthUser {
   screen_name: string | null
   image?: string | null
   description?: string | null
+  github_id?: string | null
   createdAt: Date
 }
 
@@ -67,6 +68,7 @@ export async function getSessionUser(sessionToken: string, env: any): Promise<Au
     screen_name: result.user.screen_name,
     image: result.user.image,
     description: result.user.description,
+    github_id: result.user.github_id,
     createdAt: new Date(result.user.createdAt!),
   }
 }

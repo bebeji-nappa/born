@@ -10,11 +10,15 @@ import {
   getUserbyEmail,
   getUserbyId,
 } from '../services/users.service'
+import * as bcrypt from 'bcryptjs'
 
 type Bindings = {
   DATABASE_URL: string
   DB: D1Database
   STORAGE: R2Bucket
+  STORAGE_URL: string
+  NODE_ENV: string
+  API_BASE_URL: string
 }
 
 const users = new Hono<{ Bindings: Bindings }>()
@@ -53,6 +57,21 @@ users.get(
       return c.json(result)
     } catch (error) {
       return c.json({ error: 'Failed to fetch user by email' }, 500)
+    }
+  }
+)
+
+users.get(
+  '/by-screen-name/:screen_name',
+  zValidator('param', z.object({ screen_name: z.string() })),
+  async (c) => {
+    try {
+      const { screen_name } = c.req.valid('param')
+      const db = getDB(c.env.DB)
+      const user = await db.select().from(usersTable).where(eq(usersTable.screen_name, screen_name)).get()
+      return c.json({ user: user || null })
+    } catch (error) {
+      return c.json({ error: 'Failed to fetch user by screen name' }, 500)
     }
   }
 )
@@ -221,7 +240,8 @@ users.put('/avatar/image', async (c) => {
     // 既存のアバターがあれば削除
     if (result.user.image) {
       try {
-        const oldKey = result.user.image.replace('https://storage.bebeji-nappa.com/', '')
+        const storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+        const oldKey = result.user.image.replace(`${storageUrl}/`, '')
         await c.env.STORAGE.delete(oldKey)
       } catch (error) {
         console.error('Failed to delete old avatar:', error)
@@ -240,8 +260,22 @@ users.put('/avatar/image', async (c) => {
       },
     })
 
-    // 公開URLを生成
-    const url = `https://storage.bebeji-nappa.com/${key}`
+    // 公開URLを生成（環境に応じて変更）
+    const nodeEnv = c.env.NODE_ENV || 'development'
+    let storageUrl: string
+
+    if (nodeEnv === 'development') {
+      // ローカル開発: APIサーバー経由
+      storageUrl = `${c.env.API_BASE_URL || 'http://localhost:8000'}/api/users/avatar`
+    } else if (nodeEnv === 'staging') {
+      // Staging: カスタムドメイン
+      storageUrl = c.env.STORAGE_URL || 'https://staging-storage.born-docs.com'
+    } else {
+      // Production: カスタムドメイン
+      storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+    }
+
+    const url = `${storageUrl}/${key}`
 
     // ユーザーのimageフィールドを更新
     const updatedUser = await db.update(usersTable)
@@ -268,5 +302,92 @@ users.put('/avatar/image', async (c) => {
     return c.json({ error: 'Internal server error' }, 500)
   }
 })
+
+// アバター画像配信（ローカル開発用）
+users.get('/avatar/:key{.+}', async (c) => {
+  try {
+    const key = c.req.param('key')
+    const object = await c.env.STORAGE.get(key)
+
+    if (!object) {
+      return c.json({ error: 'Image not found' }, 404)
+    }
+
+    return new Response(object.body, {
+      headers: {
+        'Content-Type': object.httpMetadata?.contentType || 'image/jpeg',
+        'Cache-Control': 'public, max-age=31536000',
+      },
+    })
+  } catch (error) {
+    console.error('Avatar image fetch error:', error)
+    return c.json({ error: 'Failed to fetch avatar image' }, 500)
+  }
+})
+
+// パスワード更新
+users.put(
+  '/password',
+  zValidator('json', z.object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    passwordConfirmation: z.string()
+  })),
+  async (c) => {
+    try {
+      const sessionToken = getCookie(c, 'session-token')
+      if (!sessionToken) {
+        return c.json({ error: 'Unauthorized' }, 401)
+      }
+
+      // セッションからユーザーを取得
+      const db = getDB(c.env.DB)
+      const result = await db
+        .select({ session: sessions, user: usersTable })
+        .from(sessions)
+        .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+        .where(eq(sessions.sessionToken, sessionToken))
+        .get()
+
+      if (!result || !result.user) {
+        return c.json({ error: 'Unauthorized' }, 401)
+      }
+
+      const { password, passwordConfirmation } = c.req.valid('json')
+
+      // パスワード確認チェック
+      if (password !== passwordConfirmation) {
+        return c.json({ error: 'Passwords do not match' }, 400)
+      }
+
+      // パスワード強度チェック
+      const hasUpperCase = /[A-Z]/.test(password)
+      const hasLowerCase = /[a-z]/.test(password)
+      const hasNumber = /[0-9]/.test(password)
+      const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+
+      if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
+        return c.json({ error: 'Password must contain uppercase, lowercase, number, and symbol' }, 400)
+      }
+
+      // パスワードをハッシュ化
+      const saltRounds = 10
+      const hash = await bcrypt.hash(password, saltRounds)
+
+      // ユーザーのhashフィールドを更新
+      await db.update(usersTable)
+        .set({ hash })
+        .where(eq(usersTable.id, result.user.id))
+        .run()
+
+      return c.json({
+        success: true,
+        message: 'Password updated successfully'
+      })
+    } catch (error) {
+      console.error('Password update error:', error)
+      return c.json({ error: 'Internal server error' }, 500)
+    }
+  }
+)
 
 export default users

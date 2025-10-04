@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fde8a817-842c-42a9-a1de-f9b6e1a56174",
-  "prevId": "a7cd26b8-bb6b-494f-a445-1bb4b329ed9d",
+  "id": "8ea14a89-9124-44bc-b5ca-a3348273f08b",
+  "prevId": "c44bdc08-48a7-41bc-a113-98ae212a6482",
   "tables": {
     "Account": {
       "name": "Account",
@@ -182,7 +182,7 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -190,7 +190,7 @@
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -272,7 +272,7 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -280,7 +280,7 @@
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -441,7 +441,7 @@
         },
         "emailVerified": {
           "name": "emailVerified",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -460,9 +460,16 @@
           "notNull": false,
           "autoincrement": false
         },
+        "hash": {
+          "name": "hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,

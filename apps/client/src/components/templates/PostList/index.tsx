@@ -302,8 +302,6 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
 
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
 
-  console.log(firstPostUser);
-
   // 環境に応じて背景画像URLを変換
   const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
     if (!url) return undefined;

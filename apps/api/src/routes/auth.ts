@@ -1,9 +1,12 @@
 import { Hono } from 'hono'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
 import { createId } from '@paralleldrive/cuid2'
 import { eq, and } from 'drizzle-orm'
 import { getDB, users, accounts, blogs } from '../db'
+import * as bcrypt from 'bcryptjs'
 
 type Bindings = {
   DB: D1Database
@@ -43,10 +46,15 @@ auth.get('/callback/github', async (c) => {
     const config = getGitHubOAuthConfig(c.env)
     const db = getDB(c.env.DB)
     const code = c.req.query('code')
+    const state = c.req.query('state')
 
     if (!code) {
       return c.json({ error: 'Authorization code not found' }, 400)
     }
+
+    // stateに"connect:"プレフィックスがある場合は連携モード
+    const isConnectMode = state?.startsWith('connect:')
+    const connectSessionToken = isConnectMode ? state?.replace('connect:', '') : null
 
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
@@ -98,6 +106,23 @@ auth.get('/callback/github', async (c) => {
 
     const githubUser = await userResponse.json() as GitHubUser
 
+    // 連携モードの場合
+    if (isConnectMode && connectSessionToken) {
+      const sessionUser = await getSessionUser(connectSessionToken, c.env)
+      if (!sessionUser) {
+        return c.json({ error: 'Invalid session' }, 401)
+      }
+
+      // github_idを更新
+      await db.update(users)
+        .set({ github_id: githubUser.login.toString() })
+        .where(eq(users.id, sessionUser.id))
+        .run()
+
+      const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
+      return c.redirect(`${frontendUrl}/setting/account?github_connected=true`)
+    }
+
     const emailResponse = await fetch('https://api.github.com/user/emails', {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
@@ -129,6 +154,7 @@ auth.get('/callback/github', async (c) => {
         name: githubUser.name || githubUser.login,
         image: githubUser.avatar_url,
         screen_name: userId,
+        github_id: githubUser.login.toString(),
         createdAt: new Date().toISOString(),
       }).returning().get()
 
@@ -142,13 +168,20 @@ auth.get('/callback/github', async (c) => {
         theme: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      })
+      }).run()
     } else {
+      // 既存ユーザーの場合、github_idがなければ追加
+      const updateData: any = {
+        name: user.name || githubUser.name,
+        image: githubUser.avatar_url,
+      }
+
+      if (!user.github_id) {
+        updateData.github_id = githubUser.login.toString()
+      }
+
       const updatedUser = await db.update(users)
-        .set({
-          name: githubUser.name || githubUser.login,
-          image: githubUser.avatar_url,
-        })
+        .set(updateData)
         .where(eq(users.email, primaryEmail))
         .returning()
         .get()
@@ -196,7 +229,8 @@ auth.get('/callback/github', async (c) => {
     })
 
     const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
-    return c.redirect(frontendUrl)
+    // ユーザーのブログページにリダイレクト
+    return c.redirect(`${frontendUrl}/${user.screen_name || user.id}`)
   } catch (error) {
     console.error('GitHub OAuth error:', error)
     return c.json({ error: 'Authentication failed' }, 500)
@@ -244,5 +278,145 @@ auth.get('/current_user', async (c) => {
 
   return c.json({ user })
 })
+
+// ログイン
+auth.post(
+  '/signin',
+  zValidator('json', z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(1, 'Password is required'),
+  })),
+  async (c) => {
+    try {
+      const { email, password } = c.req.valid('json')
+      const db = getDB(c.env.DB)
+
+      // ユーザーの存在確認
+      const user = await db.select().from(users).where(eq(users.email, email)).get()
+      if (!user || !user.hash) {
+        return c.json({ error: 'Invalid email or password' }, 401)
+      }
+
+      // パスワード検証
+      const isPasswordValid = await bcrypt.compare(password, user.hash)
+      if (!isPasswordValid) {
+        return c.json({ error: 'Invalid email or password' }, 401)
+      }
+
+      // セッション作成
+      const sessionToken = await createSession(user.id, c.env)
+
+      setCookie(c, 'session-token', sessionToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
+      return c.json({
+        success: true,
+        message: 'Signed in successfully',
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        }
+      })
+    } catch (error) {
+      console.error('Sign in error:', error)
+      return c.json({ error: 'Internal server error' }, 500)
+    }
+  }
+)
+
+// GitHub連携用エンドポイント
+auth.get('/connect/github', async (c) => {
+  const sessionToken = getCookie(c, 'session-token')
+  if (!sessionToken) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const config = getGitHubOAuthConfig(c.env)
+  // stateにconnect:プレフィックスを付けて連携モードを示す
+  const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=connect:${sessionToken}`
+
+  return c.redirect(authUrl)
+})
+
+// 新規登録
+auth.post(
+  '/signup',
+  zValidator('json', z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    passwordConfirmation: z.string()
+  })),
+  async (c) => {
+    try {
+      const { email, password, passwordConfirmation } = c.req.valid('json')
+
+      // パスワード確認チェック
+      if (password !== passwordConfirmation) {
+        return c.json({ error: 'Passwords do not match' }, 400)
+      }
+
+      // パスワード強度チェック
+      const hasUpperCase = /[A-Z]/.test(password)
+      const hasLowerCase = /[a-z]/.test(password)
+      const hasNumber = /[0-9]/.test(password)
+      const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+
+      if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
+        return c.json({ error: 'Password must contain uppercase, lowercase, number, and symbol' }, 400)
+      }
+
+      const db = getDB(c.env.DB)
+
+      // メールアドレスの重複チェック
+      const existingUser = await db.select().from(users).where(eq(users.email, email)).get()
+      if (existingUser) {
+        return c.json({ error: 'Email already exists' }, 400)
+      }
+
+      // パスワードをハッシュ化
+      const saltRounds = 10
+      const hash = await bcrypt.hash(password, saltRounds)
+
+      // ユーザー作成
+      const userId = createId()
+      const newUser = await db.insert(users).values({
+        id: userId,
+        email,
+        name: null,
+        hash,
+        screen_name: userId,
+        createdAt: new Date().toISOString(),
+      }).returning().get()
+
+      // ユーザー登録時にBlogを作成
+      await db.insert(blogs).values({
+        userId: newUser.id,
+        title: null,
+        description: null,
+        theme: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }).run()
+
+      return c.json({
+        success: true,
+        message: 'User created successfully',
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+        }
+      })
+    } catch (error) {
+      console.error('Sign up error:', error)
+      return c.json({ error: 'Internal server error' }, 500)
+    }
+  }
+)
 
 export default auth

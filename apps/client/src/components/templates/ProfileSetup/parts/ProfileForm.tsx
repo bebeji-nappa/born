@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const Section = styled.div`
   background: white;
@@ -101,7 +102,7 @@ const RequiredLabel = styled.span`
 `;
 
 interface FormData {
-  name: string;
+  name: string | null;
   description: string;
 }
 
@@ -117,17 +118,21 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      name: user.name,
+      name: user.name || "",
       description: user.description || "",
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: FormData) => {
     try {
       await apiClient.updateUserProfile({
-        name: data.name,
+        name: data.name || user.email,
         description: data.description || null,
       });
+
+      router.push("/"); // プロフィール更新後にトップページへリダイレクト
     } catch (err) {
       console.error("Profile update error:", err);
       setError("root", { message: "プロフィールの更新に失敗しました" });
