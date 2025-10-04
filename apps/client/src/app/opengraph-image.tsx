@@ -11,28 +11,14 @@ export default function Image() {
         justifyContent: "center",
         width: "100%",
         height: "100%",
-        background: "black",
+        background: "white",
+        padding: "60px",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          background: "black",
-          width: "90%",
-          height: "90%",
-          borderRadius: 30,
-          padding: "50px",
-          textAlign: "left",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#262626",
-          fontSize: 60,
-          fontWeight: 700,
-          fontFamily: '"NotoSansJP"',
-        }}
-      >
-        <img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} alt="Logo" />
-      </div>
+      <img
+        src={`${process.env.NEXT_PUBLIC_BASE_URL}/born_logo.svg`}
+        alt="Born Logo"
+      />
     </div>,
     {
       width: 1200,
