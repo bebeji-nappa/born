@@ -1,24 +1,25 @@
+"use client";
+
 import { Inter } from "next/font/google";
+import { usePathname } from "next/navigation";
 import AuthProvider from "@/components/AuthProvider";
 import { PageHeader } from "@/components/common/PageHeader";
 import "../styles/reset.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "nappa's Blog",
-  description: "nappaのブログ",
-};
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isAuthPage = pathname === "/signin" || pathname === "/signup";
+
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <PageHeader />
+        {!isAuthPage && <PageHeader />}
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
