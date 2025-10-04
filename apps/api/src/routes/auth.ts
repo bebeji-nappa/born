@@ -46,10 +46,15 @@ auth.get('/callback/github', async (c) => {
     const config = getGitHubOAuthConfig(c.env)
     const db = getDB(c.env.DB)
     const code = c.req.query('code')
+    const state = c.req.query('state')
 
     if (!code) {
       return c.json({ error: 'Authorization code not found' }, 400)
     }
+
+    // stateに"connect:"プレフィックスがある場合は連携モード
+    const isConnectMode = state?.startsWith('connect:')
+    const connectSessionToken = isConnectMode ? state?.replace('connect:', '') : null
 
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
@@ -101,6 +106,23 @@ auth.get('/callback/github', async (c) => {
 
     const githubUser = await userResponse.json() as GitHubUser
 
+    // 連携モードの場合
+    if (isConnectMode && connectSessionToken) {
+      const sessionUser = await getSessionUser(connectSessionToken, c.env)
+      if (!sessionUser) {
+        return c.json({ error: 'Invalid session' }, 401)
+      }
+
+      // github_idを更新
+      await db.update(users)
+        .set({ github_id: githubUser.login.toString() })
+        .where(eq(users.id, sessionUser.id))
+        .run()
+
+      const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
+      return c.redirect(`${frontendUrl}/setting/account?github_connected=true`)
+    }
+
     const emailResponse = await fetch('https://api.github.com/user/emails', {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
@@ -132,6 +154,7 @@ auth.get('/callback/github', async (c) => {
         name: githubUser.name || githubUser.login,
         image: githubUser.avatar_url,
         screen_name: userId,
+        github_id: githubUser.login.toString(),
         createdAt: new Date().toISOString(),
       }).returning().get()
 
@@ -145,13 +168,20 @@ auth.get('/callback/github', async (c) => {
         theme: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      })
+      }).run()
     } else {
+      // 既存ユーザーの場合、github_idがなければ追加
+      const updateData: any = {
+        name: user.name || githubUser.name,
+        image: githubUser.avatar_url,
+      }
+
+      if (!user.github_id) {
+        updateData.github_id = githubUser.login.toString()
+      }
+
       const updatedUser = await db.update(users)
-        .set({
-          name: githubUser.name || githubUser.login,
-          image: githubUser.avatar_url,
-        })
+        .set(updateData)
         .where(eq(users.email, primaryEmail))
         .returning()
         .get()
@@ -298,6 +328,20 @@ auth.post(
     }
   }
 )
+
+// GitHub連携用エンドポイント
+auth.get('/connect/github', async (c) => {
+  const sessionToken = getCookie(c, 'session-token')
+  if (!sessionToken) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const config = getGitHubOAuthConfig(c.env)
+  // stateにconnect:プレフィックスを付けて連携モードを示す
+  const authUrl = `https://github.com/login/oauth/authorize?client_id=${config.clientId}&redirect_uri=${encodeURIComponent(config.redirectUri)}&scope=${config.scope}&state=connect:${sessionToken}`
+
+  return c.redirect(authUrl)
+})
 
 // 新規登録
 auth.post(
