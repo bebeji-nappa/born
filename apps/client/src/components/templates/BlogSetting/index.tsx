@@ -416,8 +416,8 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         );
         const data = await res.json();
         setBlog(data.blog);
-        setTitle(data.blog.title || `${user.name}のブログ`);
-        setDescription(data.blog.description || `${user.name}のブログです。`);
+        setTitle(data.blog.title || `${user.name}のページ`);
+        setDescription(data.blog.description || `${user.name}のページです。`);
 
         if (data.blog.theme) {
           try {

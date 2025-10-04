@@ -485,10 +485,10 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
           <UserProfileSection bgColor={theme.sectionBackgroundColor}>
             <UserInfo>
               <BlogTitle textColor={theme.textColor}>
-                {blog.title || `${profileUser?.name || ""}のブログ`}
+                {blog.title || `${profileUser?.name || ""}のページ`}
               </BlogTitle>
               <BlogDescription textColor={theme.textColor}>
-                {blog.description || `${profileUser?.name || ""}のブログです。`}
+                {blog.description || `${profileUser?.name || ""}のページです。`}
               </BlogDescription>
             </UserInfo>
             {user && profileUser && user.id === profileUser.id && (
