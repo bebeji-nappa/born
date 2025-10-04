@@ -194,7 +194,7 @@ export const PageHeader = () => {
           />
         </LogoContainer>
 
-        {isAuthenticated && user && (
+        {isAuthenticated && user?.name && (
           <RightSection>
             <CreatePostButton onClick={() => window.location.href = "/post/create"}>
               記事を作成

@@ -20,7 +20,7 @@ export const useSignIn = () => {
 
       // nameがnullの場合は初回ログインとみなす
       if (userData?.user && !userData.user.name) {
-        router.push("/account/setting");
+        router.push("/setup/profile");
       } else {
         router.push("/");
       }
