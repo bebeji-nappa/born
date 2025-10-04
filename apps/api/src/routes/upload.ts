@@ -4,6 +4,7 @@ import { getCookie } from 'hono/cookie'
 type Bindings = {
   STORAGE: R2Bucket
   FRONTEND_URL: string
+  STORAGE_URL: string
 }
 
 const upload = new Hono<{ Bindings: Bindings }>()
@@ -48,8 +49,9 @@ upload.post('/', async (c) => {
       },
     })
 
-    // 公開URLを返す（R2の公開ドメインを設定している場合）
-    const url = `https://storage.bebeji-nappa.com/${key}`
+    // 公開URLを返す（環境変数から取得）
+    const storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+    const url = `${storageUrl}/${key}`
 
     return c.json({
       success: true,

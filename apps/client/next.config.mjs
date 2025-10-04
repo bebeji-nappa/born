@@ -10,6 +10,21 @@ const nextConfig = {
         hostname: "avatars.githubusercontent.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "storage.bebeji-nappa.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "storage-staging.bebeji-nappa.com",
+        port: "",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+      },
     ],
   },
 };

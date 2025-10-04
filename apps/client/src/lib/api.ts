@@ -13,7 +13,7 @@ function normalizeDate(value: any): string {
 export interface User {
   id: string;
   email: string;
-  name: string;
+  name: string | null;
   screen_name: string | null;
   image?: string;
   description?: string | null;
@@ -62,6 +62,45 @@ class ApiClient {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
+  }
+
+  async signIn(data: {
+    email: string;
+    password: string;
+  }): Promise<{ success: boolean; message: string; user: { id: string; email: string; name: string | null } }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/signin`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async signUp(data: {
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  }): Promise<{ success: boolean; message: string; user: { id: string; email: string; name: string | null } }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/signup`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
   }
 
   // User APIs
@@ -166,6 +205,25 @@ class ApiClient {
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async updatePassword(data: {
+    password: string;
+    passwordConfirmation: string;
+  }): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/users/password`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
     }
 
     return response.json();

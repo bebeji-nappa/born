@@ -34,12 +34,13 @@ export const sessions = sqliteTable('Session', {
 // User table
 export const users = sqliteTable('User', {
   id: text('id').primaryKey(),
-  name: text('name').notNull(),
+  name: text('name'),
   screen_name: text('screen_name'),
   email: text('email').unique(),
   emailVerified: text('emailVerified'),
   image: text('image'),
   description: text('description'),
+  hash: text('hash'),
   createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => ({
   emailIdx: uniqueIndex('User_email_key').on(table.email),
