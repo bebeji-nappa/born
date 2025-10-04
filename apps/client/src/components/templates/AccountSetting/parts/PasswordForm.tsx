@@ -1,6 +1,8 @@
 import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { apiClient } from "@/lib/api";
+import { validatePassword } from "@/lib/validation";
 
 const Section = styled.section`
   border: 1px solid #e1e5e9;
@@ -39,7 +41,13 @@ const Label = styled.label`
   color: #333;
 `;
 
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 const Input = styled.input`
+  width: 100%;
   padding: 12px 16px;
   font-size: 14px;
   border: 1px solid #e0e0e0;
@@ -53,6 +61,35 @@ const Input = styled.input`
 
   &::placeholder {
     color: #999;
+  }
+`;
+
+const PasswordInput = styled(Input)`
+  padding-right: 48px;
+`;
+
+const EyeButton = styled.button`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #333;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -94,21 +131,54 @@ const SuccessMessage = styled.p`
   margin-top: 4px;
 `;
 
+const PasswordRequirements = styled.div`
+  font-size: 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+`;
+
+const RequirementItem = styled.div<{ met: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: ${props => props.met ? '#16a34a' : '#dc2626'};
+  white-space: nowrap;
+
+  &::before {
+    content: '${props => props.met ? '✓' : '✗'}';
+    font-weight: bold;
+  }
+`;
+
 const PasswordForm: FC = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // パスワード要件のチェック
+  const passwordRequirements = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasLowerCase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    // バリデーション
-    if (password.length < 8) {
-      setError("パスワードは8文字以上で入力してください");
+    // パスワード強度チェック
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.error || "パスワードが要件を満たしていません");
       return;
     }
 
@@ -147,30 +217,67 @@ const PasswordForm: FC = () => {
       <Form onSubmit={handleSubmit}>
         <InputGroup>
           <Label htmlFor="password">新しいパスワード</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="8文字以上"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
-          />
+          <InputWrapper>
+            <PasswordInput
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="パスワードを入力"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+            />
+            <EyeButton
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </EyeButton>
+          </InputWrapper>
+          {password && (
+            <PasswordRequirements>
+              <RequirementItem met={passwordRequirements.minLength}>
+                8文字以上
+              </RequirementItem>
+              <RequirementItem met={passwordRequirements.hasUpperCase}>
+                英大文字を含む
+              </RequirementItem>
+              <RequirementItem met={passwordRequirements.hasLowerCase}>
+                英小文字を含む
+              </RequirementItem>
+              <RequirementItem met={passwordRequirements.hasNumber}>
+                数字を含む
+              </RequirementItem>
+              <RequirementItem met={passwordRequirements.hasSymbol}>
+                記号を含む
+              </RequirementItem>
+            </PasswordRequirements>
+          )}
         </InputGroup>
 
         <InputGroup>
           <Label htmlFor="passwordConfirmation">
             パスワード（確認用）
           </Label>
-          <Input
-            id="passwordConfirmation"
-            type="password"
-            placeholder="もう一度入力してください"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-            required
-            minLength={8}
-          />
+          <InputWrapper>
+            <PasswordInput
+              id="passwordConfirmation"
+              type={showPasswordConfirmation ? "text" : "password"}
+              placeholder="もう一度入力してください"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              required
+              minLength={8}
+            />
+            <EyeButton
+              type="button"
+              onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+              aria-label={showPasswordConfirmation ? "パスワードを隠す" : "パスワードを表示"}
+            >
+              {showPasswordConfirmation ? <FiEyeOff /> : <FiEye />}
+            </EyeButton>
+          </InputWrapper>
         </InputGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}

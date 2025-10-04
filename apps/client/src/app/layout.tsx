@@ -14,12 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isSignInPage = pathname === "/signin";
+  const isAuthPage = pathname === "/signin" || pathname === "/signup";
 
   return (
     <html lang="ja">
       <body className={inter.className}>
-        {!isSignInPage && <PageHeader />}
+        {!isAuthPage && <PageHeader />}
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

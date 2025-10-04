@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
+import Link from "next/link";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useSignIn } from "./logic";
 
 const Wrapper = styled.div`
@@ -81,6 +83,35 @@ const Input = styled.input`
   }
 `;
 
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const PasswordInput = styled(Input)`
+  padding-right: 48px;
+`;
+
+const EyeButton = styled.button`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #333;
+  }
+`;
+
 const Button = styled.button`
   width: 100%;
   padding: 12px 16px;
@@ -140,20 +171,37 @@ const GitHubButton = styled(Button)`
   }
 `;
 
+const LinkText = styled.p`
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin-top: 16px;
+
+  a {
+    color: #f97316;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
 export type SignInInputs = {
   email: string;
   password: string;
 };
 
 const SignInTemplate = () => {
-  const { githubSignIn } = useSignIn();
+  const { githubSignIn, emailSignIn } = useSignIn();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // API実装は別途対応予定
-    console.log("Login attempt:", { email, password });
+    await emailSignIn(email, password);
   };
 
   return (
@@ -187,14 +235,23 @@ const SignInTemplate = () => {
 
           <InputGroup>
             <Label htmlFor="password">パスワード</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <InputWrapper>
+              <PasswordInput
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <EyeButton
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+              >
+                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </EyeButton>
+            </InputWrapper>
           </InputGroup>
 
           <PrimaryButton type="submit">ログイン</PrimaryButton>
@@ -211,6 +268,11 @@ const SignInTemplate = () => {
           />
           GitHub でログイン
         </GitHubButton>
+
+        <LinkText>
+          アカウントをお持ちでない方は{" "}
+          <Link href="/signup">新規登録</Link>
+        </LinkText>
       </Container>
     </Wrapper>
   );

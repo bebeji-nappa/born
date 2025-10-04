@@ -1,6 +1,7 @@
 import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { User, apiClient } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 import ScreenNameForm from "./parts/ScreenNameForm";
@@ -34,6 +35,7 @@ interface Props {
 }
 
 const AccountSettingTemplate: FC<Props> = ({ user }) => {
+  const { refetch } = useAuth();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.image || null
   );
@@ -63,6 +65,8 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
     try {
       const result = await apiClient.updateUserAvatar(file);
       setAvatarPreview(result.url);
+      // ヘッダーのアバターを更新
+      await refetch();
     } catch (err) {
       console.error("Avatar update error:", err);
       alert("アバター画像の更新に失敗しました");

@@ -16,6 +16,9 @@ type Bindings = {
   DATABASE_URL: string
   DB: D1Database
   STORAGE: R2Bucket
+  STORAGE_URL: string
+  NODE_ENV: string
+  API_BASE_URL: string
 }
 
 const users = new Hono<{ Bindings: Bindings }>()
@@ -222,7 +225,8 @@ users.put('/avatar/image', async (c) => {
     // 既存のアバターがあれば削除
     if (result.user.image) {
       try {
-        const oldKey = result.user.image.replace('https://storage.bebeji-nappa.com/', '')
+        const storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+        const oldKey = result.user.image.replace(`${storageUrl}/`, '')
         await c.env.STORAGE.delete(oldKey)
       } catch (error) {
         console.error('Failed to delete old avatar:', error)
@@ -241,8 +245,22 @@ users.put('/avatar/image', async (c) => {
       },
     })
 
-    // 公開URLを生成
-    const url = `https://storage.bebeji-nappa.com/${key}`
+    // 公開URLを生成（環境に応じて変更）
+    const nodeEnv = c.env.NODE_ENV || 'development'
+    let storageUrl: string
+
+    if (nodeEnv === 'development') {
+      // ローカル開発: APIサーバー経由
+      storageUrl = `${c.env.API_BASE_URL || 'http://localhost:8000'}/api/users/avatar`
+    } else if (nodeEnv === 'staging') {
+      // Staging: カスタムドメイン
+      storageUrl = c.env.STORAGE_URL || 'https://storage-staging.bebeji-nappa.com'
+    } else {
+      // Production: カスタムドメイン
+      storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+    }
+
+    const url = `${storageUrl}/${key}`
 
     // ユーザーのimageフィールドを更新
     const updatedUser = await db.update(usersTable)
@@ -267,6 +285,28 @@ users.put('/avatar/image', async (c) => {
   } catch (error) {
     console.error('Avatar update error:', error)
     return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// アバター画像配信（ローカル開発用）
+users.get('/avatar/:key{.+}', async (c) => {
+  try {
+    const key = c.req.param('key')
+    const object = await c.env.STORAGE.get(key)
+
+    if (!object) {
+      return c.json({ error: 'Image not found' }, 404)
+    }
+
+    return new Response(object.body, {
+      headers: {
+        'Content-Type': object.httpMetadata?.contentType || 'image/jpeg',
+        'Cache-Control': 'public, max-age=31536000',
+      },
+    })
+  } catch (error) {
+    console.error('Avatar image fetch error:', error)
+    return c.json({ error: 'Failed to fetch avatar image' }, 500)
   }
 })
 
@@ -302,6 +342,16 @@ users.put(
       // パスワード確認チェック
       if (password !== passwordConfirmation) {
         return c.json({ error: 'Passwords do not match' }, 400)
+      }
+
+      // パスワード強度チェック
+      const hasUpperCase = /[A-Z]/.test(password)
+      const hasLowerCase = /[a-z]/.test(password)
+      const hasNumber = /[0-9]/.test(password)
+      const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+
+      if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
+        return c.json({ error: 'Password must contain uppercase, lowercase, number, and symbol' }, 400)
       }
 
       // パスワードをハッシュ化
