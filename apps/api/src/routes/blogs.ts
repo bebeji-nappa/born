@@ -143,7 +143,7 @@ blogs.post(
         storageUrl = c.env.STORAGE_URL || 'https://staging-storage.born-docs.com'
       } else {
         // Production: カスタムドメイン
-        storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+        storageUrl = c.env.STORAGE_URL || 'https://storage.born-docs.com'
       }
 
       const url = `${storageUrl}/${key}`
