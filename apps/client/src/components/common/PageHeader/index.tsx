@@ -184,52 +184,58 @@ export const PageHeader = () => {
           </Link>
         </LogoContainer>
 
-        {isAuthenticated && user?.name && (
-          <RightSection>
-            <CreatePostButton onClick={() => window.location.href = "/post/create"}>
-              記事を作成
-            </CreatePostButton>
+        <RightSection>
+          {isAuthenticated && user?.name ? (
+            <>
+              <CreatePostButton onClick={() => window.location.href = "/post/create"}>
+                記事を作成
+              </CreatePostButton>
 
-            <UserMenuContainer ref={menuRef}>
-              <AvatarButton
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="ユーザーメニュー"
-                aria-expanded={isMenuOpen}
-              >
-                {user.image ? (
-                  <Image
-                    src={user.image}
-                    alt={user.name}
-                    width={40}
-                    height={40}
-                  />
-                ) : (
-                  <div>
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </AvatarButton>
-
-              <DropdownMenu isOpen={isMenuOpen}>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = `/${user.screen_name}`)}>
-                  自分のブログを確認
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>
-                  記事の管理
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
-                  アカウント設定
-                </MenuItem>
-                <MenuItem
-                  hasBorderTop
-                  onClick={() => handleMenuItemClick(signOut)}
+              <UserMenuContainer ref={menuRef}>
+                <AvatarButton
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="ユーザーメニュー"
+                  aria-expanded={isMenuOpen}
                 >
-                  ログアウト
-                </MenuItem>
-              </DropdownMenu>
-            </UserMenuContainer>
-          </RightSection>
-        )}
+                  {user.image ? (
+                    <Image
+                      src={user.image}
+                      alt={user.name}
+                      width={40}
+                      height={40}
+                    />
+                  ) : (
+                    <div>
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </AvatarButton>
+
+                <DropdownMenu isOpen={isMenuOpen}>
+                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = `/${user.screen_name}`)}>
+                    自分のブログを確認
+                  </MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>
+                    記事の管理
+                  </MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
+                    アカウント設定
+                  </MenuItem>
+                  <MenuItem
+                    hasBorderTop
+                    onClick={() => handleMenuItemClick(signOut)}
+                  >
+                    ログアウト
+                  </MenuItem>
+                </DropdownMenu>
+              </UserMenuContainer>
+            </>
+          ) : (
+            <CreatePostButton onClick={() => window.location.href = "/signin"}>
+              ログイン
+            </CreatePostButton>
+          )}
+        </RightSection>
       </HeaderContent>
     </StyledPageHeader>
   );
