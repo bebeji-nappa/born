@@ -6,6 +6,7 @@ import { VirtuosoGrid } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 import { create } from "domain";
+import { useAuth } from "@/hooks/useAuth";
 
 type Blog = {
   id: number;
@@ -258,6 +259,7 @@ export type PostListTemplateProps = {
 
 const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
   const router = useRouter();
+  const { user } = useAuth();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
     return name
@@ -338,9 +340,9 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
                 {firstPostUser.description || ""}
               </UserDescription>
             </UserInfo>
-            {blog && (
+            {blog && user && user.id === firstPostUser.id && (
               <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
-                設定
+                ブログ設定
               </SettingsButton>
             )}
           </UserProfileSection>
