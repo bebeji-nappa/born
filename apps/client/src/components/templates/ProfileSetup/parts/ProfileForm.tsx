@@ -118,7 +118,7 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      name: user.name,
+      name: user.name || "",
       description: user.description || "",
     },
   });
