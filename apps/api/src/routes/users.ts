@@ -62,6 +62,21 @@ users.get(
 )
 
 users.get(
+  '/by-screen-name/:screen_name',
+  zValidator('param', z.object({ screen_name: z.string() })),
+  async (c) => {
+    try {
+      const { screen_name } = c.req.valid('param')
+      const db = getDB(c.env.DB)
+      const user = await db.select().from(usersTable).where(eq(usersTable.screen_name, screen_name)).get()
+      return c.json({ user: user || null })
+    } catch (error) {
+      return c.json({ error: 'Failed to fetch user by screen name' }, 500)
+    }
+  }
+)
+
+users.get(
   '/:id',
   zValidator('param', z.object({ id: z.string() })),
   async (c) => {
