@@ -108,8 +108,8 @@ export default async function Image({
   const blog = await getBlogByUserId(user.id);
 
   let bgColor = "#dae2e6";
-  let blogTitle = `${user.name}のブログ`;
-  let blogDescription = `${user.name}のブログです。`;
+  let blogTitle = `${user.name}のページ`;
+  let blogDescription = `${user.name}のページです。`;
 
   if (blog) {
     if (blog.title) {
