@@ -1,4 +1,4 @@
-import React, { useState, useCallback, FC } from "react";
+import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { useBoolean } from "ahooks";
 import { useForm } from "react-hook-form";
@@ -6,6 +6,7 @@ import Preview from "./parts/Preview";
 import { usePosts } from "@/hooks/usePosts";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
+import MarkdownEditor from "@/components/common/MarkdownEditor";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -86,15 +87,6 @@ const Label = styled.label`
   font-size: 14px;
 `;
 
-const Textarea = styled.textarea`
-  padding: 8px;
-  resize: none;
-  height: 25rem;
-  border: none;
-  width: 100%;
-  outline: none;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -114,36 +106,6 @@ const SubmitButton = styled.button`
 
   &:hover {
     background-color: #333333;
-  }
-`;
-
-const EditorWrapper = styled.div`
-  border: 1px solid #e1e5e9;
-  border-radius: 4px;
-  margin-bottom: 16px;
-`;
-
-
-const TabContainer = styled.div`
-  display: flex;
-  border-bottom: 1px solid #e1e5e9;
-  margin-bottom: 16px;
-`;
-
-const Tab = styled.button<{ isActive: boolean }>`
-  padding: 12px 24px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid
-    ${(props) => (props.isActive ? "#000000" : "transparent")};
-  color: ${(props) => (props.isActive ? "#000000" : "#586069")};
-  font-weight: ${(props) => (props.isActive ? "600" : "400")};
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    color: #000000;
-    background-color: #f6f8fa;
   }
 `;
 
@@ -224,12 +186,14 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
   const [isPublished, setIsPublished] = useState(published);
   const { updatePost } = usePosts();
 
-  const { handleSubmit, register, getValues } = useForm({
+  const { handleSubmit, register, getValues, setValue, watch } = useForm({
     defaultValues: {
       title: title,
       content: content,
     },
   });
+
+  const contentValue = watch("content");
 
   const onSubmit = async (e: any) => {
     try {
@@ -244,15 +208,6 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
       setAlertMessage("Failed to update post. Please try again.");
     }
   };
-
-  const handleTabClick = useCallback(
-    (isEditMode: boolean) => {
-      if (isEdit !== isEditMode) {
-        handleIsEdit();
-      }
-    },
-    [isEdit, handleIsEdit],
-  );
 
   const handleBack = () => {
     router.back();
@@ -289,30 +244,17 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
           <Input type="text" defaultValue={title} {...register("title")} />
 
           <Label htmlFor="content">内容</Label>
-          <EditorWrapper id="content">
-            <TabContainer>
-              <Tab
-                type="button"
-                isActive={isEdit}
-                onClick={() => handleTabClick(true)}
-              >
-                Edit
-              </Tab>
-              <Tab
-                type="button"
-                isActive={!isEdit}
-                onClick={() => handleTabClick(false)}
-              >
-                Preview
-              </Tab>
-            </TabContainer>
-
-            {isEdit ? (
-              <Textarea defaultValue={content} {...register("content")} />
-            ) : (
-              <Preview text={getValues("content")} textColor={theme.textColor} linkColor={theme.linkColor} />
-            )}
-          </EditorWrapper>
+          <MarkdownEditor
+            value={contentValue || ""}
+            onChange={(value) => {
+              setValue("content", value, { shouldValidate: false, shouldDirty: true });
+            }}
+            isEdit={isEdit}
+            onToggleEdit={handleIsEdit}
+            previewComponent={
+              <Preview text={contentValue || ""} textColor={theme.textColor} linkColor={theme.linkColor} />
+            }
+          />
         </Form>
       </Wrapper>
     </PageWrapper>
