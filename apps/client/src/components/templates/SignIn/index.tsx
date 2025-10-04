@@ -208,13 +208,15 @@ const SignInTemplate = () => {
     <Wrapper>
       <Container>
         <LogoWrapper>
-          <Image
-            src="/born_logo.svg"
-            alt="Born Logo"
-            width={180}
-            height={60}
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/born_logo.svg"
+              alt="Born Logo"
+              width={180}
+              height={60}
+              priority
+            />
+          </Link>
         </LogoWrapper>
 
         <Title>ログイン</Title>
