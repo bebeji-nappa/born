@@ -14,6 +14,41 @@ type Bindings = {
 
 const blogs = new Hono<{ Bindings: Bindings }>()
 
+// Serve background images from R2
+blogs.get('/background-image/:key{.+}', async (c) => {
+  try {
+    const key = c.req.param('key')
+    const object = await c.env.STORAGE.get(key)
+
+    if (!object) {
+      return c.json({ error: 'Image not found' }, 404)
+    }
+
+    return new Response(object.body, {
+      headers: {
+        'Content-Type': object.httpMetadata?.contentType || 'image/jpeg',
+        'Cache-Control': 'public, max-age=31536000',
+      },
+    })
+  } catch (error) {
+    console.error('Background image fetch error:', error)
+    return c.json({ error: 'Failed to fetch background image' }, 500)
+  }
+})
+
+blogs.get('/user/:userId', async (c) => {
+  try {
+    const userId = c.req.param('userId')
+    const result = await getBlogByUserId(userId, c.env)
+    return c.json(result)
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('No blog')) {
+      return c.json({ error: error.message }, 404)
+    }
+    return c.json({ error: 'Failed to fetch blog' }, 500)
+  }
+})
+
 blogs.get(
   '/:id',
   zValidator('param', z.object({ id: z.string().transform(Number) })),
@@ -30,19 +65,6 @@ blogs.get(
     }
   }
 )
-
-blogs.get('/user/:userId', async (c) => {
-  try {
-    const userId = c.req.param('userId')
-    const result = await getBlogByUserId(userId, c.env)
-    return c.json(result)
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('No blog')) {
-      return c.json({ error: error.message }, 404)
-    }
-    return c.json({ error: 'Failed to fetch blog' }, 500)
-  }
-})
 
 blogs.put(
   '/:id',
@@ -165,27 +187,5 @@ blogs.delete(
     }
   }
 )
-
-// Serve background images from R2
-blogs.get('/background-image/:key{.+}', async (c) => {
-  try {
-    const key = c.req.param('key')
-    const object = await c.env.STORAGE.get(key)
-
-    if (!object) {
-      return c.json({ error: 'Image not found' }, 404)
-    }
-
-    return new Response(object.body, {
-      headers: {
-        'Content-Type': object.httpMetadata?.contentType || 'image/jpeg',
-        'Cache-Control': 'public, max-age=31536000',
-      },
-    })
-  } catch (error) {
-    console.error('Background image fetch error:', error)
-    return c.json({ error: 'Failed to fetch background image' }, 500)
-  }
-})
 
 export default blogs
