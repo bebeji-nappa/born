@@ -360,31 +360,23 @@ const PostListTemplate = ({ posts, blog }: PostListTemplateProps) => {
 
   const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
 
-  const showUserProfile = posts.length > 0 || (blog && posts.length === 0);
+  const showBlogInfo = blog !== null;
   const profileUser = firstPostUser || (blog && user);
 
   return (
     <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
-      {showUserProfile && profileUser && (
+      {showBlogInfo && blog && (
         <PageContainer>
           <UserProfileSection bgColor={theme.sectionBackgroundColor}>
-            <UserAvatar>
-              {profileUser.image ? (
-                <UserImage
-                  src={profileUser.image}
-                  alt={profileUser.name || "User"}
-                />
-              ) : (
-                getInitials(profileUser.name)
-              )}
-            </UserAvatar>
             <UserInfo>
-              <UserName textColor={theme.textColor}>{profileUser.name || "Unknown User"}</UserName>
+              <UserName textColor={theme.textColor}>
+                {blog.title || `${profileUser?.name || ""}のブログ`}
+              </UserName>
               <UserDescription textColor={theme.textColor}>
-                {profileUser.description || ""}
+                {blog.description || `${profileUser?.name || ""}のブログです。`}
               </UserDescription>
             </UserInfo>
-            {blog && user && user.id === profileUser.id && (
+            {user && profileUser && user.id === profileUser.id && (
               <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
                 ブログ設定
               </SettingsButton>
