@@ -54,4 +54,25 @@ app.route('/api/posts', posts)
 app.route('/api/upload', upload)
 app.route('/api/blogs', blogs)
 
+// R2ストレージから画像を取得するルート
+app.get('/storage/*', async (c) => {
+  try {
+    const key = c.req.path.replace('/storage/', '')
+    const object = await c.env.STORAGE.get(key)
+
+    if (!object) {
+      return c.json({ error: 'File not found' }, 404)
+    }
+
+    const headers = new Headers()
+    object.writeHttpMetadata(headers)
+    headers.set('Cache-Control', 'public, max-age=31536000')
+
+    return new Response(object.body, { headers })
+  } catch (error) {
+    console.error('Storage error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
 export default app
