@@ -6,7 +6,7 @@ import { User } from "@/lib/api";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};
-  min-height: calc(100vh - 55px);
+  min-height: calc(100vh - 60px);
   transition: background 0.3s ease;
 `;
 
