@@ -21,15 +21,13 @@ const MainContent = styled.main`
   background: #ffffff;
 `;
 
-const LogoContainer = styled.div`
-  margin-bottom: 48px;
+const LogoImageContainer = styled.div`
   position: relative;
   width: 280px;
   height: 80px;
 
   @media (max-width: 768px) {
     width: 220px;
-    height: 60px;
   }
 `;
 
@@ -58,6 +56,7 @@ const Description = styled.p`
   }
 `;
 
+// リリース後に有効化
 const CTAButton = styled(Link)`
   display: inline-block;
   padding: 16px 48px;
@@ -81,6 +80,7 @@ const CTAButton = styled(Link)`
   }
 `;
 
+// TODO: リリース後に削除
 const CTAPreButton = styled.div`
   display: inline-block;
   padding: 16px 48px;
@@ -92,6 +92,21 @@ const CTAPreButton = styled.div`
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 48px;
+`;
+
+const BetaBadge = styled.span`
+  padding: 2px 8px;
+  background-color: #9effdf;
+  color: #10b981;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  font-size: 12px;
 `;
 
 const Footer = styled.footer`
@@ -121,13 +136,20 @@ const HomeTemplate = () => {
     <Wrapper>
       <MainContent>
         <LogoContainer>
-          <Image
-            src="/born_logo.svg"
-            alt="Born Logo"
-            fill
-            style={{ objectFit: "contain" }}
-            priority
-          />
+          <LogoImageContainer>
+            <Image
+              src="/born_logo.svg"
+              alt="Born Logo"
+              sizes="100vw"
+              fill
+              style={{
+                width: "100%",
+                objectFit: "contain",
+              }}
+              priority
+            />
+          </LogoImageContainer>
+          <BetaBadge>ベータ版</BetaBadge>
         </LogoContainer>
 
         <Title>あなたの発想を、形にする</Title>

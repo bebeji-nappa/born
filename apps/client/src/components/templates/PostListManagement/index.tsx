@@ -109,35 +109,37 @@ const Actions = styled.div`
 `;
 
 const EditButton = styled.button`
-  background-color: #3b82f6;
-  color: white;
+  background-color: #f5f5f5;
+  color: #000000;
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 0.875rem;
+  font-weight: 500;
 
   &:hover {
-    background-color: #2563eb;
+    background-color: #e5e5e5;
   }
 `;
 
 const DeleteButton = styled.button`
-  background-color: #ef4444;
-  color: white;
+  background-color: #f5f5f5;
+  color: #ef4444;
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
   cursor: pointer;
   font-size: 0.875rem;
+  font-weight: 500;
 
   &:hover {
-    background-color: #dc2626;
+    background-color: #e5e5e5;
   }
 `;
 
 const CreateButton = styled.button`
-  background-color: #10b981;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 8px;
@@ -148,7 +150,7 @@ const CreateButton = styled.button`
   margin-bottom: 24px;
 
   &:hover {
-    background-color: #059669;
+    background-color: #333333;
   }
 `;
 
