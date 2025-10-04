@@ -534,21 +534,22 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
             </PostListContainer>
             {pagination && (
               <PaginationContainer>
-                <PaginationButton
-                  disabled={!pagination.hasPrev}
-                  onClick={() => onPageChange(pagination.page - 1)}
-                >
-                  前の10件
-                </PaginationButton>
-                <PaginationInfo textColor={theme.textColor}>
-                  {pagination.page} / {pagination.totalPages} ページ ({pagination.total}件)
-                </PaginationInfo>
-                <PaginationButton
-                  disabled={!pagination.hasNext}
-                  onClick={() => onPageChange(pagination.page + 1)}
-                >
-                  次の10件
-                </PaginationButton>
+                {pagination.page > 1 &&(
+                   <PaginationButton
+                    disabled={!pagination.hasPrev}
+                    onClick={() => onPageChange(pagination.page - 1)}
+                  >
+                    前の10件
+                  </PaginationButton>
+                )}
+                {pagination.page < pagination.totalPages && (
+                  <PaginationButton
+                    disabled={!pagination.hasNext}
+                    onClick={() => onPageChange(pagination.page + 1)}
+                  >
+                    次の10件
+                  </PaginationButton>
+                )}
               </PaginationContainer>
             )}
           </MainContent>
