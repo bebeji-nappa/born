@@ -50,7 +50,7 @@ upload.post('/', async (c) => {
     })
 
     // 公開URLを返す（環境変数から取得）
-    const storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+    const storageUrl = c.env.STORAGE_URL || 'https://storage.born-docs.com'
     const url = `${storageUrl}/${key}`
 
     return c.json({

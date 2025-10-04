@@ -240,7 +240,7 @@ users.put('/avatar/image', async (c) => {
     // 既存のアバターがあれば削除
     if (result.user.image) {
       try {
-        const storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+        const storageUrl = c.env.STORAGE_URL || 'https://storage.born-docs.com'
         const oldKey = result.user.image.replace(`${storageUrl}/`, '')
         await c.env.STORAGE.delete(oldKey)
       } catch (error) {
@@ -272,7 +272,7 @@ users.put('/avatar/image', async (c) => {
       storageUrl = c.env.STORAGE_URL || 'https://staging-storage.born-docs.com'
     } else {
       // Production: カスタムドメイン
-      storageUrl = c.env.STORAGE_URL || 'https://storage.bebeji-nappa.com'
+      storageUrl = c.env.STORAGE_URL || 'https://storage.born-docs.com'
     }
 
     const url = `${storageUrl}/${key}`
