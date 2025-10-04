@@ -17,7 +17,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "storage-staging.bebeji-nappa.com",
+        hostname: "staging-storage.born-docs.com",
         port: "",
       },
       {
