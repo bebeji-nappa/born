@@ -370,6 +370,24 @@ class ApiClient {
     return result;
   }
 
+  async getPendingEmailChange(): Promise<{
+    pending: boolean;
+    newEmail?: string;
+    expiresAt?: string;
+  }> {
+    const response = await fetch(`${this.baseUrl}/api/users/email/pending`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   async requestEmailChange(
     newEmail: string,
   ): Promise<{ success: boolean; message: string }> {

@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import React, { useState, useEffect, FC } from "react";
 import styled from "@emotion/styled";
 import { User, apiClient } from "@/lib/api";
 
@@ -107,6 +107,28 @@ const ErrorMessage = styled.p`
   margin-top: 8px;
 `;
 
+const PendingInfo = styled.div`
+  background-color: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+`;
+
+const PendingText = styled.p`
+  font-size: 14px;
+  color: #92400e;
+  margin-bottom: 4px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const PendingEmail = styled.span`
+  font-weight: 600;
+`;
+
 export type EmailFormProps = {
   user: User;
 };
@@ -117,6 +139,27 @@ const EmailForm: FC<EmailFormProps> = ({ user }) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  useEffect(() => {
+    const checkPending = async () => {
+      try {
+        const result = await apiClient.getPendingEmailChange();
+        if (result.pending && result.newEmail) {
+          setIsPending(true);
+          setPendingEmail(result.newEmail);
+        } else {
+          setIsPending(false);
+          setPendingEmail(null);
+        }
+      } catch (error) {
+        console.error("Failed to check pending email change:", error);
+      }
+    };
+
+    checkPending();
+  }, []);
 
   const handleCancel = () => {
     setShowForm(false);
@@ -137,9 +180,20 @@ const EmailForm: FC<EmailFormProps> = ({ user }) => {
         "確認メールを送信しました。メール内のリンクをクリックして変更を完了してください。",
       );
       setEmail("");
+      setShowForm(false);
+      // 確認待ち状態を更新
+      const result = await apiClient.getPendingEmailChange();
+      if (result.pending && result.newEmail) {
+        setIsPending(true);
+        setPendingEmail(result.newEmail);
+      }
     } catch (err) {
       console.error("Email change request error:", err);
-      setError("メールアドレス変更リクエストの送信に失敗しました");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("メールアドレス変更リクエストの送信に失敗しました");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -148,10 +202,24 @@ const EmailForm: FC<EmailFormProps> = ({ user }) => {
   return (
     <Section>
       <SectionTitle>メールアドレスを変更</SectionTitle>
+      {isPending && pendingEmail && (
+        <PendingInfo>
+          <PendingText>
+            変更後のメールアドレス: <PendingEmail>{pendingEmail}</PendingEmail>
+          </PendingText>
+          <PendingText>
+            確認メールを送信済みです。メール内のリンクをクリックして変更を完了してください。
+          </PendingText>
+        </PendingInfo>
+      )}
       {!showForm ? (
         <EmailDisplay>
           <EmailText>{user.email}</EmailText>
-          <Button type="button" onClick={() => setShowForm(true)}>
+          <Button
+            type="button"
+            onClick={() => setShowForm(true)}
+            disabled={isPending}
+          >
             変更する
           </Button>
         </EmailDisplay>

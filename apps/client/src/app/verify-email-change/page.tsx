@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { apiClient } from "@/lib/api";
 import VerifyEmailChangeTemplate from "@/components/templates/VerifyEmailChange";
@@ -11,8 +11,13 @@ const VerifyEmailChangePage: React.FC = () => {
     success: boolean;
     message: string;
   } | null>(null);
+  const hasVerified = useRef(false);
 
   useEffect(() => {
+    // 既に実行済みの場合はスキップ（React Strict Modeの2重実行を防ぐ）
+    if (hasVerified.current) return;
+    hasVerified.current = true;
+
     const verifyEmail = async () => {
       const token = searchParams.get("token");
 

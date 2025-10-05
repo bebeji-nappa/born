@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { getCookie, setCookie } from "hono/cookie";
 import { eq } from "drizzle-orm";
-import { getDB, users as usersTable, sessions } from "../db";
+import { getDB, users as usersTable, sessions, emailChangeTokens } from "../db";
 import {
   getAll,
   getAuthUserId,
@@ -19,6 +19,11 @@ import {
 import { csrfProtection } from "../middleware/csrf";
 import { deleteAllUserSessions, createSession } from "../lib/auth";
 import { generateCsrfToken } from "../lib/csrf";
+import { randomBytes } from "node:crypto";
+import {
+  sendEmail,
+  generateEmailChangeVerificationHTML,
+} from "../services/email.service";
 
 type Bindings = {
   DATABASE_URL: string;
@@ -27,6 +32,9 @@ type Bindings = {
   STORAGE_URL: string;
   NODE_ENV: string;
   API_BASE_URL: string;
+  RESEND_API_KEY: string;
+  EMAIL_FROM: string;
+  EMAIL_FROM_NAME: string;
 };
 
 const users = new Hono<{ Bindings: Bindings }>();
@@ -388,6 +396,7 @@ users.put(
   zValidator(
     "json",
     z.object({
+      currentPassword: z.string(),
       password: z.string().min(8, "Password must be at least 8 characters"),
       passwordConfirmation: z.string(),
     }),
@@ -418,7 +427,21 @@ users.put(
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      const { password, passwordConfirmation } = c.req.valid("json");
+      const { currentPassword, password, passwordConfirmation } =
+        c.req.valid("json");
+
+      // 現在のパスワード確認
+      if (!result.user.hash) {
+        return c.json({ error: "No password set for this account" }, 400);
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        result.user.hash,
+      );
+      if (!isPasswordValid) {
+        return c.json({ error: "現在のパスワードが正しくありません" }, 400);
+      }
 
       // パスワード確認チェック
       if (password !== passwordConfirmation) {
@@ -483,6 +506,240 @@ users.put(
       });
     } catch (error) {
       console.error("Password update error:", error);
+      return c.json({ error: "Internal server error" }, 500);
+    }
+  },
+);
+
+// メールアドレス変更の確認待ち状態をチェック
+users.get("/email/pending", async (c) => {
+  try {
+    const sessionToken = getCookie(c, "session-token");
+    if (!sessionToken) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const db = getDB(c.env.DB);
+    const result = await db
+      .select({ session: sessions, user: usersTable })
+      .from(sessions)
+      .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+      .where(eq(sessions.sessionToken, sessionToken))
+      .get();
+
+    if (!result || !result.user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // 有効期限内のトークンを検索
+    const pendingToken = await db
+      .select()
+      .from(emailChangeTokens)
+      .where(eq(emailChangeTokens.userId, result.user.id))
+      .get();
+
+    if (pendingToken && new Date() < new Date(pendingToken.expires)) {
+      return c.json({
+        pending: true,
+        newEmail: pendingToken.newEmail,
+        expiresAt: pendingToken.expires,
+      });
+    }
+
+    // 期限切れトークンがあれば削除
+    if (pendingToken) {
+      await db
+        .delete(emailChangeTokens)
+        .where(eq(emailChangeTokens.id, pendingToken.id))
+        .run();
+    }
+
+    return c.json({ pending: false });
+  } catch (error) {
+    console.error("Email pending check error:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
+// メールアドレス変更リクエスト
+users.post(
+  "/email/request",
+  zValidator(
+    "json",
+    z.object({
+      newEmail: z.string().email("Invalid email address"),
+    }),
+  ),
+  async (c) => {
+    try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c);
+      if (csrfError) {
+        return csrfError;
+      }
+
+      const sessionToken = getCookie(c, "session-token");
+      if (!sessionToken) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      // セッションからユーザーを取得
+      const db = getDB(c.env.DB);
+      const result = await db
+        .select({ session: sessions, user: usersTable })
+        .from(sessions)
+        .innerJoin(usersTable, eq(sessions.userId, usersTable.id))
+        .where(eq(sessions.sessionToken, sessionToken))
+        .get();
+
+      if (!result || !result.user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      // 有効期限内の確認待ちトークンがあるかチェック
+      const existingToken = await db
+        .select()
+        .from(emailChangeTokens)
+        .where(eq(emailChangeTokens.userId, result.user.id))
+        .get();
+
+      if (existingToken && new Date() < new Date(existingToken.expires)) {
+        return c.json(
+          {
+            error:
+              "既にメールアドレス変更の確認待ち状態です。確認メールをご確認ください。",
+          },
+          400,
+        );
+      }
+
+      const { newEmail } = c.req.valid("json");
+
+      // 新しいメールアドレスが既に使用されているかチェック
+      const existingUser = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.email, newEmail))
+        .get();
+
+      if (existingUser) {
+        return c.json(
+          { error: "このメールアドレスは既に使用されています" },
+          400,
+        );
+      }
+
+      // 既存のトークンを削除
+      await db
+        .delete(emailChangeTokens)
+        .where(eq(emailChangeTokens.userId, result.user.id))
+        .run();
+
+      // トークン生成
+      const token = randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 60 * 60 * 1000); // 1時間
+
+      // トークンをDBに保存
+      await db
+        .insert(emailChangeTokens)
+        .values({
+          id: randomBytes(16).toString("hex"),
+          userId: result.user.id,
+          newEmail,
+          token,
+          expires,
+        })
+        .run();
+
+      // 確認メールを送信
+      const clientUrl =
+        c.env.NODE_ENV === "production"
+          ? "https://born-docs.com"
+          : c.env.NODE_ENV === "staging"
+            ? "https://staging.born-docs.com"
+            : "http://localhost:3000";
+
+      const verifyUrl = `${clientUrl}/verify-email-change?token=${token}`;
+
+      // メール送信
+      const emailSent = await sendEmail(
+        {
+          to: newEmail,
+          subject: "【Born】メールアドレス変更の確認",
+          html: generateEmailChangeVerificationHTML(verifyUrl, newEmail),
+        },
+        c.env,
+      );
+
+      if (!emailSent) {
+        console.error("Failed to send email change verification email");
+        // メール送信失敗時もトークンは保存済みなので、エラーは返さない
+        // 開発環境ではコンソールにURLを出力
+        if (c.env.NODE_ENV === "development") {
+          console.log(
+            `Email change verification URL for ${newEmail}: ${verifyUrl}`,
+          );
+        }
+      }
+
+      return c.json({
+        success: true,
+        message: "確認メールを送信しました",
+      });
+    } catch (error) {
+      console.error("Email change request error:", error);
+      return c.json({ error: "Internal server error" }, 500);
+    }
+  },
+);
+
+// メールアドレス変更確認
+users.get(
+  "/email/verify",
+  zValidator("query", z.object({ token: z.string() })),
+  async (c) => {
+    try {
+      const { token } = c.req.valid("query");
+
+      const db = getDB(c.env.DB);
+      const tokenRecord = await db
+        .select()
+        .from(emailChangeTokens)
+        .where(eq(emailChangeTokens.token, token))
+        .get();
+
+      if (!tokenRecord) {
+        return c.json({ error: "Invalid or expired token" }, 400);
+      }
+
+      // トークンの有効期限チェック
+      if (new Date() > new Date(tokenRecord.expires)) {
+        await db
+          .delete(emailChangeTokens)
+          .where(eq(emailChangeTokens.id, tokenRecord.id))
+          .run();
+        return c.json({ error: "Token has expired" }, 400);
+      }
+
+      // メールアドレスを更新
+      await db
+        .update(usersTable)
+        .set({ email: tokenRecord.newEmail })
+        .where(eq(usersTable.id, tokenRecord.userId))
+        .run();
+
+      // トークンを削除
+      await db
+        .delete(emailChangeTokens)
+        .where(eq(emailChangeTokens.id, tokenRecord.id))
+        .run();
+
+      return c.json({
+        success: true,
+        message: "メールアドレスが正常に変更されました",
+      });
+    } catch (error) {
+      console.error("Email change verification error:", error);
       return c.json({ error: "Internal server error" }, 500);
     }
   },

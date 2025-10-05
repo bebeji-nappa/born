@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,17 +26,21 @@ const Card = styled.div`
   }
 `;
 
-const Icon = styled.div`
+const IconWrapper = styled.div<{ success: boolean }>`
   width: 80px;
   height: 80px;
   margin: 0 auto 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: ${(props) => (props.success ? "#f0fdf4" : "#fef2f2")};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
-  color: white;
+
+  svg {
+    width: 40px;
+    height: 40px;
+    color: ${(props) => (props.success ? "#16a34a" : "#dc2626")};
+  }
 `;
 
 const Title = styled.h1`
@@ -67,10 +72,6 @@ const HomeButton = styled(Link)`
   }
 `;
 
-const ErrorIcon = styled(Icon)`
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-`;
-
 export type VerifyEmailChangeTemplateProps = {
   success: boolean;
   message: string;
@@ -83,19 +84,16 @@ const VerifyEmailChangeTemplate: FC<VerifyEmailChangeTemplateProps> = ({
   return (
     <Wrapper>
       <Card>
-        {success ? (
-          <>
-            <Icon>✓</Icon>
-            <Title>メールアドレス変更完了</Title>
-            <Description>{message}</Description>
-          </>
-        ) : (
-          <>
-            <ErrorIcon>✗</ErrorIcon>
-            <Title>メールアドレス変更失敗</Title>
-            <Description>{message}</Description>
-          </>
-        )}
+        <IconWrapper success={success}>
+          {success ? <FiCheckCircle /> : <FiXCircle />}
+        </IconWrapper>
+
+        <Title>
+          {success ? "メールアドレス変更完了" : "メールアドレス変更失敗"}
+        </Title>
+
+        <Description>{message}</Description>
+
         <HomeButton href="/">ホームに戻る</HomeButton>
       </Card>
     </Wrapper>
