@@ -10,6 +10,8 @@ import * as bcrypt from 'bcryptjs'
 import { sendEmail, generateVerificationEmailHTML } from '../services/email.service'
 import { isValidEmail, sanitizeText } from '../lib/sanitize'
 import { rateLimitMiddleware } from '../middleware/rateLimit'
+import { generateCsrfToken } from '../lib/csrf'
+import { csrfProtection } from '../middleware/csrf'
 
 type Bindings = {
   DB: D1Database
@@ -244,13 +246,20 @@ auth.get('/callback/github', async (c) => {
 })
 
 auth.post('/signout', async (c) => {
+  // CSRF保護
+  const csrfError = await csrfProtection(c)
+  if (csrfError) {
+    return csrfError
+  }
+
   const sessionToken = getCookie(c, 'session-token')
-  
+
   if (sessionToken) {
     await deleteSession(sessionToken, c.env)
   }
-  
+
   deleteCookie(c, 'session-token')
+  deleteCookie(c, 'csrf-token')
   return c.json({ message: 'Signed out successfully' })
 })
 
@@ -341,9 +350,19 @@ auth.post(
         maxAge: 60 * 60 * 24 * 7, // 7 days
       })
 
+      // CSRFトークン生成
+      const csrfToken = generateCsrfToken()
+      setCookie(c, 'csrf-token', csrfToken, {
+        httpOnly: false, // フロントエンドから読み取れるように
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
       return c.json({
         success: true,
         message: 'Signed in successfully',
+        csrfToken, // フロントエンドで保存用
         user: {
           id: user.id,
           email: user.email,
@@ -586,9 +605,19 @@ auth.post(
         // メール送信失敗してもユーザー登録は成功とする
       }
 
+      // CSRFトークン生成（サインアップ後も認証状態になる場合に備えて）
+      const csrfToken = generateCsrfToken()
+      setCookie(c, 'csrf-token', csrfToken, {
+        httpOnly: false, // フロントエンドから読み取れるように
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
       return c.json({
         success: true,
         message: 'User created successfully. Please check your email to verify your account.',
+        csrfToken, // フロントエンドで保存用
         user: {
           id: newUser.id,
           email: newUser.email,

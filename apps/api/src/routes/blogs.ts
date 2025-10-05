@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { getBlogById, getBlogByUserId, updateBlog, updateBlogBackgroundImage, deleteBlogBackgroundImage } from '../services/blogs.service'
 import { authMiddleware } from '../middleware/auth'
+import { csrfProtection } from '../middleware/csrf'
 
 type Bindings = {
   DB: any
@@ -80,6 +81,12 @@ blogs.put(
   ),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const { id } = c.req.valid('param')
       const { title, description, theme } = c.req.valid('json')
       const result = await updateBlog(id, title, description, theme, c.env)
@@ -97,6 +104,12 @@ blogs.post(
   zValidator('param', z.object({ id: z.string().transform(Number) })),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const { id } = c.req.valid('param')
       const formData = await c.req.formData()
       const file = formData.get('file') as File | null
@@ -169,6 +182,12 @@ blogs.delete(
   zValidator('param', z.object({ id: z.string().transform(Number) })),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const { id } = c.req.valid('param')
       const result = await deleteBlogBackgroundImage(id, c.env)
 

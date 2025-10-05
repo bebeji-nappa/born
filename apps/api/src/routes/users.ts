@@ -12,6 +12,7 @@ import {
 } from '../services/users.service'
 import * as bcrypt from 'bcryptjs'
 import { sanitizeText, sanitizeDescription, sanitizeScreenName } from '../lib/sanitize'
+import { csrfProtection } from '../middleware/csrf'
 
 type Bindings = {
   DATABASE_URL: string
@@ -94,6 +95,12 @@ users.get(
 // ユーザー情報更新
 users.put('/profile', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -152,6 +159,12 @@ users.put('/profile', async (c) => {
 // ユーザID（screen_name）更新
 users.put('/screen-name', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -212,6 +225,12 @@ users.put('/screen-name', async (c) => {
 // アバター画像更新
 users.put('/avatar/image', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -346,6 +365,12 @@ users.put(
   })),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const sessionToken = getCookie(c, 'session-token')
       if (!sessionToken) {
         return c.json({ error: 'Unauthorized' }, 401)

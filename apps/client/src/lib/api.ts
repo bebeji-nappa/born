@@ -34,9 +34,55 @@ export interface Post {
 
 class ApiClient {
   private baseUrl: string;
+  private csrfToken: string | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
+    this.loadCsrfToken();
+  }
+
+  /**
+   * LocalStorageからCSRFトークンを読み込む
+   */
+  private loadCsrfToken() {
+    if (typeof window !== 'undefined') {
+      this.csrfToken = localStorage.getItem('csrf-token');
+    }
+  }
+
+  /**
+   * CSRFトークンをLocalStorageに保存
+   */
+  private saveCsrfToken(token: string) {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('csrf-token', token);
+      this.csrfToken = token;
+    }
+  }
+
+  /**
+   * CSRFトークンを削除
+   */
+  private clearCsrfToken() {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('csrf-token');
+      this.csrfToken = null;
+    }
+  }
+
+  /**
+   * CSRF保護が必要なリクエスト用のヘッダーを取得
+   */
+  private getHeaders(includeCSRF: boolean = false): HeadersInit {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    if (includeCSRF && this.csrfToken) {
+      headers["X-CSRF-Token"] = this.csrfToken;
+    }
+
+    return headers;
   }
 
   // Auth APIs
@@ -62,8 +108,11 @@ class ApiClient {
     await fetch(`${this.baseUrl}/api/auth/signout`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
     });
+
+    // CSRFトークンを削除
+    this.clearCsrfToken();
   }
 
   async signIn(data: {
@@ -87,7 +136,14 @@ class ApiClient {
       throw error;
     }
 
-    return response.json();
+    const result = await response.json();
+
+    // CSRFトークンを保存
+    if (result.csrfToken) {
+      this.saveCsrfToken(result.csrfToken);
+    }
+
+    return result;
   }
 
   async signUp(data: {
@@ -107,7 +163,14 @@ class ApiClient {
       throw new Error(errorData.error || `API Error: ${response.status}`);
     }
 
-    return response.json();
+    const result = await response.json();
+
+    // CSRFトークンを保存
+    if (result.csrfToken) {
+      this.saveCsrfToken(result.csrfToken);
+    }
+
+    return result;
   }
 
   async verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
@@ -189,7 +252,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/users/profile`, {
       method: "PUT",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
       body: JSON.stringify(data),
     });
 
@@ -204,9 +267,15 @@ class ApiClient {
     const formData = new FormData();
     formData.append("file", file);
 
+    const headers: HeadersInit = {};
+    if (this.csrfToken) {
+      headers["X-CSRF-Token"] = this.csrfToken;
+    }
+
     const response = await fetch(`${this.baseUrl}/api/users/avatar/image`, {
       method: "PUT",
       credentials: "include",
+      headers, // CSRF保護（FormDataなのでContent-Typeは自動設定）
       body: formData,
     });
 
@@ -221,7 +290,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/users/screen-name`, {
       method: "PUT",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
       body: JSON.stringify({ screen_name }),
     });
 
@@ -239,7 +308,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/users/password`, {
       method: "PUT",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
       body: JSON.stringify(data),
     });
 
@@ -299,7 +368,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/posts`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
       body: JSON.stringify({ title, content, published }),
     });
 
@@ -321,7 +390,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {
       method: "PUT",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
       body: JSON.stringify(body),
     });
 
@@ -336,7 +405,7 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {
       method: "DELETE",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(true), // CSRF保護
     });
 
     if (!response.ok) {
