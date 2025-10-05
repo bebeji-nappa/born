@@ -5,6 +5,7 @@ import PostEditTemplate from "@/components/templates/PostEdit";
 import { usePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export const dynamic = "force-dynamic";
 
@@ -70,12 +71,15 @@ export default function PostEditPage({
   if (!user) return <div>Unauthorized</div>;
 
   return (
-    <PostEditTemplate
-      id={post.id}
-      title={post.title}
-      content={post.content}
-      published={post.published}
-      theme={theme}
-    />
+    <>
+      <PageTitle title={`${post.title}の編集`} />
+      <PostEditTemplate
+        id={post.id}
+        title={post.title}
+        content={post.content}
+        published={post.published}
+        theme={theme}
+      />
+    </>
   );
 }

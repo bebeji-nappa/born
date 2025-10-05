@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePosts } from "@/hooks/usePosts";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PageTitle } from "@/components/common/PageTitle";
 
 type Blog = {
   id: number;
@@ -16,11 +17,18 @@ type Blog = {
   userId: string;
 };
 
+type User = {
+  id: string;
+  name: string;
+  screen_name: string | null;
+};
+
 export default function UserBlogPage() {
   const { isLoading: authLoading } = useAuth();
   const params = useParams();
   const screenName = params.id as string; // params.idはscreen_name
   const [userId, setUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [blog, setBlog] = useState<Blog | null>(null);
   const [page, setPage] = useState(1);
   const { posts, pagination, isLoading: postsLoading } = usePosts(userId || undefined, true, page, 10);
@@ -37,6 +45,7 @@ export default function UserBlogPage() {
 
           if (userData.user) {
             setUserId(userData.user.id);
+            setUser(userData.user);
 
             // Blogデータを取得
             const blogRes = await fetch(
@@ -60,12 +69,17 @@ export default function UserBlogPage() {
     return <LoadingSpinner />;
   }
 
+  const pageTitle = blog?.title || (user ? `${user.name}のブログ` : "");
+
   return (
-    <PostListTemplate
-      posts={posts}
-      blog={blog}
-      pagination={pagination}
-      onPageChange={setPage}
-    />
+    <>
+      {pageTitle && <PageTitle title={pageTitle} />}
+      <PostListTemplate
+        posts={posts}
+        blog={blog}
+        pagination={pagination}
+        onPageChange={setPage}
+      />
+    </>
   );
 }
