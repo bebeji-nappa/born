@@ -2,7 +2,7 @@
 
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
-import AuthProvider from "@/components/AuthProvider";
+import AuthProvider from "./AuthProvider";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
 import "../styles/reset.css";
