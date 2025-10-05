@@ -1,5 +1,4 @@
 import { Resend } from 'resend'
-import { BORN_LOGO_SVG } from '../constants/logo'
 
 type EmailOptions = {
   to: string

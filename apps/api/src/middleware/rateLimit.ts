@@ -46,6 +46,7 @@ export async function rateLimitMiddleware(
     const remainingMinutes = Math.ceil((existing.blockedUntil - now) / 60000)
     return c.json({
       error: `Too many failed attempts. Please try again in ${remainingMinutes} minutes.`,
+      code: 'RATE_LIMIT_BLOCKED',
       retryAfter: remainingMinutes,
     }, 429)
   }
@@ -86,6 +87,7 @@ export async function rateLimitMiddleware(
     const remainingMinutes = Math.ceil(config.blockDurationMs / 60000)
     return c.json({
       error: `Too many failed attempts. You are blocked for ${remainingMinutes} minutes.`,
+      code: 'RATE_LIMIT_BLOCKED',
       retryAfter: remainingMinutes,
     }, 429)
   }

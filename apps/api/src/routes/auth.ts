@@ -634,4 +634,43 @@ auth.post(
   }
 )
 
+// レート制限状態確認
+auth.get('/rate-limit-status', async (c) => {
+  try {
+    const db = getDB(c.env.DB)
+    const ip = c.req.header('cf-connecting-ip') ||
+               c.req.header('x-forwarded-for') ||
+               c.req.header('x-real-ip') ||
+               'unknown'
+
+    const key = `${ip}:signin`
+    const now = Date.now()
+
+    const { rateLimits } = await import('../db')
+
+    const rateLimit = await db.select()
+      .from(rateLimits)
+      .where(eq(rateLimits.key, key))
+      .get()
+
+    // ブロックされているかチェック
+    if (rateLimit?.blockedUntil && rateLimit.blockedUntil > now) {
+      const remainingMinutes = Math.ceil((rateLimit.blockedUntil - now) / 60000)
+      return c.json({
+        blocked: true,
+        retryAfter: remainingMinutes
+      })
+    }
+
+    // ブロックされていない
+    return c.json({
+      blocked: false,
+      retryAfter: 0
+    })
+  } catch (error) {
+    console.error('Rate limit status check error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
 export default auth

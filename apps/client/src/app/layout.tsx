@@ -16,8 +16,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const isHomePage = pathname === "/";
   const isPostEditPage = pathname?.match(/^\/post\/[^/]+\/edit$/);
   const isPostCreatePage = pathname === "/post/create";
+  const isBlockedPage = pathname === "/blocked";
 
-  const shouldShowHeader = !isAuthPage && !isHomePage && !isPostEditPage && !isPostCreatePage && !isGlobalLoading;
+  const shouldShowHeader = !isAuthPage && !isHomePage && !isPostEditPage && !isPostCreatePage && !isBlockedPage && !isGlobalLoading;
 
   return (
     <>

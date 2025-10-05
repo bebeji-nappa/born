@@ -128,6 +128,16 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json();
+
+      // レート制限ブロックの場合、ブロックページにリダイレクト（エラーをthrowしない）
+      if (errorData.code === 'RATE_LIMIT_BLOCKED') {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/blocked';
+        }
+        // エラーをthrowせず、Promiseを保留状態にする（リダイレクトが完了するまで）
+        return new Promise(() => {});
+      }
+
       const error: any = new Error(errorData.error || `API Error: ${response.status}`);
       // エラーコードを保持
       if (errorData.code) {
@@ -183,6 +193,20 @@ class ApiClient {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async getRateLimitStatus(): Promise<{ blocked: boolean; retryAfter: number }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/rate-limit-status`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
     }
 
     return response.json();
