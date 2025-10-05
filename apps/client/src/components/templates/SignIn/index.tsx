@@ -147,7 +147,7 @@ const Divider = styled.div`
 
   &::before,
   &::after {
-    content: "";
+    content: '';
     flex: 1;
     height: 1px;
     background-color: #e0e0e0;
@@ -249,7 +249,9 @@ const SignInTemplate = () => {
               <EyeButton
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                aria-label={
+                  showPassword ? "パスワードを隠す" : "パスワードを表示"
+                }
               >
                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
               </EyeButton>
@@ -272,8 +274,7 @@ const SignInTemplate = () => {
         </GitHubButton> */}
 
         <LinkText>
-          アカウントをお持ちでない方は{" "}
-          <Link href="/signup">新規登録</Link>
+          アカウントをお持ちでない方は <Link href="/signup">新規登録</Link>
         </LinkText>
       </Container>
     </Wrapper>

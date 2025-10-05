@@ -143,11 +143,11 @@ const RequirementItem = styled.div<{ met: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  color: ${props => props.met ? '#16a34a' : '#dc2626'};
+  color: ${(props) => (props.met ? "#16a34a" : "#dc2626")};
   white-space: nowrap;
 
   &::before {
-    content: '${props => props.met ? '✓' : '✗'}';
+    content: '${(props) => (props.met ? "✓" : "✗")}';
     font-weight: bold;
   }
 `;
@@ -156,7 +156,8 @@ const PasswordForm: FC = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -178,7 +179,9 @@ const PasswordForm: FC = () => {
     // パスワード強度チェック
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-      setError(passwordValidation.error || "パスワードが要件を満たしていません");
+      setError(
+        passwordValidation.error || "パスワードが要件を満たしていません",
+      );
       return;
     }
 
@@ -199,9 +202,7 @@ const PasswordForm: FC = () => {
       setPasswordConfirmation("");
     } catch (err: any) {
       console.error("Password update error:", err);
-      setError(
-        err.response?.data?.error || "パスワードの更新に失敗しました"
-      );
+      setError(err.response?.data?.error || "パスワードの更新に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -230,7 +231,9 @@ const PasswordForm: FC = () => {
             <EyeButton
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+              aria-label={
+                showPassword ? "パスワードを隠す" : "パスワードを表示"
+              }
             >
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </EyeButton>
@@ -257,9 +260,7 @@ const PasswordForm: FC = () => {
         </InputGroup>
 
         <InputGroup>
-          <Label htmlFor="passwordConfirmation">
-            パスワード（確認用）
-          </Label>
+          <Label htmlFor="passwordConfirmation">パスワード（確認用）</Label>
           <InputWrapper>
             <PasswordInput
               id="passwordConfirmation"
@@ -272,8 +273,14 @@ const PasswordForm: FC = () => {
             />
             <EyeButton
               type="button"
-              onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-              aria-label={showPasswordConfirmation ? "パスワードを隠す" : "パスワードを表示"}
+              onClick={() =>
+                setShowPasswordConfirmation(!showPasswordConfirmation)
+              }
+              aria-label={
+                showPasswordConfirmation
+                  ? "パスワードを隠す"
+                  : "パスワードを表示"
+              }
             >
               {showPasswordConfirmation ? <FiEyeOff /> : <FiEye />}
             </EyeButton>

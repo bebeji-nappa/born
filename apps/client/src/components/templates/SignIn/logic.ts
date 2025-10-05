@@ -11,35 +11,38 @@ export const useSignIn = () => {
     window.location.href = `${apiBaseUrl}/api/auth/signin/github`;
   }, []);
 
-  const emailSignIn = useCallback(async (email: string, password: string) => {
-    try {
-      await apiClient.signIn({ email, password });
+  const emailSignIn = useCallback(
+    async (email: string, password: string) => {
+      try {
+        await apiClient.signIn({ email, password });
 
-      // ログイン成功後、現在のユーザー情報を取得
-      const userData = await apiClient.getCurrentUser();
+        // ログイン成功後、現在のユーザー情報を取得
+        const userData = await apiClient.getCurrentUser();
 
-      // nameがnullの場合は初回ログインとみなす
-      if (userData?.user && !userData.user.name) {
-        router.push("/setup/profile");
-      } else if (userData?.user && userData.user.screen_name) {
-        router.push(`/${userData.user.screen_name}`);
-      } else {
-        router.push("/");
-      }
-    } catch (error: any) {
-      // メール未認証エラーの場合は、メール確認ページへリダイレクト
-      if (error?.code === 'EMAIL_NOT_VERIFIED') {
-        router.push("/verify-email-sent");
-        return;
-      }
+        // nameがnullの場合は初回ログインとみなす
+        if (userData?.user && !userData.user.name) {
+          router.push("/setup/profile");
+        } else if (userData?.user && userData.user.screen_name) {
+          router.push(`/${userData.user.screen_name}`);
+        } else {
+          router.push("/");
+        }
+      } catch (error: any) {
+        // メール未認証エラーの場合は、メール確認ページへリダイレクト
+        if (error?.code === "EMAIL_NOT_VERIFIED") {
+          router.push("/verify-email-sent");
+          return;
+        }
 
-      if (error instanceof Error) {
-        alert(error.message);
-      } else {
-        alert("ログインに失敗しました");
+        if (error instanceof Error) {
+          alert(error.message);
+        } else {
+          alert("ログインに失敗しました");
+        }
       }
-    }
-  }, [router]);
+    },
+    [router],
+  );
 
   return { githubSignIn, emailSignIn };
 };

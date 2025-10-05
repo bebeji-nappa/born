@@ -12,14 +12,15 @@
     "d1:migrate:prod": "wrangler d1 migrations apply DB --env production --remote",
     "fix:lint": "pnpm fix:prettier && pnpm fix:eslint",
     "lint": "pnpm lint:prettier && pnpm lint:eslint",
-    "fix:eslint": "biome format --write",
-    "lint:eslint": "biome check",
-    "fix:prettier": "prettier --write src",
-    "lint:prettier": "prettier --check src",
+    "fix:eslint": "biome format --write ./src",
+    "lint:eslint": "biome check ./src",
+    "fix:prettier": "prettier --write ./src",
+    "lint:prettier": "prettier --check ./src",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint-staged": "pnpm lint-staged"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.3",

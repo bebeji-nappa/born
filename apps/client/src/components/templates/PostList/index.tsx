@@ -24,11 +24,15 @@ type ThemeConfig = {
   backgroundRepeat?: boolean;
 };
 
-const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: boolean }>`
+const Background = styled.div<{
+  bgColor?: string;
+  bgImage?: string;
+  bgRepeat?: boolean;
+}>`
   background: ${(props) => {
     if (props.bgImage) {
-      const repeat = props.bgRepeat ? 'repeat' : 'no-repeat';
-      const size = props.bgRepeat ? 'auto' : 'cover';
+      const repeat = props.bgRepeat ? "repeat" : "no-repeat";
+      const size = props.bgRepeat ? "auto" : "cover";
       return `url(${props.bgImage}) center/${size} ${repeat}`;
     }
     return props.bgColor || "#dae2e6";
@@ -385,17 +389,17 @@ const PaginationContainer = styled.div`
 
 const PaginationButton = styled.button<{ disabled?: boolean }>`
   padding: 12px 24px;
-  background: ${(props) => props.disabled ? "#e5e7eb" : "#000000"};
-  color: ${(props) => props.disabled ? "#9ca3af" : "white"};
+  background: ${(props) => (props.disabled ? "#e5e7eb" : "#000000")};
+  color: ${(props) => (props.disabled ? "#9ca3af" : "white")};
   border: none;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
-  cursor: ${(props) => props.disabled ? "not-allowed" : "pointer"};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: background 0.2s;
 
   &:hover {
-    background: ${(props) => props.disabled ? "#e5e7eb" : "#333333"};
+    background: ${(props) => (props.disabled ? "#e5e7eb" : "#333333")};
   }
 `;
 
@@ -429,7 +433,12 @@ export type PostListTemplateProps = {
   onPageChange: (page: number) => void;
 };
 
-const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTemplateProps) => {
+const PostListTemplate = ({
+  posts,
+  blog,
+  pagination,
+  onPageChange,
+}: PostListTemplateProps) => {
   const router = useRouter();
   const { user } = useAuth();
   const getInitials = (name: string | null) => {
@@ -456,11 +465,15 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
     try {
       const parsedTheme = JSON.parse(blog.theme) as ThemeConfig;
       theme = {
-        backgroundColor: parsedTheme.backgroundColor || defaultTheme.backgroundColor,
+        backgroundColor:
+          parsedTheme.backgroundColor || defaultTheme.backgroundColor,
         textColor: parsedTheme.textColor || defaultTheme.textColor,
         linkColor: parsedTheme.linkColor || defaultTheme.linkColor,
-        sectionBackgroundColor: parsedTheme.sectionBackgroundColor || defaultTheme.sectionBackgroundColor,
-        backgroundRepeat: parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
+        sectionBackgroundColor:
+          parsedTheme.sectionBackgroundColor ||
+          defaultTheme.sectionBackgroundColor,
+        backgroundRepeat:
+          parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
       };
     } catch {
       // JSONパースに失敗した場合はデフォルト値を使用
@@ -470,13 +483,18 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
 
   // 環境に応じて背景画像URLを変換
-  const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
+  const getBackgroundImageUrl = (
+    url: string | null | undefined,
+  ): string | undefined => {
     if (!url) return undefined;
 
     // ローカル開発環境の場合、APIサーバー経由のURLに変換
-    if (process.env.NODE_ENV === 'development' && url.includes('storage-dev.bebeji-nappa.com')) {
-      const key = url.split('.com/')[1];
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image/${key}`;
+    if (
+      process.env.NODE_ENV === "development" &&
+      url.includes("storage-dev.bebeji-nappa.com")
+    ) {
+      const key = url.split(".com/")[1];
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/background-image/${key}`;
     }
 
     return url;
@@ -489,7 +507,11 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
 
   return (
     <>
-      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+      <Background
+        bgColor={theme.backgroundColor}
+        bgImage={backgroundImageUrl}
+        bgRepeat={theme.backgroundRepeat}
+      >
         {showBlogInfo && blog && (
           <PageContainer>
             <BlogDetailSection bgColor={theme.sectionBackgroundColor}>
@@ -498,11 +520,14 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                   {blog.title || `${profileUser?.name || ""}のページ`}
                 </BlogTitle>
                 <BlogDescription textColor={theme.textColor}>
-                  {blog.description || `${profileUser?.name || ""}のページです。`}
+                  {blog.description ||
+                    `${profileUser?.name || ""}のページです。`}
                 </BlogDescription>
               </BlogInfo>
               {user && profileUser && user.id === profileUser.id && (
-                <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
+                <SettingsButton
+                  onClick={() => router.push(`/setting/blog/${blog.id}`)}
+                >
                   ブログ設定
                 </SettingsButton>
               )}
@@ -516,7 +541,12 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                 {posts.map((post) => {
                   const { id, title, user, createdAt } = post;
                   return (
-                    <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
+                    <Article
+                      key={id}
+                      onClick={() => router.push(`/post/${id}`)}
+                      bgColor={theme.sectionBackgroundColor}
+                      textColor={theme.textColor}
+                    >
                       <Header>
                         <Title>{title}</Title>
                         <AuthorSection>
@@ -531,11 +561,18 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                             )}
                           </AuthorAvatar>
                           <AuthorInfo>
-                            <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                            <AuthorName textColor={theme.textColor}>
+                              {user.name || "Unknown Author"}
+                            </AuthorName>
                           </AuthorInfo>
                         </AuthorSection>
                         <DateSection textColor={theme.textColor}>
-                          公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                          公開日:{" "}
+                          {dayjs(
+                            typeof createdAt === "number"
+                              ? createdAt * 1000
+                              : createdAt,
+                          ).format("YYYY年MM月DD日")}
                         </DateSection>
                       </Header>
                     </Article>
@@ -544,8 +581,8 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
               </PostListContainer>
               {pagination && (
                 <PaginationContainer>
-                  {pagination.page > 1 &&(
-                     <PaginationButton
+                  {pagination.page > 1 && (
+                    <PaginationButton
                       disabled={!pagination.hasPrev}
                       onClick={() => onPageChange(pagination.page - 1)}
                     >
@@ -601,7 +638,9 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                     <br />
                     記事を投稿することで、多くの人にあなたの情報を届けることができます。
                   </EmptyStateMessage>
-                  <CreatePostButtonLarge onClick={() => router.push("/post/create")}>
+                  <CreatePostButtonLarge
+                    onClick={() => router.push("/post/create")}
+                  >
                     記事を作成
                   </CreatePostButtonLarge>
                 </>
