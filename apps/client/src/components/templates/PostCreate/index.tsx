@@ -196,12 +196,6 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
     try {
       setIsLoading(true);
       const post = await createPost(e.title, e.content, isPublished);
-
-      // データの反映にタイムラグがあるため、リダイレクト前に5秒待機
-      // staging環境で静的生成されたページの更新が遅延するため、
-      // データが確実に反映されてからリダイレクトする
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
       if (post.published) {
         router.push(`/post/${post.id}`);
       } else {

@@ -205,12 +205,6 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
     try {
       setIsLoading(true);
       const updatedPost = await updatePost(id, e.title, e.content, isPublished);
-
-      // データの反映にタイムラグがあるため、リダイレクト前に5秒待機
-      // staging環境で静的生成されたページの更新が遅延するため、
-      // データが確実に反映されてからリダイレクトする
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
       if (updatedPost.published) {
         router.push(`/post/${id}`);
       } else {
