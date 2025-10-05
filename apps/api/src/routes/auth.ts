@@ -4,9 +4,10 @@ import { z } from 'zod'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
 import { createId } from '@paralleldrive/cuid2'
-import { eq, and } from 'drizzle-orm'
-import { getDB, users, accounts, blogs } from '../db'
+import { eq, and, lt } from 'drizzle-orm'
+import { getDB, users, accounts, blogs, emailVerificationTokens } from '../db'
 import * as bcrypt from 'bcryptjs'
+import { sendEmail, generateVerificationEmailHTML } from '../services/email.service'
 
 type Bindings = {
   DB: D1Database
@@ -16,6 +17,9 @@ type Bindings = {
   FRONTEND_URL: string
   ALLOW_EMAIL: string
   NODE_ENV: string
+  RESEND_API_KEY: string
+  EMAIL_FROM: string
+  EMAIL_FROM_NAME: string
 }
 
 type GitHubUser = {
@@ -303,6 +307,16 @@ auth.post(
         return c.json({ error: 'Invalid email or password' }, 401)
       }
 
+      // メールアドレス確認チェック（開発環境ではスキップ）
+      const isDevEnvironment = c.env.NODE_ENV === 'development' || !c.env.NODE_ENV
+      if (!user.emailVerified && !isDevEnvironment) {
+        return c.json({
+          error: 'Email not verified',
+          code: 'EMAIL_NOT_VERIFIED',
+          message: 'Please verify your email address before signing in'
+        }, 403)
+      }
+
       // セッション作成
       const sessionToken = await createSession(user.id, c.env)
 
@@ -343,6 +357,90 @@ auth.get('/connect/github', async (c) => {
   return c.redirect(authUrl)
 })
 
+// メールアドレス確認
+auth.get('/verify-email', async (c) => {
+  try {
+    const token = c.req.query('token')
+
+    if (!token) {
+      return c.json({ error: 'Verification token is required' }, 400)
+    }
+
+    const db = getDB(c.env.DB)
+    const isDevEnvironment = c.env.NODE_ENV === 'development' || !c.env.NODE_ENV
+
+    // 開発環境の場合、トークンチェックをスキップして直接確認済みにする
+    if (isDevEnvironment) {
+      // トークンに紐づくユーザーを取得（存在確認のみ）
+      const verificationToken = await db.select()
+        .from(emailVerificationTokens)
+        .where(eq(emailVerificationTokens.token, token))
+        .get()
+
+      if (!verificationToken) {
+        return c.json({ error: 'Invalid verification token' }, 400)
+      }
+
+      // ユーザーのメールアドレスを確認済みにする
+      await db.update(users)
+        .set({ emailVerified: new Date().toISOString() })
+        .where(eq(users.id, verificationToken.userId))
+        .run()
+
+      // 使用済みトークンを削除
+      await db.delete(emailVerificationTokens)
+        .where(eq(emailVerificationTokens.token, token))
+        .run()
+
+      return c.json({
+        success: true,
+        message: 'Email verified successfully (dev mode)',
+      })
+    }
+
+    // 本番環境: 通常のトークン検証フロー
+    // トークンの検証
+    const verificationToken = await db.select()
+      .from(emailVerificationTokens)
+      .where(eq(emailVerificationTokens.token, token))
+      .get()
+
+    if (!verificationToken) {
+      return c.json({ error: 'Invalid verification token' }, 400)
+    }
+
+    // トークンの有効期限チェック
+    const now = new Date()
+    if (verificationToken.expires < now) {
+      // 期限切れトークンを削除
+      await db.delete(emailVerificationTokens)
+        .where(eq(emailVerificationTokens.token, token))
+        .run()
+
+      return c.json({ error: 'Verification token has expired' }, 400)
+    }
+
+    // ユーザーのメールアドレスを確認済みにする
+    await db.update(users)
+      .set({ emailVerified: new Date().toISOString() })
+      .where(eq(users.id, verificationToken.userId))
+      .run()
+
+    // 使用済みトークンを削除
+    await db.delete(emailVerificationTokens)
+      .where(eq(emailVerificationTokens.token, token))
+      .run()
+
+    return c.json({
+      success: true,
+      message: 'Email verified successfully',
+    })
+  } catch (error) {
+    console.error('Email verification error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
 // 新規登録
 auth.post(
   '/signup',
@@ -375,6 +473,18 @@ auth.post(
       // メールアドレスの重複チェック
       const existingUser = await db.select().from(users).where(eq(users.email, email)).get()
       if (existingUser) {
+        // 既にAccountが作成されているかチェック
+        const existingAccount = await db.select().from(accounts)
+          .where(and(
+            eq(accounts.userId, existingUser.id),
+            eq(accounts.provider, 'email')
+          ))
+          .get()
+
+        if (existingAccount) {
+          return c.json({ error: 'Account already exists with this email' }, 400)
+        }
+
         return c.json({ error: 'Email already exists' }, 400)
       }
 
@@ -382,7 +492,7 @@ auth.post(
       const saltRounds = 10
       const hash = await bcrypt.hash(password, saltRounds)
 
-      // ユーザー作成
+      // ユーザー作成（メール未確認状態）
       const userId = createId()
       const newUser = await db.insert(users).values({
         id: userId,
@@ -390,6 +500,7 @@ auth.post(
         name: null,
         hash,
         screen_name: userId,
+        emailVerified: null, // メール未確認
         createdAt: new Date().toISOString(),
       }).returning().get()
 
@@ -403,9 +514,50 @@ auth.post(
         updatedAt: new Date().toISOString(),
       }).run()
 
+      // Email/Password用のAccountレコードを作成
+      await db.insert(accounts).values({
+        id: createId(),
+        userId: newUser.id,
+        type: 'credentials',
+        provider: 'email',
+        providerAccountId: email, // emailをproviderAccountIdとして使用
+      }).run()
+
+      // メール確認トークン生成
+      const verificationToken = createId()
+      const expiresAt = new Date()
+      expiresAt.setHours(expiresAt.getHours() + 24) // 24時間有効
+
+      await db.insert(emailVerificationTokens).values({
+        id: createId(),
+        userId: newUser.id,
+        token: verificationToken,
+        expires: expiresAt,
+        createdAt: new Date().toISOString(),
+      }).run()
+
+      // 確認メール送信
+      const frontendUrl = c.env.FRONTEND_URL || 'http://localhost:3000'
+      const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`
+      const emailHTML = generateVerificationEmailHTML(verificationUrl)
+
+      const emailSent = await sendEmail(
+        {
+          to: email,
+          subject: 'メールアドレスの確認 - Born',
+          html: emailHTML,
+        },
+        c.env
+      )
+
+      if (!emailSent) {
+        console.error('Failed to send verification email to:', email)
+        // メール送信失敗してもユーザー登録は成功とする
+      }
+
       return c.json({
         success: true,
-        message: 'User created successfully',
+        message: 'User created successfully. Please check your email to verify your account.',
         user: {
           id: newUser.id,
           email: newUser.email,

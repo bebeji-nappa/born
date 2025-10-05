@@ -79,7 +79,12 @@ class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
+      const error: any = new Error(errorData.error || `API Error: ${response.status}`);
+      // エラーコードを保持
+      if (errorData.code) {
+        error.code = errorData.code;
+      }
+      throw error;
     }
 
     return response.json();
@@ -95,6 +100,21 @@ class ApiClient {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     });
 
     if (!response.ok) {

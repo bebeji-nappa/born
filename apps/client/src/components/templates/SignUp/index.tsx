@@ -250,10 +250,8 @@ const SignUpTemplate = () => {
         password,
         passwordConfirmation,
       });
-      setSuccess("アカウントを作成しました。ログインページに移動します...");
-      setTimeout(() => {
-        router.push("/signin");
-      }, 2000);
+      // サインアップ成功後、確認メール送信ページへリダイレクト
+      router.push("/verify-email-sent");
     } catch (err: any) {
       console.error("Sign up error:", err);
       setError(

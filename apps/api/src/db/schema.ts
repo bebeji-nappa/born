@@ -57,6 +57,18 @@ export const verificationTokens = sqliteTable('VerificationToken', {
   identifierTokenIdx: uniqueIndex('VerificationToken_identifier_token_key').on(table.identifier, table.token),
 }));
 
+// EmailVerificationToken table
+export const emailVerificationTokens = sqliteTable('EmailVerificationToken', {
+  id: text('id').primaryKey(),
+  userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  token: text('token').notNull().unique(),
+  expires: integer('expires', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => ({
+  userIdIdx: index('EmailVerificationToken_userId_idx').on(table.userId),
+  tokenIdx: uniqueIndex('EmailVerificationToken_token_key').on(table.token),
+}));
+
 // Blog table
 export const blogs = sqliteTable('Blog', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -96,3 +108,5 @@ export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 export type Account = typeof accounts.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
+export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
+export type NewEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
