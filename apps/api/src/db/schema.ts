@@ -47,16 +47,6 @@ export const users = sqliteTable('User', {
   emailIdx: uniqueIndex('User_email_key').on(table.email),
 }));
 
-// VerificationToken table
-export const verificationTokens = sqliteTable('VerificationToken', {
-  identifier: text('identifier').notNull(),
-  token: text('token').notNull().unique(),
-  expires: integer('expires', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
-  tokenIdx: uniqueIndex('VerificationToken_token_key').on(table.token),
-  identifierTokenIdx: uniqueIndex('VerificationToken_identifier_token_key').on(table.identifier, table.token),
-}));
-
 // EmailVerificationToken table
 export const emailVerificationTokens = sqliteTable('EmailVerificationToken', {
   id: text('id').primaryKey(),
