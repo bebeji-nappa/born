@@ -1,36 +1,39 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { Metadata } from "next";
 import HomeTemplate from "@/components/templates/Home";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
 
+export const metadata: Metadata = {
+  title: "Born - 自分だけのブログを始めよう",
+  description:
+    "Bornは誰でも簡単に美しいブログを作成できるプラットフォームです。マークダウンで記事を書き、テーマをカスタマイズして、自分だけのブログを公開しましょう。",
+  openGraph: {
+    title: "Born - 自分だけのブログを始めよう",
+    description:
+      "Bornは誰でも簡単に美しいブログを作成できるプラットフォームです。マークダウンで記事を書き、テーマをカスタマイズして、自分だけのブログを公開しましょう。",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Born",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Born - 自分だけのブログを始めよう",
+    description:
+      "Bornは誰でも簡単に美しいブログを作成できるプラットフォームです。マークダウンで記事を書き、テーマをカスタマイズして、自分だけのブログを公開しましょう。",
+    images: ["/opengraph-image"],
+  },
+};
+
 export default function HomePage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && user && user.screen_name) {
-      // ログイン済みの場合はユーザーのブログページへリダイレクト
-      router.push(`/${user.screen_name}`);
-    }
-  }, [user, isLoading, router]);
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  // 未ログインの場合のみトップページを表示
-  if (!user) {
-    return (
-      <>
-        <PageTitle title="ホーム" />
-        <HomeTemplate />
-      </>
-    );
-  }
-
-  return null;
+  return (
+    <>
+      <PageTitle title="ホーム" />
+      <HomeTemplate />
+    </>
+  );
 }
