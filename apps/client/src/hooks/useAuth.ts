@@ -14,8 +14,10 @@ export function useAuth() {
   const checkAuth = async () => {
     try {
       const response = await apiClient.getCurrentUser();
+      console.log("Auth check response:", response);
       setUser(response?.user || null);
-    } catch {
+    } catch (error) {
+      console.error("Auth check error:", error);
       setUser(null);
     } finally {
       setIsLoading(false);
