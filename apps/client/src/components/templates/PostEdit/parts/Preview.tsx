@@ -8,7 +8,9 @@ const StyledRichmd = styled(Richmd)<{ textColor?: string; linkColor?: string }>`
   width: 100%;
   padding: 0 16px;
 
-  ${(props) => props.textColor && `
+  ${(props) =>
+    props.textColor &&
+    `
     color: ${props.textColor};
 
     .richmd p, li, td, th, blockquote, code, pre, h1, h2, h3, h4, h5, h6 {
@@ -16,7 +18,9 @@ const StyledRichmd = styled(Richmd)<{ textColor?: string; linkColor?: string }>`
     }
   `}
 
-  ${(props) => props.linkColor && `
+  ${(props) =>
+    props.linkColor &&
+    `
     .richmd .a {
       color: ${props.linkColor};
     }
@@ -30,7 +34,9 @@ export type PreviewProps = {
 };
 
 const Preview: FC<PreviewProps> = ({ text, textColor, linkColor }) => {
-  return <StyledRichmd text={text} textColor={textColor} linkColor={linkColor} />;
+  return (
+    <StyledRichmd text={text} textColor={textColor} linkColor={linkColor} />
+  );
 };
 
 export default Preview;

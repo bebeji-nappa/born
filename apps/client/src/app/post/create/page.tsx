@@ -32,7 +32,7 @@ export default function PostCreatePage() {
           `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/user/${user.id}`,
           {
             credentials: "include",
-          }
+          },
         );
         const data = await res.json();
 

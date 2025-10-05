@@ -241,12 +241,20 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
           <MarkdownEditor
             value={contentValue || ""}
             onChange={(value) => {
-              setValue("content", value, { shouldValidate: false, shouldDirty: true });
+              setValue("content", value, {
+                shouldValidate: false,
+                shouldDirty: true,
+              });
             }}
             isEdit={isEdit}
             onToggleEdit={handleIsEdit}
             previewComponent={
-              <Preview text={contentValue || ""} id="content" textColor={theme.textColor} linkColor={theme.linkColor} />
+              <Preview
+                text={contentValue || ""}
+                id="content"
+                textColor={theme.textColor}
+                linkColor={theme.linkColor}
+              />
             }
             textareaProps={{ placeholder: "記事の内容を入力..." }}
           />

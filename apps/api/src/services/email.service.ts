@@ -1,47 +1,50 @@
-import { Resend } from 'resend'
+import { Resend } from "resend";
 
 type EmailOptions = {
-  to: string
-  subject: string
-  html: string
+  to: string;
+  subject: string;
+  html: string;
   from?: {
-    email: string
-    name: string
-  }
-}
+    email: string;
+    name: string;
+  };
+};
 
 type Bindings = {
-  RESEND_API_KEY: string
-  EMAIL_FROM: string
-  EMAIL_FROM_NAME: string
-}
+  RESEND_API_KEY: string;
+  EMAIL_FROM: string;
+  EMAIL_FROM_NAME: string;
+};
 
-export async function sendEmail(options: EmailOptions, env: Bindings): Promise<boolean> {
+export async function sendEmail(
+  options: EmailOptions,
+  env: Bindings,
+): Promise<boolean> {
   const from = options.from || {
     email: env.EMAIL_FROM,
     name: env.EMAIL_FROM_NAME,
-  }
+  };
 
   try {
-    const resend = new Resend(env.RESEND_API_KEY)
+    const resend = new Resend(env.RESEND_API_KEY);
 
     const { data, error } = await resend.emails.send({
       from: `${from.name} <${from.email}>`,
       to: options.to,
       subject: options.subject,
       html: options.html,
-    })
+    });
 
     if (error) {
-      console.error('Resend API error:', error)
-      return false
+      console.error("Resend API error:", error);
+      return false;
     }
 
-    console.log('Email sent successfully:', data)
-    return true
+    console.log("Email sent successfully:", data);
+    return true;
   } catch (error) {
-    console.error('Failed to send email:', error)
-    return false
+    console.error("Failed to send email:", error);
+    return false;
   }
 }
 
@@ -106,5 +109,5 @@ export function generateVerificationEmailHTML(verificationUrl: string): string {
         </table>
       </body>
     </html>
-  `
+  `;
 }

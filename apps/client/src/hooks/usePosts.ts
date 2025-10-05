@@ -12,7 +12,12 @@ type Pagination = {
   hasPrev: boolean;
 };
 
-export function usePosts(userId?: string, published?: boolean, page: number = 1, limit: number = 10) {
+export function usePosts(
+  userId?: string,
+  published?: boolean,
+  page: number = 1,
+  limit: number = 10,
+) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +29,10 @@ export function usePosts(userId?: string, published?: boolean, page: number = 1,
     }
   }, [userId, page, limit]);
 
-  const fetchPosts = async (currentPage: number = 1, currentLimit: number = 10) => {
+  const fetchPosts = async (
+    currentPage: number = 1,
+    currentLimit: number = 10,
+  ) => {
     if (!userId) return;
 
     try {

@@ -38,11 +38,11 @@ interface Props {
 const AccountSettingTemplate: FC<Props> = ({ user }) => {
   const { refetch } = useAuth();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    user.image || null
+    user.image || null,
   );
 
   const handleAvatarChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -56,7 +56,7 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
     // ファイルタイプチェック
     if (
       !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-        file.type
+        file.type,
       )
     ) {
       alert("JPEG、PNG、GIF、WebP形式の画像のみアップロード可能です");

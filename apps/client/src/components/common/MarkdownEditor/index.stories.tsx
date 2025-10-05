@@ -5,7 +5,9 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 const PreviewComponent = ({ content }: { content: string }) => (
   <div style={{ padding: "16px" }}>
-    <div dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br />") }} />
+    <div
+      dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, "<br />") }}
+    />
   </div>
 );
 
@@ -47,7 +49,8 @@ export const Default: Story = {
 
 export const WithInitialContent: Story = {
   args: {
-    value: "# タイトル\n\n## サブタイトル\n\n**太字**と*斜体*のテキスト。\n\n- リスト1\n- リスト2\n- リスト3",
+    value:
+      "# タイトル\n\n## サブタイトル\n\n**太字**と*斜体*のテキスト。\n\n- リスト1\n- リスト2\n- リスト3",
     onChange: () => {},
     isEdit: true,
     onToggleEdit: () => {},

@@ -18,7 +18,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const isPostCreatePage = pathname === "/post/create";
   const isBlockedPage = pathname === "/blocked";
 
-  const shouldShowHeader = !isAuthPage && !isHomePage && !isPostEditPage && !isPostCreatePage && !isBlockedPage && !isGlobalLoading;
+  const shouldShowHeader =
+    !isAuthPage &&
+    !isHomePage &&
+    !isPostEditPage &&
+    !isPostCreatePage &&
+    !isBlockedPage &&
+    !isGlobalLoading;
 
   return (
     <>

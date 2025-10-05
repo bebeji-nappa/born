@@ -1,48 +1,53 @@
-import { eq } from 'drizzle-orm'
-import { getDB, sessions, users } from '../db'
-import { createId } from '@paralleldrive/cuid2'
+import { eq } from "drizzle-orm";
+import { getDB, sessions, users } from "../db";
+import { createId } from "@paralleldrive/cuid2";
 
 export interface AuthUser {
-  id: string
-  email: string
-  name: string
-  screen_name: string | null
-  image?: string | null
-  description?: string | null
-  github_id?: string | null
-  createdAt: Date
+  id: string;
+  email: string;
+  name: string;
+  screen_name: string | null;
+  image?: string | null;
+  description?: string | null;
+  github_id?: string | null;
+  createdAt: Date;
 }
 
 export interface SessionData {
-  sessionToken: string
-  user: AuthUser
-  expires: Date
+  sessionToken: string;
+  user: AuthUser;
+  expires: Date;
 }
 
 export function generateSessionToken(): string {
-  const array = new Uint8Array(32)
-  crypto.getRandomValues(array)
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 export async function createSession(userId: string, env: any): Promise<string> {
-  const db = getDB(env.DB)
-  const sessionToken = generateSessionToken()
-  const expires = new Date()
-  expires.setDate(expires.getDate() + 7) // 7 days from now
+  const db = getDB(env.DB);
+  const sessionToken = generateSessionToken();
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 7); // 7 days from now
 
   await db.insert(sessions).values({
     id: createId(),
     sessionToken,
     userId,
     expires,
-  })
+  });
 
-  return sessionToken
+  return sessionToken;
 }
 
-export async function getSessionUser(sessionToken: string, env: any): Promise<AuthUser | null> {
-  const db = getDB(env.DB)
+export async function getSessionUser(
+  sessionToken: string,
+  env: any,
+): Promise<AuthUser | null> {
+  const db = getDB(env.DB);
 
   const result = await db
     .select({
@@ -52,13 +57,13 @@ export async function getSessionUser(sessionToken: string, env: any): Promise<Au
     .from(sessions)
     .innerJoin(users, eq(sessions.userId, users.id))
     .where(eq(sessions.sessionToken, sessionToken))
-    .get()
+    .get();
 
   if (!result || result.session.expires < new Date()) {
     if (result) {
-      await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
+      await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken));
     }
-    return null
+    return null;
   }
 
   return {
@@ -70,13 +75,16 @@ export async function getSessionUser(sessionToken: string, env: any): Promise<Au
     description: result.user.description,
     github_id: result.user.github_id,
     createdAt: new Date(result.user.createdAt!),
-  }
+  };
 }
 
-export async function deleteSession(sessionToken: string, env: any): Promise<void> {
-  const db = getDB(env.DB)
+export async function deleteSession(
+  sessionToken: string,
+  env: any,
+): Promise<void> {
+  const db = getDB(env.DB);
   try {
-    await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
+    await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken));
   } catch {
     // Ignore errors if session doesn't exist
   }
@@ -86,12 +94,15 @@ export async function deleteSession(sessionToken: string, env: any): Promise<voi
  * ユーザーの全セッションを無効化
  * パスワード変更時などに使用
  */
-export async function deleteAllUserSessions(userId: string, env: any): Promise<void> {
-  const db = getDB(env.DB)
+export async function deleteAllUserSessions(
+  userId: string,
+  env: any,
+): Promise<void> {
+  const db = getDB(env.DB);
   try {
-    await db.delete(sessions).where(eq(sessions.userId, userId))
+    await db.delete(sessions).where(eq(sessions.userId, userId));
   } catch (error) {
-    console.error('Failed to delete user sessions:', error)
+    console.error("Failed to delete user sessions:", error);
   }
 }
 
@@ -100,19 +111,19 @@ export async function deleteAllUserSessions(userId: string, env: any): Promise<v
  * 定期的なクリーンアップ用
  */
 export async function deleteExpiredSessions(env: any): Promise<number> {
-  const db = getDB(env.DB)
-  const now = new Date()
+  const db = getDB(env.DB);
+  const now = new Date();
 
   try {
     const result = await db
       .delete(sessions)
       .where(eq(sessions.expires, now))
-      .returning()
+      .returning();
 
-    return result.length
+    return result.length;
   } catch (error) {
-    console.error('Failed to delete expired sessions:', error)
-    return 0
+    console.error("Failed to delete expired sessions:", error);
+    return 0;
   }
 }
 
@@ -120,22 +131,25 @@ export async function deleteExpiredSessions(env: any): Promise<number> {
  * セッションの有効期限を延長
  * アクティブなユーザーのセッション維持用
  */
-export async function refreshSession(sessionToken: string, env: any): Promise<boolean> {
-  const db = getDB(env.DB)
-  const newExpires = new Date()
-  newExpires.setDate(newExpires.getDate() + 7) // 7日延長
+export async function refreshSession(
+  sessionToken: string,
+  env: any,
+): Promise<boolean> {
+  const db = getDB(env.DB);
+  const newExpires = new Date();
+  newExpires.setDate(newExpires.getDate() + 7); // 7日延長
 
   try {
     const result = await db
       .update(sessions)
       .set({ expires: newExpires })
       .where(eq(sessions.sessionToken, sessionToken))
-      .returning()
+      .returning();
 
-    return result.length > 0
+    return result.length > 0;
   } catch (error) {
-    console.error('Failed to refresh session:', error)
-    return false
+    console.error("Failed to refresh session:", error);
+    return false;
   }
 }
 
@@ -143,7 +157,7 @@ export function getGitHubOAuthConfig(env: any) {
   return {
     clientId: env.AUTH_GITHUB_ID!,
     clientSecret: env.AUTH_GITHUB_SECRET!,
-    redirectUri: `${env.API_BASE_URL || 'http://localhost:8000'}/api/auth/callback/github`,
-    scope: 'user:email',
-  }
+    redirectUri: `${env.API_BASE_URL || "http://localhost:8000"}/api/auth/callback/github`,
+    scope: "user:email",
+  };
 }

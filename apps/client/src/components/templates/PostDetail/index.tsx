@@ -28,11 +28,15 @@ type ThemeConfig = {
   backgroundRepeat?: boolean;
 };
 
-const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: boolean }>`
+const Background = styled.div<{
+  bgColor?: string;
+  bgImage?: string;
+  bgRepeat?: boolean;
+}>`
   background: ${(props) => {
     if (props.bgImage) {
-      const repeat = props.bgRepeat ? 'repeat' : 'no-repeat';
-      const size = props.bgRepeat ? 'auto' : 'cover';
+      const repeat = props.bgRepeat ? "repeat" : "no-repeat";
+      const size = props.bgRepeat ? "auto" : "cover";
       return `url(${props.bgImage}) center/${size} ${repeat}`;
     }
     return props.bgColor || "#dae2e6";
@@ -190,7 +194,8 @@ const AuthorProfile = styled.aside<{ bgColor?: string }>`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.bgColor === "transparent" ? "rgba(255, 255, 255, 0.1)" : "#f9fafb"};
+    background-color: ${(props) =>
+      props.bgColor === "transparent" ? "rgba(255, 255, 255, 0.1)" : "#f9fafb"};
   }
 
   @media (max-width: 768px) {
@@ -234,7 +239,6 @@ const AuthorBio = styled.p<{ textColor?: string }>`
   line-height: 1.6;
   margin: 0;
 `;
-
 
 const AuthorProfileDetail = styled.div`
   display: flex;
@@ -387,11 +391,15 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
     try {
       const parsedTheme = JSON.parse(blog.theme) as ThemeConfig;
       theme = {
-        backgroundColor: parsedTheme.backgroundColor || defaultTheme.backgroundColor,
+        backgroundColor:
+          parsedTheme.backgroundColor || defaultTheme.backgroundColor,
         textColor: parsedTheme.textColor || defaultTheme.textColor,
         linkColor: parsedTheme.linkColor || defaultTheme.linkColor,
-        sectionBackgroundColor: parsedTheme.sectionBackgroundColor || defaultTheme.sectionBackgroundColor,
-        backgroundRepeat: parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
+        sectionBackgroundColor:
+          parsedTheme.sectionBackgroundColor ||
+          defaultTheme.sectionBackgroundColor,
+        backgroundRepeat:
+          parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
       };
     } catch {
       // JSONパースに失敗した場合はデフォルト値を使用
@@ -412,13 +420,18 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
   };
 
   // 環境に応じて背景画像URLを変換
-  const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
+  const getBackgroundImageUrl = (
+    url: string | null | undefined,
+  ): string | undefined => {
     if (!url) return undefined;
 
     // ローカル開発環境の場合、APIサーバー経由のURLに変換
-    if (process.env.NODE_ENV === 'development' && url.includes('storage-dev.bebeji-nappa.com')) {
-      const key = url.split('.com/')[1];
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image/${key}`;
+    if (
+      process.env.NODE_ENV === "development" &&
+      url.includes("storage-dev.bebeji-nappa.com")
+    ) {
+      const key = url.split(".com/")[1];
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/background-image/${key}`;
     }
 
     return url;
@@ -428,11 +441,18 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
   return (
     <>
-      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+      <Background
+        bgColor={theme.backgroundColor}
+        bgImage={backgroundImageUrl}
+        bgRepeat={theme.backgroundRepeat}
+      >
         <PageContainer>
           <BlogInfoSection bgColor={theme.sectionBackgroundColor}>
             <BlogInfo>
-              <Link href={`/${user.screen_name}`} style={{ textDecoration: 'none' }}>
+              <Link
+                href={`/${user.screen_name}`}
+                style={{ textDecoration: "none" }}
+              >
                 <BlogTitle textColor={theme.textColor}>
                   {blog?.title || `${user.name}のページ`}
                 </BlogTitle>
@@ -450,11 +470,18 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                 <HeaderContent>
                   <Title textColor={theme.textColor}>{title}</Title>
                   <DateSection textColor={theme.textColor}>
-                    公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                    公開日:{" "}
+                    {dayjs(
+                      typeof createdAt === "number"
+                        ? createdAt * 1000
+                        : createdAt,
+                    ).format("YYYY年MM月DD日")}
                   </DateSection>
                 </HeaderContent>
                 {authUserEmail === user.email && (
-                  <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
+                  <DeleteButton onClick={() => handleDelete(id)}>
+                    削除
+                  </DeleteButton>
                 )}
               </Header>
               <Content textColor={theme.textColor} linkColor={theme.linkColor}>
@@ -470,7 +497,9 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                 )}
               </AuthorAvatar>
               <AuthorProfileDetail>
-                <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                <AuthorName textColor={theme.textColor}>
+                  {user.name || "Unknown Author"}
+                </AuthorName>
                 <AuthorBio textColor={theme.textColor}>
                   {user.description || ""}
                 </AuthorBio>
