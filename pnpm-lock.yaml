@@ -42,6 +42,9 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^2.2.5
+        version: 2.2.5
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.9.10
         version: 0.9.10(@cloudflare/workers-types@4.20251004.0)(@vitest/runner@3.2.4)(@vitest/snapshot@3.2.4)(vitest@3.2.4)
@@ -60,6 +63,12 @@ importers:
       drizzle-kit:
         specifier: ^0.30.6
         version: 0.30.6
+      lint-staged:
+        specifier: ^16.2.3
+        version: 16.2.3
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
       typescript:
         specifier: ^5.8.3
         version: 5.9.3

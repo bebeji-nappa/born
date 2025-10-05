@@ -23,6 +23,12 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "fix:lint": {
+      "cache": false
     }
   }
 }
