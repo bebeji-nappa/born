@@ -23,6 +23,17 @@ import { rateLimitMiddleware } from "../middleware/rateLimit";
 import { generateCsrfToken } from "../lib/csrf";
 import { csrfProtection } from "../middleware/csrf";
 
+// Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
+function getCookieDomain(nodeEnv?: string): string | undefined {
+  if (nodeEnv === "production") {
+    return ".born-docs.com";
+  } else if (nodeEnv === "staging") {
+    return ".born-docs.com";
+  }
+  // ローカル開発環境ではdomainを指定しない
+  return undefined;
+}
+
 type Bindings = {
   DB: D1Database;
   AUTH_GITHUB_ID: string;
@@ -269,11 +280,13 @@ auth.get("/callback/github", async (c) => {
 
     const sessionToken = await createSession(user.id, c.env);
 
+    const cookieDomain = getCookieDomain(c.env.NODE_ENV);
     setCookie(c, "session-token", sessionToken, {
       httpOnly: true,
       secure: true, // Always secure in Workers
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
+      domain: cookieDomain,
     });
 
     const frontendUrl = c.env.FRONTEND_URL || "http://localhost:3000";
@@ -298,8 +311,13 @@ auth.post("/signout", async (c) => {
     await deleteSession(sessionToken, c.env);
   }
 
-  deleteCookie(c, "session-token");
-  deleteCookie(c, "csrf-token");
+  const cookieDomain = getCookieDomain(c.env.NODE_ENV);
+  deleteCookie(c, "session-token", {
+    domain: cookieDomain,
+  });
+  deleteCookie(c, "csrf-token", {
+    domain: cookieDomain,
+  });
   return c.json({ message: "Signed out successfully" });
 });
 
@@ -398,11 +416,13 @@ auth.post(
       // セッション作成
       const sessionToken = await createSession(user.id, c.env);
 
+      const cookieDomain = getCookieDomain(c.env.NODE_ENV);
       setCookie(c, "session-token", sessionToken, {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 7, // 7 days
+        domain: cookieDomain,
       });
 
       // CSRFトークン生成
