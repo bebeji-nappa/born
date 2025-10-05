@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import PostListManagement from "@/components/templates/PostListManagement";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function PostListPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -30,5 +31,10 @@ export default function PostListPage() {
     return null;
   }
 
-  return <PostListManagement posts={posts} onDelete={deletePost} />;
+  return (
+    <>
+      <PageTitle title="投稿一覧" />
+      <PostListManagement posts={posts} onDelete={deletePost} />
+    </>
+  );
 }

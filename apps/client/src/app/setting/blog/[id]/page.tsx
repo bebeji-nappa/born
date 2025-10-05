@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import BlogSettingTemplate from "@/components/templates/BlogSetting";
 import { apiClient, User } from "@/lib/api";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function BlogSettingPage() {
   const params = useParams();
@@ -40,5 +41,10 @@ export default function BlogSettingPage() {
     return null;
   }
 
-  return <BlogSettingTemplate blogId={Number(params.id)} user={user} />;
+  return (
+    <>
+      <PageTitle title="ブログ設定" />
+      <BlogSettingTemplate blogId={Number(params.id)} user={user} />
+    </>
+  );
 }

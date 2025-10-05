@@ -3,6 +3,7 @@
 import ProfileSetupTemplate from "@/components/templates/ProfileSetup";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function ProfileSetupPage() {
   const { user, isLoading } = useAuth();
@@ -11,5 +12,10 @@ export default function ProfileSetupPage() {
     return <LoadingSpinner />;
   }
 
-  return <ProfileSetupTemplate user={user} />;
+  return (
+    <>
+      <PageTitle title="プロフィール登録" />
+      <ProfileSetupTemplate user={user} />
+    </>
+  );
 }
