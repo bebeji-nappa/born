@@ -9,6 +9,7 @@ import { getDB, users, accounts, blogs, emailVerificationTokens } from '../db'
 import * as bcrypt from 'bcryptjs'
 import { sendEmail, generateVerificationEmailHTML } from '../services/email.service'
 import { isValidEmail, sanitizeText } from '../lib/sanitize'
+import { rateLimitMiddleware } from '../middleware/rateLimit'
 
 type Bindings = {
   DB: D1Database
@@ -293,6 +294,12 @@ auth.post(
   })),
   async (c) => {
     try {
+      // レート制限チェック
+      const rateLimitResponse = await rateLimitMiddleware(c, 'signin')
+      if (rateLimitResponse) {
+        return rateLimitResponse
+      }
+
       const { email, password } = c.req.valid('json')
 
       // 追加のメールアドレス検証
@@ -367,6 +374,12 @@ auth.get('/connect/github', async (c) => {
 // メールアドレス確認
 auth.get('/verify-email', async (c) => {
   try {
+    // レート制限チェック
+    const rateLimitResponse = await rateLimitMiddleware(c, 'verify-email')
+    if (rateLimitResponse) {
+      return rateLimitResponse
+    }
+
     const token = c.req.query('token')
 
     if (!token) {
@@ -458,6 +471,12 @@ auth.post(
   })),
   async (c) => {
     try {
+      // レート制限チェック
+      const rateLimitResponse = await rateLimitMiddleware(c, 'signup')
+      if (rateLimitResponse) {
+        return rateLimitResponse
+      }
+
       const { email, password, passwordConfirmation } = c.req.valid('json')
 
       // 追加のメールアドレス検証

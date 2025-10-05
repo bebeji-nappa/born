@@ -69,6 +69,15 @@ export const emailVerificationTokens = sqliteTable('EmailVerificationToken', {
   tokenIdx: uniqueIndex('EmailVerificationToken_token_key').on(table.token),
 }));
 
+// RateLimit table
+export const rateLimits = sqliteTable('RateLimit', {
+  key: text('key').primaryKey(), // IPアドレス + エンドポイント (例: "192.168.1.1:signup")
+  requestCount: integer('requestCount').notNull().default(0),
+  windowStart: integer('windowStart').notNull(), // Unix timestamp
+  blockedUntil: integer('blockedUntil'), // ブロック解除時刻 (NULLならブロックなし)
+  expiresAt: integer('expiresAt').notNull(), // レコード削除用
+});
+
 // Blog table
 export const blogs = sqliteTable('Blog', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -110,3 +119,5 @@ export type Account = typeof accounts.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
 export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
 export type NewEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
+export type RateLimit = typeof rateLimits.$inferSelect;
+export type NewRateLimit = typeof rateLimits.$inferInsert;
