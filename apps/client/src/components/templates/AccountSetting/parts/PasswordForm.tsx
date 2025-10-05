@@ -179,6 +179,14 @@ const PasswordForm: FC = () => {
       return;
     }
 
+    // 現在のパスワードと新しいパスワードが同じかチェック
+    if (currentPassword === password) {
+      setError(
+        "新しいパスワードは現在のパスワードと異なるものを設定してください",
+      );
+      return;
+    }
+
     // パスワード強度チェック
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
@@ -206,6 +214,10 @@ const PasswordForm: FC = () => {
       setCurrentPassword("");
       setPassword("");
       setPasswordConfirmation("");
+      // パスワード表示状態をリセット
+      setShowCurrentPassword(false);
+      setShowPassword(false);
+      setShowPasswordConfirmation(false);
       setError(null);
     } catch (err: any) {
       console.error("Password update error:", err);
