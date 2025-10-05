@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import HomeTemplate from "@/components/templates/Home";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -23,7 +24,12 @@ export default function HomePage() {
 
   // 未ログインの場合のみトップページを表示
   if (!user) {
-    return <HomeTemplate />;
+    return (
+      <>
+        <PageTitle title="ホーム" />
+        <HomeTemplate />
+      </>
+    );
   }
 
   return null;

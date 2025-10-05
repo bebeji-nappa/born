@@ -3,6 +3,7 @@
 import AccountSettingTemplate from "@/components/templates/AccountSetting";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function AccountSettingPage() {
   const { user, isLoading } = useAuth();
@@ -11,5 +12,10 @@ export default function AccountSettingPage() {
     return <LoadingSpinner />;
   }
 
-  return <AccountSettingTemplate user={user} />;
+  return (
+    <>
+      <PageTitle title="アカウント設定" />
+      <AccountSettingTemplate user={user} />
+    </>
+  );
 }

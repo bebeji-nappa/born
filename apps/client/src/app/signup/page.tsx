@@ -1,7 +1,13 @@
 "use client";
 
 import SignUpTemplate from "@/components/templates/SignUp";
+import { PageTitle } from "@/components/common/PageTitle";
 
 export default function SignUpPage() {
-  return <SignUpTemplate />;
+  return (
+    <>
+      <PageTitle title="新規登録" />
+      <SignUpTemplate />
+    </>
+  );
 }
