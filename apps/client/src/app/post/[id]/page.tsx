@@ -70,27 +70,9 @@ async function getBlog(id: number): Promise<Blog | null> {
   }
 }
 
-export async function generateStaticParams() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/posts`, {
-      next: { revalidate: 3600 },
-    });
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const data = await response.json();
-    const posts = data.posts || [];
-
-    return posts.map((post: Post) => ({
-      id: post.id.toString(),
-    }));
-  } catch (error) {
-    console.error("Failed to fetch posts for static generation:", error);
-    return [];
-  }
-}
+// SSGを無効化し、動的レンダリングに変更
+// 投稿の公開/非公開の即時反映のため
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -144,5 +126,7 @@ export default async function PostDetailPage({
 
   const blog = await getBlog(post.blogId);
 
-  return <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />;
+  return (
+    <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />
+  );
 }

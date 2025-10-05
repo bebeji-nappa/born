@@ -3,6 +3,8 @@
 import { FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { User } from "@/lib/api";
+import { useToast } from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};
@@ -15,7 +17,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 40px 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 16px;
   }
 `;
@@ -29,7 +31,7 @@ const Card = styled.div<{ bgColor?: string; textColor?: string }>`
     0 2px 4px -2px rgb(0 0 0 / 0.1);
   padding: 32px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px;
   }
 `;
@@ -40,7 +42,7 @@ const Title = styled.h1<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#111827"};
   margin: 0 0 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -140,7 +142,9 @@ const PresetColor = styled.button<{ color: string }>`
   border: 2px solid #e5e7eb;
   background-color: ${(props) => props.color};
   cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
 
   &:hover {
     transform: scale(1.1);
@@ -370,7 +374,7 @@ const hexToRgba = (hex: string, alpha: number): string => {
 
 // RGBAを16進数カラーコードに変換
 const rgbaToHex = (rgba: string): { color: string; opacity: number } => {
-  if (rgba.startsWith('#')) {
+  if (rgba.startsWith("#")) {
     // 既に16進数の場合
     if (rgba.length === 9) {
       const alpha = parseInt(rgba.slice(7, 9), 16) / 255;
@@ -381,9 +385,9 @@ const rgbaToHex = (rgba: string): { color: string; opacity: number } => {
 
   const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
   if (match) {
-    const r = parseInt(match[1]).toString(16).padStart(2, '0');
-    const g = parseInt(match[2]).toString(16).padStart(2, '0');
-    const b = parseInt(match[3]).toString(16).padStart(2, '0');
+    const r = parseInt(match[1]).toString(16).padStart(2, "0");
+    const g = parseInt(match[2]).toString(16).padStart(2, "0");
+    const b = parseInt(match[3]).toString(16).padStart(2, "0");
     const a = match[4] ? parseFloat(match[4]) : 1;
     return { color: `#${r}${g}${b}`, opacity: a };
   }
@@ -394,16 +398,22 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
   blogId,
   user,
 }) => {
+  const { showToast } = useToast();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
   const [sectionBgOpacity, setSectionBgOpacity] = useState(1);
-  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(null);
-  const [backgroundImagePreview, setBackgroundImagePreview] = useState<string | null>(null);
+  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(
+    null,
+  );
+  const [backgroundImagePreview, setBackgroundImagePreview] = useState<
+    string | null
+  >(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -412,7 +422,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
           `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}`,
           {
             credentials: "include",
-          }
+          },
         );
         const data = await res.json();
         setBlog(data.blog);
@@ -426,7 +436,9 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
 
             // セクション背景色から不透明度を抽出
             if (parsedTheme.sectionBackgroundColor) {
-              const { color, opacity } = rgbaToHex(parsedTheme.sectionBackgroundColor);
+              const { color, opacity } = rgbaToHex(
+                parsedTheme.sectionBackgroundColor,
+              );
               setSectionBgOpacity(opacity);
             }
           } catch {
@@ -465,29 +477,37 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
     if (!confirm("背景画像を削除しますか？")) return;
 
     try {
+      const csrfToken = localStorage.getItem("csrf-token");
+      const headers: HeadersInit = {};
+      if (csrfToken) {
+        headers["X-CSRF-Token"] = csrfToken;
+      }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}/background-image`,
         {
           method: "DELETE",
           credentials: "include",
-        }
+          headers,
+        },
       );
 
       if (res.ok) {
         // セクション背景色の処理（背景画像がある場合のみ不透明度を含める）
-        const sectionBgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+        const sectionBgColor =
+          theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
         const { color } = rgbaToHex(sectionBgColor!);
 
         setTheme({ ...theme, sectionBackgroundColor: color });
         setBackgroundImagePreview(null);
         setBackgroundImageFile(null);
-        alert("背景画像を削除しました");
+        showToast("背景画像を削除しました", "success");
       } else {
-        alert("削除に失敗しました");
+        showToast("削除に失敗しました", "error");
       }
     } catch (error) {
       console.error("Failed to delete image", error);
-      alert("削除に失敗しました");
+      showToast("削除に失敗しました", "error");
     }
   };
 
@@ -502,24 +522,32 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         const formData = new FormData();
         formData.append("file", backgroundImageFile);
 
+        const csrfToken = localStorage.getItem("csrf-token");
+        const uploadHeaders: HeadersInit = {};
+        if (csrfToken) {
+          uploadHeaders["X-CSRF-Token"] = csrfToken;
+        }
+
         const uploadRes = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}/background-image`,
           {
             method: "POST",
             credentials: "include",
+            headers: uploadHeaders,
             body: formData,
-          }
+          },
         );
 
         if (!uploadRes.ok) {
-          alert("画像のアップロードに失敗しました");
+          showToast("画像のアップロードに失敗しました", "error");
           return;
         }
         setUploading(false);
       }
 
       // セクション背景色の処理（背景画像がある場合のみ不透明度を含める）
-      const sectionBgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+      const sectionBgColor =
+        theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
       const { color } = rgbaToHex(sectionBgColor!);
 
       // 背景画像が設定されている場合は不透明度込み、ない場合は不透明度100%
@@ -527,7 +555,9 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       let finalSectionBackgroundColor: string;
 
       if (hasBackgroundImage) {
-        const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
+        const alphaHex = Math.round(sectionBgOpacity * 255)
+          .toString(16)
+          .padStart(2, "0");
         finalSectionBackgroundColor = `${color}${alphaHex}`;
       } else {
         // 背景画像がない場合は不透明度100%（ff）を設定
@@ -540,32 +570,39 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       };
 
       // ブログ情報の更新
+      const csrfToken = localStorage.getItem("csrf-token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (csrfToken) {
+        headers["X-CSRF-Token"] = csrfToken;
+      }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}`,
         {
           method: "PUT",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
           body: JSON.stringify({
             title: title || null,
             description: description || null,
             theme: JSON.stringify(themeToSave),
           }),
-        }
+        },
       );
 
       if (res.ok) {
-        alert("保存しました");
+        showToast("保存しました", "success");
         setBackgroundImageFile(null);
         setTheme(themeToSave);
+        router.push(`/${user.screen_name}`);
       } else {
-        alert("保存に失敗しました");
+        showToast("保存に失敗しました", "error");
       }
     } catch (error) {
       console.error("Failed to save blog", error);
-      alert("保存に失敗しました");
+      showToast("保存に失敗しました", "error");
     } finally {
       setSaving(false);
       setUploading(false);
@@ -594,7 +631,8 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
 
   // セクション背景色を計算（未保存時のプレビュー用）
   const sectionBgColorPreview = (() => {
-    const bgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+    const bgColor =
+      theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
     if (!bgColor) return "white";
 
     // 8桁の16進数形式の場合
@@ -610,13 +648,27 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
   })();
 
   return (
-    <Background bgColor={theme.backgroundColor} style={backgroundImagePreview ? { backgroundImage: `url(${backgroundImagePreview})`, backgroundRepeat: theme.backgroundRepeat ? 'repeat' : 'no-repeat', backgroundSize: theme.backgroundRepeat ? 'auto' : 'cover', backgroundPosition: 'center' } : {}}>
+    <Background
+      bgColor={theme.backgroundColor}
+      style={
+        backgroundImagePreview
+          ? {
+              backgroundImage: `url(${backgroundImagePreview})`,
+              backgroundRepeat: theme.backgroundRepeat ? "repeat" : "no-repeat",
+              backgroundSize: theme.backgroundRepeat ? "auto" : "cover",
+              backgroundPosition: "center",
+            }
+          : {}
+      }
+    >
       <Container>
         <Card bgColor={sectionBgColorPreview} textColor={theme.textColor}>
           <Title textColor={theme.textColor}>ブログ設定</Title>
           <Form onSubmit={handleSave}>
             <FormGroup>
-              <Label htmlFor="title" textColor={theme.textColor}>ブログタイトル</Label>
+              <Label htmlFor="title" textColor={theme.textColor}>
+                ブログタイトル
+              </Label>
               <Input
                 id="title"
                 type="text"
@@ -627,7 +679,9 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="description" textColor={theme.textColor}>ブログ説明</Label>
+              <Label htmlFor="description" textColor={theme.textColor}>
+                ブログ説明
+              </Label>
               <Textarea
                 id="description"
                 value={description}
@@ -641,14 +695,24 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
               <ImageUploadSection>
                 {backgroundImagePreview && (
                   <ImagePreview>
-                    <ImagePreviewImg src={backgroundImagePreview} alt="Background preview" />
-                    <DeleteImageButton type="button" onClick={handleDeleteImage}>
+                    <ImagePreviewImg
+                      src={backgroundImagePreview}
+                      alt="Background preview"
+                    />
+                    <DeleteImageButton
+                      type="button"
+                      onClick={handleDeleteImage}
+                    >
                       削除
                     </DeleteImageButton>
                   </ImagePreview>
                 )}
                 <FileInputLabel htmlFor="backgroundImage">
-                  {backgroundImageFile ? "別の画像を選択" : backgroundImagePreview ? "画像を変更" : "画像をアップロード"}
+                  {backgroundImageFile
+                    ? "別の画像を選択"
+                    : backgroundImagePreview
+                      ? "画像を変更"
+                      : "画像をアップロード"}
                 </FileInputLabel>
                 <HiddenFileInput
                   id="backgroundImage"
@@ -662,10 +726,15 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                       type="checkbox"
                       checked={theme.backgroundRepeat || false}
                       onChange={(e) =>
-                        setTheme({ ...theme, backgroundRepeat: e.target.checked })
+                        setTheme({
+                          ...theme,
+                          backgroundRepeat: e.target.checked,
+                        })
                       }
                     />
-                    <span style={{ color: theme.textColor || "#374151" }}>背景画像を繰り返し表示する</span>
+                    <span style={{ color: theme.textColor || "#374151" }}>
+                      背景画像を繰り返し表示する
+                    </span>
                   </CheckboxLabel>
                 )}
               </ImageUploadSection>
@@ -674,20 +743,26 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             <FormGroup>
               <Label textColor={theme.textColor}>背景色</Label>
               {backgroundImagePreview && (
-                <NoteText textColor={theme.textColor}>※ 背景画像が設定されている場合、背景画像が優先されます</NoteText>
+                <NoteText textColor={theme.textColor}>
+                  ※ 背景画像が設定されている場合、背景画像が優先されます
+                </NoteText>
               )}
               <ColorSection>
                 <ColorInputGroup>
                   <ColorInput
                     type="color"
-                    value={theme.backgroundColor || DEFAULT_THEME.backgroundColor}
+                    value={
+                      theme.backgroundColor || DEFAULT_THEME.backgroundColor
+                    }
                     onChange={(e) =>
                       setTheme({ ...theme, backgroundColor: e.target.value })
                     }
                   />
                   <ColorHexInput
                     type="text"
-                    value={theme.backgroundColor || DEFAULT_THEME.backgroundColor}
+                    value={
+                      theme.backgroundColor || DEFAULT_THEME.backgroundColor
+                    }
                     onChange={(e) =>
                       setTheme({ ...theme, backgroundColor: e.target.value })
                     }
@@ -753,39 +828,58 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <Label textColor={theme.textColor}>ページ内コンテンツの背景色</Label>
+              <Label textColor={theme.textColor}>
+                ページ内コンテンツの背景色
+              </Label>
               <ColorInputGroup>
                 <ColorInput
                   type="color"
                   value={(() => {
-                    const bgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+                    const bgColor =
+                      theme.sectionBackgroundColor ||
+                      DEFAULT_THEME.sectionBackgroundColor;
                     const { color } = rgbaToHex(bgColor!);
                     return color;
                   })()}
                   onChange={(e) => {
-                    const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
-                    const bgImage = backgroundImageFile || backgroundImagePreview;
-                    setTheme({ ...theme, sectionBackgroundColor: `${e.target.value}${bgImage ? alphaHex : ''}` });
+                    const alphaHex = Math.round(sectionBgOpacity * 255)
+                      .toString(16)
+                      .padStart(2, "0");
+                    const bgImage =
+                      backgroundImageFile || backgroundImagePreview;
+                    setTheme({
+                      ...theme,
+                      sectionBackgroundColor: `${e.target.value}${bgImage ? alphaHex : ""}`,
+                    });
                   }}
                 />
                 <ColorHexInput
                   type="text"
                   value={(() => {
-                    const bgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+                    const bgColor =
+                      theme.sectionBackgroundColor ||
+                      DEFAULT_THEME.sectionBackgroundColor;
                     const { color } = rgbaToHex(bgColor!);
-                    const bgImage = backgroundImageFile || backgroundImagePreview;
+                    const bgImage =
+                      backgroundImageFile || backgroundImagePreview;
 
                     if (bgImage) {
-                      const alphaHex = Math.round(sectionBgOpacity * 255).toString(16).padStart(2, '0');
+                      const alphaHex = Math.round(sectionBgOpacity * 255)
+                        .toString(16)
+                        .padStart(2, "0");
                       return `${color}${alphaHex}`;
                     }
                     return color;
                   })()}
                   onChange={(e) => {
-                    setTheme({ ...theme, sectionBackgroundColor: e.target.value });
+                    setTheme({
+                      ...theme,
+                      sectionBackgroundColor: e.target.value,
+                    });
                     // 8桁の16進数から不透明度を抽出
                     if (e.target.value.length === 9) {
-                      const alpha = parseInt(e.target.value.slice(7, 9), 16) / 255;
+                      const alpha =
+                        parseInt(e.target.value.slice(7, 9), 16) / 255;
                       setSectionBgOpacity(alpha);
                     }
                   }}
@@ -794,7 +888,9 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
               </ColorInputGroup>
               {backgroundImagePreview && (
                 <div style={{ marginTop: "12px" }}>
-                  <Label textColor={theme.textColor}>不透明度: {Math.round(sectionBgOpacity * 100)}%</Label>
+                  <Label textColor={theme.textColor}>
+                    不透明度: {Math.round(sectionBgOpacity * 100)}%
+                  </Label>
                   <OpacitySlider
                     type="range"
                     min="0.2"
@@ -804,10 +900,17 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                     onChange={(e) => {
                       const newOpacity = parseFloat(e.target.value);
                       setSectionBgOpacity(newOpacity);
-                      const bgColor = theme.sectionBackgroundColor || DEFAULT_THEME.sectionBackgroundColor;
+                      const bgColor =
+                        theme.sectionBackgroundColor ||
+                        DEFAULT_THEME.sectionBackgroundColor;
                       const { color } = rgbaToHex(bgColor!);
-                      const alphaHex = Math.round(newOpacity * 255).toString(16).padStart(2, '0');
-                      setTheme({ ...theme, sectionBackgroundColor: `${color}${alphaHex}` });
+                      const alphaHex = Math.round(newOpacity * 255)
+                        .toString(16)
+                        .padStart(2, "0");
+                      setTheme({
+                        ...theme,
+                        sectionBackgroundColor: `${color}${alphaHex}`,
+                      });
                     }}
                   />
                   <OpacityLabel textColor={theme.textColor}>
@@ -817,18 +920,21 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
                 </div>
               )}
               {!backgroundImagePreview && (
-                <NoteText style={{ marginTop: "8px" }}>※ 不透明度の調整は背景画像が設定されている場合のみ可能です</NoteText>
+                <NoteText style={{ marginTop: "8px" }}>
+                  ※ 不透明度の調整は背景画像が設定されている場合のみ可能です
+                </NoteText>
               )}
             </FormGroup>
 
             <ButtonGroup>
               <SaveButton type="submit" disabled={saving || uploading}>
-                {uploading ? "アップロード中..." : saving ? "保存中..." : "保存"}
+                {uploading
+                  ? "アップロード中..."
+                  : saving
+                    ? "保存中..."
+                    : "保存"}
               </SaveButton>
-              <CancelButton
-                type="button"
-                onClick={() => window.history.back()}
-              >
+              <CancelButton type="button" onClick={() => window.history.back()}>
                 キャンセル
               </CancelButton>
             </ButtonGroup>

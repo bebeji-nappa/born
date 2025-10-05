@@ -2,9 +2,10 @@
 
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
-import AuthProvider from "@/components/AuthProvider";
+import AuthProvider from "./AuthProvider";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
+import { ToastProvider } from "@/hooks/useToast";
 import "../styles/reset.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,7 +19,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const isPostCreatePage = pathname === "/post/create";
   const isBlockedPage = pathname === "/blocked";
 
-  const shouldShowHeader = !isAuthPage && !isHomePage && !isPostEditPage && !isPostCreatePage && !isBlockedPage && !isGlobalLoading;
+  const shouldShowHeader =
+    !isAuthPage &&
+    !isHomePage &&
+    !isPostEditPage &&
+    !isPostCreatePage &&
+    !isBlockedPage &&
+    !isGlobalLoading;
 
   return (
     <>
@@ -36,9 +43,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <LoadingProvider>
-          <LayoutContent>{children}</LayoutContent>
-        </LoadingProvider>
+        <ToastProvider>
+          <LoadingProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </LoadingProvider>
+        </ToastProvider>
       </body>
     </html>
   );

@@ -44,13 +44,3 @@ pnpm build-storybook
 # Storybook テスト
 pnpm test-storybook
 ```
-
-## デプロイ
-
-```bash
-# プレビュー
-pnpm preview
-
-# デプロイ（Cloudflare Pages）
-pnpm deploy
-```

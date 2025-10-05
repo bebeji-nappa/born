@@ -1,6 +1,7 @@
 import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { User, apiClient } from "@/lib/api";
+import { useToast } from "@/hooks/useToast";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 
@@ -32,29 +33,33 @@ interface Props {
 }
 
 const ProfileSetupTemplate: FC<Props> = ({ user }) => {
+  const { showToast } = useToast();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
-    user.image || null
+    user.image || null,
   );
 
   const handleAvatarChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // ファイルサイズチェック (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert("画像サイズは2MB以下にしてください");
+      showToast("画像サイズは2MB以下にしてください", "error");
       return;
     }
 
     // ファイルタイプチェック
     if (
       !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(
-        file.type
+        file.type,
       )
     ) {
-      alert("JPEG、PNG、GIF、WebP形式の画像のみアップロード可能です");
+      showToast(
+        "JPEG、PNG、GIF、WebP形式の画像のみアップロード可能です",
+        "error",
+      );
       return;
     }
 
@@ -63,7 +68,7 @@ const ProfileSetupTemplate: FC<Props> = ({ user }) => {
       setAvatarPreview(result.url);
     } catch (err) {
       console.error("Avatar update error:", err);
-      alert("アバター画像の更新に失敗しました");
+      showToast("アバター画像の更新に失敗しました", "error");
     }
   };
 

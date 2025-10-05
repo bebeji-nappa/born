@@ -15,7 +15,7 @@ const StyledPageHeader = styled.header`
   top: 0;
   z-index: 100;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 12px 16px;
   }
 `;
@@ -117,7 +117,8 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   min-width: 200px;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   visibility: ${(props) => (props.isOpen ? "visible" : "hidden")};
-  transform: ${(props) => (props.isOpen ? "translateY(0)" : "translateY(-8px)")};
+  transform: ${(props) =>
+    props.isOpen ? "translateY(0)" : "translateY(-8px)"};
   transition: all 0.2s ease-in-out;
   z-index: 1000;
 `;
@@ -203,7 +204,9 @@ export const PageHeader = () => {
         <RightSection>
           {isAuthenticated && user?.name ? (
             <>
-              <CreatePostButton onClick={() => window.location.href = "/post/create"}>
+              <CreatePostButton
+                onClick={() => (window.location.href = "/post/create")}
+              >
                 記事を作成
               </CreatePostButton>
 
@@ -221,20 +224,36 @@ export const PageHeader = () => {
                       height={40}
                     />
                   ) : (
-                    <div>
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
+                    <div>{user.name.charAt(0).toUpperCase()}</div>
                   )}
                 </AvatarButton>
 
                 <DropdownMenu isOpen={isMenuOpen}>
-                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = `/${user.screen_name}`)}>
+                  <MenuItem
+                    onClick={() =>
+                      handleMenuItemClick(
+                        () => (window.location.href = `/${user.screen_name}`),
+                      )
+                    }
+                  >
                     自分のブログを確認
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/post/list")}>
+                  <MenuItem
+                    onClick={() =>
+                      handleMenuItemClick(
+                        () => (window.location.href = "/post/list"),
+                      )
+                    }
+                  >
                     記事の管理
                   </MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick(() => window.location.href = "/setting/account")}>
+                  <MenuItem
+                    onClick={() =>
+                      handleMenuItemClick(
+                        () => (window.location.href = "/setting/account"),
+                      )
+                    }
+                  >
                     アカウント設定
                   </MenuItem>
                   <MenuItem
@@ -247,7 +266,9 @@ export const PageHeader = () => {
               </UserMenuContainer>
             </>
           ) : (
-            <CreatePostButton onClick={() => window.location.href = "/signin"}>
+            <CreatePostButton
+              onClick={() => (window.location.href = "/signin")}
+            >
               ログイン
             </CreatePostButton>
           )}

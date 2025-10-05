@@ -107,7 +107,7 @@ const InfoItem = styled.li`
   }
 
   &::before {
-    content: "•";
+    content: '•';
     color: #4f46e5;
     font-weight: bold;
     margin-top: 2px;
@@ -179,17 +179,13 @@ const EmailSentTemplate = () => {
             <InfoItem>
               メール内の「メールアドレスを確認」ボタンをクリックしてください
             </InfoItem>
-            <InfoItem>
-              確認が完了したら、ログインできるようになります
-            </InfoItem>
+            <InfoItem>確認が完了したら、ログインできるようになります</InfoItem>
           </InfoList>
         </InfoBox>
 
         <LinkButton href="/signin">ログインページへ</LinkButton>
 
-        <HelpText>
-          ※確認リンクの有効期限は24時間です
-        </HelpText>
+        <HelpText>※確認リンクの有効期限は24時間です</HelpText>
       </Container>
     </Wrapper>
   );

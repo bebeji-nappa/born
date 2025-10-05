@@ -85,7 +85,7 @@ const UserProfileSection = styled.div`
   flex-direction: column;
   min-width: 400px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 100%;
   }
 `;

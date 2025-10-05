@@ -93,7 +93,7 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const SubmitButton = styled.button`
+const SubmitButton = styled.button<{ disabled?: boolean }>`
   width: 100px;
   background-color: #000000;
   color: white;
@@ -106,6 +106,11 @@ const SubmitButton = styled.button`
 
   &:hover {
     background-color: #333333;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -184,6 +189,7 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
   const [alertMessage, setAlertMessage] = useState("");
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
   const [isPublished, setIsPublished] = useState(published);
+  const [isLoading, setIsLoading] = useState(false);
   const { updatePost } = usePosts();
 
   const { handleSubmit, register, getValues, setValue, watch } = useForm({
@@ -197,8 +203,9 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
 
   const onSubmit = async (e: any) => {
     try {
-      await updatePost(id, e.title, e.content, isPublished);
-      if (isPublished) {
+      setIsLoading(true);
+      const updatedPost = await updatePost(id, e.title, e.content, isPublished);
+      if (updatedPost.published) {
         router.push(`/post/${id}`);
       } else {
         router.push("/post/list");
@@ -206,6 +213,8 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
     } catch (error) {
       console.error("Failed to update post:", error);
       setAlertMessage("Failed to update post. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -232,8 +241,12 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
               <span>{isPublished ? "公開する" : "下書き保存"}</span>
             </SwitchLabel>
           </PublishSwitchWrapper>
-          <SubmitButton type="button" onClick={handleSubmit(onSubmit)}>
-            {isPublished ? "公開する" : "下書き保存"}
+          <SubmitButton
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          >
+            {isLoading ? "保存中..." : isPublished ? "公開する" : "下書き保存"}
           </SubmitButton>
         </HeaderRight>
       </CustomHeader>
@@ -247,12 +260,19 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
           <MarkdownEditor
             value={contentValue || ""}
             onChange={(value) => {
-              setValue("content", value, { shouldValidate: false, shouldDirty: true });
+              setValue("content", value, {
+                shouldValidate: false,
+                shouldDirty: true,
+              });
             }}
             isEdit={isEdit}
             onToggleEdit={handleIsEdit}
             previewComponent={
-              <Preview text={contentValue || ""} textColor={theme.textColor} linkColor={theme.linkColor} />
+              <Preview
+                text={contentValue || ""}
+                textColor={theme.textColor}
+                linkColor={theme.linkColor}
+              />
             }
           />
         </Form>

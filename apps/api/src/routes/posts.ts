@@ -1,6 +1,6 @@
-import { Hono } from 'hono'
-import { zValidator } from '@hono/zod-validator'
-import { z } from 'zod'
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
 import {
   createPost,
   deletePostById,
@@ -8,148 +8,157 @@ import {
   getAllPostsByUserId,
   getPostById,
   updatePostById,
-} from '../services/posts.service'
-import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth'
-import { csrfProtection } from '../middleware/csrf'
+} from "../services/posts.service";
+import { authMiddleware, optionalAuthMiddleware } from "../middleware/auth";
+import { csrfProtection } from "../middleware/csrf";
 
 type Bindings = {
-  DATABASE_URL: string
-}
+  DATABASE_URL: string;
+};
 
-const posts = new Hono<{ Bindings: Bindings }>()
+const posts = new Hono<{ Bindings: Bindings }>();
 
-posts.get('/', async (c) => {
+posts.get("/", async (c) => {
   try {
-    const user = c.get('user')
-    const result = await getAllPosts(c.env, user.id, true)
-    return c.json(result)
+    const user = c.get("user");
+    const result = await getAllPosts(c.env, user.id, true);
+    return c.json(result);
   } catch (error) {
-    return c.json({ error: 'Failed to fetch posts' }, 500)
+    return c.json({ error: "Failed to fetch posts" }, 500);
   }
-})
+});
 
 posts.get(
-  '/:id',
-  zValidator('param', z.object({ id: z.string().transform(Number) })),
+  "/:id",
+  zValidator("param", z.object({ id: z.string().transform(Number) })),
   async (c) => {
     try {
-      const { id } = c.req.valid('param')
-      const result = await getPostById(id, c.env)
-      return c.json(result)
+      const { id } = c.req.valid("param");
+      const result = await getPostById(id, c.env);
+      return c.json(result);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('No post with id')) {
-        return c.json({ error: error.message }, 404)
+      if (error instanceof Error && error.message.includes("No post with id")) {
+        return c.json({ error: error.message }, 404);
       }
-      return c.json({ error: 'Failed to fetch post' }, 500)
+      return c.json({ error: "Failed to fetch post" }, 500);
     }
-  }
-)
+  },
+);
 
 posts.get(
-  '/user/:userId',
-  zValidator('param', z.object({ userId: z.string() })),
-  zValidator('query', z.object({
-    published: z.string().optional(),
-    page: z.string().optional(),
-    limit: z.string().optional(),
-  })),
+  "/user/:userId",
+  zValidator("param", z.object({ userId: z.string() })),
+  zValidator(
+    "query",
+    z.object({
+      published: z.string().optional(),
+      page: z.string().optional(),
+      limit: z.string().optional(),
+    }),
+  ),
   async (c) => {
     try {
-      const { userId } = c.req.valid('param')
-      const { published, page, limit } = c.req.valid('query')
-      const pageNum = page ? parseInt(page) : 1
-      const limitNum = limit ? parseInt(limit) : 10
+      const { userId } = c.req.valid("param");
+      const { published, page, limit } = c.req.valid("query");
+      const pageNum = page ? parseInt(page) : 1;
+      const limitNum = limit ? parseInt(limit) : 10;
       const result = await getAllPostsByUserId(
         userId,
-        published === '1' ? true : undefined,
+        published === "1" ? true : undefined,
         c.env,
         pageNum,
-        limitNum
-      )
-      return c.json(result)
+        limitNum,
+      );
+      return c.json(result);
     } catch (error) {
-      return c.json({ error: 'Failed to fetch posts' }, 500)
+      return c.json({ error: "Failed to fetch posts" }, 500);
     }
-  }
-)
+  },
+);
 
 posts.post(
-  '/',
+  "/",
   authMiddleware,
   zValidator(
-    'json',
+    "json",
     z.object({
       title: z.string(),
       content: z.string(),
       published: z.boolean().default(false),
-    })
+    }),
   ),
   async (c) => {
     try {
       // CSRF保護
-      const csrfError = await csrfProtection(c)
+      const csrfError = await csrfProtection(c);
       if (csrfError) {
-        return csrfError
+        return csrfError;
       }
 
-      const user = c.get('user')
-      const { title, content, published } = c.req.valid('json')
-      const result = await createPost(title, content, user.id, published, c.env)
-      return c.json(result, 201)
+      const user = c.get("user");
+      const { title, content, published } = c.req.valid("json");
+      const result = await createPost(
+        title,
+        content,
+        user.id,
+        published,
+        c.env,
+      );
+      return c.json(result, 201);
     } catch (error) {
-      return c.json({ error: 'Failed to create post' }, 500)
+      return c.json({ error: "Failed to create post" }, 500);
     }
-  }
-)
+  },
+);
 
 posts.put(
-  '/:id',
+  "/:id",
   authMiddleware,
-  zValidator('param', z.object({ id: z.string().transform(Number) })),
+  zValidator("param", z.object({ id: z.string().transform(Number) })),
   zValidator(
-    'json',
+    "json",
     z.object({
       title: z.string(),
       content: z.string(),
       published: z.boolean(),
-    })
+    }),
   ),
   async (c) => {
     try {
       // CSRF保護
-      const csrfError = await csrfProtection(c)
+      const csrfError = await csrfProtection(c);
       if (csrfError) {
-        return csrfError
+        return csrfError;
       }
 
-      const { id } = c.req.valid('param')
-      const { title, content, published } = c.req.valid('json')
-      const result = await updatePostById(id, title, content, published, c.env)
-      return c.json(result)
+      const { id } = c.req.valid("param");
+      const { title, content, published } = c.req.valid("json");
+      const result = await updatePostById(id, title, content, published, c.env);
+      return c.json(result);
     } catch (error) {
-      return c.json({ error: 'Failed to update post' }, 500)
+      return c.json({ error: "Failed to update post" }, 500);
     }
-  }
-)
+  },
+);
 
 posts.delete(
-  '/:id',
+  "/:id",
   authMiddleware,
-  zValidator('param', z.object({ id: z.string().transform(Number) })),
+  zValidator("param", z.object({ id: z.string().transform(Number) })),
   async (c) => {
     try {
       // CSRF保護
-      const csrfError = await csrfProtection(c)
+      const csrfError = await csrfProtection(c);
       if (csrfError) {
-        return csrfError
+        return csrfError;
       }
-      const { id } = c.req.valid('param')
-      const result = await deletePostById(id, c.env)
-      return c.json(result)
+      const { id } = c.req.valid("param");
+      const result = await deletePostById(id, c.env);
+      return c.json(result);
     } catch (error) {
-      return c.json({ error: 'Failed to delete post' }, 500)
+      return c.json({ error: "Failed to delete post" }, 500);
     }
-  }
-)
+  },
+);
 
-export default posts
+export default posts;

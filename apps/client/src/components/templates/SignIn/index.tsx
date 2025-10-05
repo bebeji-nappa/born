@@ -46,6 +46,17 @@ const Subtitle = styled.p`
   text-align: center;
 `;
 
+const ErrorMessage = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+`;
+
 const Form = styled.form`
   width: 100%;
   display: flex;
@@ -147,7 +158,7 @@ const Divider = styled.div`
 
   &::before,
   &::after {
-    content: "";
+    content: '';
     flex: 1;
     height: 1px;
     background-color: #e0e0e0;
@@ -198,10 +209,15 @@ const SignInTemplate = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await emailSignIn(email, password);
+    setError(null);
+    const errorMessage = await emailSignIn(email, password);
+    if (errorMessage) {
+      setError(errorMessage);
+    }
   };
 
   return (
@@ -221,6 +237,8 @@ const SignInTemplate = () => {
 
         <Title>ログイン</Title>
         <Subtitle>アカウントにログインしてください</Subtitle>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <Form onSubmit={handleSubmit}>
           <InputGroup>
@@ -249,7 +267,9 @@ const SignInTemplate = () => {
               <EyeButton
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                aria-label={
+                  showPassword ? "パスワードを隠す" : "パスワードを表示"
+                }
               >
                 {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
               </EyeButton>
@@ -259,7 +279,7 @@ const SignInTemplate = () => {
           <PrimaryButton type="submit">ログイン</PrimaryButton>
         </Form>
 
-        <Divider>または</Divider>
+        {/* <Divider>または</Divider>
 
         <GitHubButton type="button" onClick={githubSignIn}>
           <Image
@@ -269,11 +289,10 @@ const SignInTemplate = () => {
             height={20}
           />
           GitHub でログイン
-        </GitHubButton>
+        </GitHubButton> */}
 
         <LinkText>
-          アカウントをお持ちでない方は{" "}
-          <Link href="/signup">新規登録</Link>
+          アカウントをお持ちでない方は <Link href="/signup">新規登録</Link>
         </LinkText>
       </Container>
     </Wrapper>
