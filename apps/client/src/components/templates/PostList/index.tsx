@@ -496,7 +496,9 @@ const PostListTemplate = ({
   const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
 
   const showBlogInfo = blog !== null;
-  const profileUser = firstPostUser || (blog && user);
+  // blog が存在し、blog.userId と user.id が一致する場合は user を使用
+  const profileUser =
+    firstPostUser || (blog && user && blog.userId === user.id ? user : null);
 
   return (
     <>

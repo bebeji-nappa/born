@@ -74,6 +74,8 @@ bucket_name = "born-storage"
 [env.production.vars]
 NODE_ENV = "production"
 STORAGE_URL = "https://storage.born-docs.com"
+EMAIL_FROM = "noreply@born-docs.com"
+EMAIL_FROM_NAME = "Born"
 
 [observability.logs]
 enabled = true
