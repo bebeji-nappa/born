@@ -2,11 +2,10 @@
 
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
-import AuthProviderGuard from "./AuthProvider";
+import AuthProvider from "./AuthProvider";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
 import { ToastProvider } from "@/hooks/useToast";
-import { AuthProvider } from "@/contexts/AuthContext";
 import "../styles/reset.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,7 +30,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       {shouldShowHeader && <PageHeader />}
-      <AuthProviderGuard>{children}</AuthProviderGuard>
+      <AuthProvider>{children}</AuthProvider>
     </>
   );
 }
@@ -44,13 +43,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <AuthProvider>
-          <ToastProvider>
-            <LoadingProvider>
-              <LayoutContent>{children}</LayoutContent>
-            </LoadingProvider>
-          </ToastProvider>
-        </AuthProvider>
+        <ToastProvider>
+          <LoadingProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </LoadingProvider>
+        </ToastProvider>
       </body>
     </html>
   );
