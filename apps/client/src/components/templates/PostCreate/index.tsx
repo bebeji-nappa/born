@@ -93,7 +93,7 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const SubmitButton = styled.button`
+const SubmitButton = styled.button<{ disabled?: boolean }>`
   width: 100px;
   background-color: #000000;
   color: white;
@@ -106,6 +106,11 @@ const SubmitButton = styled.button`
 
   &:hover {
     background-color: #333333;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -175,6 +180,7 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
   const [isPublished, setIsPublished] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { createPost } = usePosts(userId);
 
   const { handleSubmit, register, getValues, setValue, watch } = useForm({
@@ -188,8 +194,9 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
 
   const onSubmit = async (e: any) => {
     try {
+      setIsLoading(true);
       const post = await createPost(e.title, e.content, isPublished);
-      if (isPublished) {
+      if (post.published) {
         router.push(`/post/${post.id}`);
       } else {
         router.push("/post/list");
@@ -197,6 +204,8 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
     } catch (error) {
       console.error("Failed to create post:", error);
       setAlertMessage("Failed to create post. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -223,8 +232,12 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
               <span>{isPublished ? "公開する" : "下書き保存"}</span>
             </SwitchLabel>
           </PublishSwitchWrapper>
-          <SubmitButton type="button" onClick={handleSubmit(onSubmit)}>
-            {isPublished ? "公開する" : "下書き保存"}
+          <SubmitButton
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          >
+            {isLoading ? "保存中..." : isPublished ? "公開する" : "下書き保存"}
           </SubmitButton>
         </HeaderRight>
       </CustomHeader>
