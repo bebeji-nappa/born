@@ -32,17 +32,12 @@ export default function AuthProvider({ children }: AuthGuardProps) {
     const isEditPage = /^\/post\/\d+\/edit$/.test(pathname);
     const isSigninPage = pathname === "/signin";
 
-    console.log(user);
-
     // 投稿作成・編集ページで未認証の場合、サインインページにリダイレクト
     if ((isCreatePage || isEditPage) && !user) {
       router.push("/signin");
       return;
-    }
-
-    // 認証済みでサインインページにいる場合、トップページにリダイレクト
-    if (user && isSigninPage) {
-      router.push("/");
+    } else if (user && isSigninPage) {
+      router.push(`/${user.screen_name}`);
       return;
     }
 

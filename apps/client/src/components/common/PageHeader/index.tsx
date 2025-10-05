@@ -14,6 +14,7 @@ const StyledPageHeader = styled.header`
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 60px;
 
   @media (max-width: 860px) {
     padding: 12px 16px;

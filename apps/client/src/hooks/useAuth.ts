@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { apiClient, type User } from "@/lib/api";
 
 export function useAuth() {
@@ -11,7 +11,7 @@ export function useAuth() {
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await apiClient.getCurrentUser();
       console.log("Auth check response:", response);
@@ -22,7 +22,7 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [apiClient]);
 
   const signOut = async () => {
     try {
@@ -37,6 +37,8 @@ export function useAuth() {
   const signIn = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/auth/signin/github`;
   };
+
+  console.log("useAuth user:", user);
 
   return {
     user,
