@@ -132,7 +132,8 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
         description: data.description || null,
       });
 
-      router.push("/"); // プロフィール更新後にトップページへリダイレクト
+      // ユーザーのブログトップページにリダイレクト
+      router.push(`/${user.screen_name}`);
     } catch (err) {
       console.error("Profile update error:", err);
       setError("root", { message: "プロフィールの更新に失敗しました" });
