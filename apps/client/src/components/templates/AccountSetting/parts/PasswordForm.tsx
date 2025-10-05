@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { apiClient } from "@/lib/api";
 import { validatePassword } from "@/lib/validation";
+import { useToast } from "@/hooks/useToast";
 
 const Section = styled.section`
   border: 1px solid #e1e5e9;
@@ -125,12 +126,6 @@ const ErrorMessage = styled.p`
   margin-top: 4px;
 `;
 
-const SuccessMessage = styled.p`
-  font-size: 14px;
-  color: #16a34a;
-  margin-top: 4px;
-`;
-
 const PasswordRequirements = styled.div`
   font-size: 12px;
   margin-top: 8px;
@@ -153,13 +148,13 @@ const RequirementItem = styled.div<{ met: boolean }>`
 `;
 
 const PasswordForm: FC = () => {
+  const { showToast } = useToast();
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // パスワード要件のチェック
@@ -174,7 +169,6 @@ const PasswordForm: FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
 
     // パスワード強度チェック
     const passwordValidation = validatePassword(password);
@@ -197,12 +191,16 @@ const PasswordForm: FC = () => {
         password,
         passwordConfirmation,
       });
-      setSuccess("パスワードを更新しました");
+      showToast("パスワードを更新しました", "success");
       setPassword("");
       setPasswordConfirmation("");
+      setError(null);
     } catch (err: any) {
       console.error("Password update error:", err);
-      setError(err.response?.data?.error || "パスワードの更新に失敗しました");
+      showToast(
+        err.response?.data?.error || "パスワードの更新に失敗しました",
+        "error",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -288,7 +286,6 @@ const PasswordForm: FC = () => {
         </InputGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        {success && <SuccessMessage>{success}</SuccessMessage>}
 
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "更新中..." : "パスワードを更新"}

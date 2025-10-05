@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
+import { useToast } from "@/hooks/useToast";
 
 const Section = styled.div`
   background: white;
@@ -84,15 +85,9 @@ const UserProfileSection = styled.div`
   flex-direction: column;
   min-width: 400px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 100%;
   }
-`;
-
-const ErrorMessage = styled.p`
-  color: #d73a49;
-  font-size: 14px;
-  margin-top: 8px;
 `;
 
 interface FormData {
@@ -105,10 +100,10 @@ export type ProfileFormProps = {
 };
 
 const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
+  const { showToast } = useToast();
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
@@ -123,9 +118,10 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
         name: data.name,
         description: data.description || null,
       });
+      showToast("プロフィールを更新しました", "success");
     } catch (err) {
       console.error("Profile update error:", err);
-      setError("root", { message: "プロフィールの更新に失敗しました" });
+      showToast("プロフィールの更新に失敗しました", "error");
     }
   };
 
@@ -149,8 +145,6 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
             disabled={isSubmitting}
             placeholder="あなたについて教えてください"
           />
-
-          {errors.root && <ErrorMessage>{errors.root.message}</ErrorMessage>}
 
           <SaveButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? "保存中..." : "保存"}

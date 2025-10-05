@@ -16,7 +16,7 @@ const Container = styled.div`
   padding: 24px;
   min-height: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px;
   }
 `;
@@ -36,7 +36,7 @@ const Content = styled.div`
   align-items: center;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 `;
@@ -46,7 +46,7 @@ const LogoContainer = styled.div`
   width: 400px;
   height: 200px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 200px;
     height: 200px;
   }
@@ -59,7 +59,7 @@ const ErrorText = styled.h1`
   margin: 0;
   text-align: center;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;

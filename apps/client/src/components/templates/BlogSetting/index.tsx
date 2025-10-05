@@ -3,6 +3,7 @@
 import { FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { User } from "@/lib/api";
+import { useToast } from "@/hooks/useToast";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};
@@ -15,7 +16,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 40px 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 16px;
   }
 `;
@@ -29,7 +30,7 @@ const Card = styled.div<{ bgColor?: string; textColor?: string }>`
     0 2px 4px -2px rgb(0 0 0 / 0.1);
   padding: 32px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px;
   }
 `;
@@ -40,7 +41,7 @@ const Title = styled.h1<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#111827"};
   margin: 0 0 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -396,6 +397,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
   blogId,
   user,
 }) => {
+  const { showToast } = useToast();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -490,13 +492,13 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         setTheme({ ...theme, sectionBackgroundColor: color });
         setBackgroundImagePreview(null);
         setBackgroundImageFile(null);
-        alert("背景画像を削除しました");
+        showToast("背景画像を削除しました", "success");
       } else {
-        alert("削除に失敗しました");
+        showToast("削除に失敗しました", "error");
       }
     } catch (error) {
       console.error("Failed to delete image", error);
-      alert("削除に失敗しました");
+      showToast("削除に失敗しました", "error");
     }
   };
 
@@ -521,7 +523,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         );
 
         if (!uploadRes.ok) {
-          alert("画像のアップロードに失敗しました");
+          showToast("画像のアップロードに失敗しました", "error");
           return;
         }
         setUploading(false);
@@ -569,15 +571,15 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       );
 
       if (res.ok) {
-        alert("保存しました");
+        showToast("保存しました", "success");
         setBackgroundImageFile(null);
         setTheme(themeToSave);
       } else {
-        alert("保存に失敗しました");
+        showToast("保存に失敗しました", "error");
       }
     } catch (error) {
       console.error("Failed to save blog", error);
-      alert("保存に失敗しました");
+      showToast("保存に失敗しました", "error");
     } finally {
       setSaving(false);
       setUploading(false);

@@ -12,7 +12,6 @@ type Bindings = {
   AUTH_GITHUB_SECRET: string;
   API_BASE_URL: string;
   FRONTEND_URL: string;
-  ALLOW_EMAIL: string;
   NODE_ENV: string;
   STORAGE: R2Bucket;
 };
@@ -51,6 +50,8 @@ app.use(
       "X-Requested-With",
       "Accept",
       "Origin",
+      "x-csrf-token",
+      "X-CSRF-Token",
     ],
     exposeHeaders: ["Set-Cookie"],
   }),

@@ -27,17 +27,19 @@ export const useSignIn = () => {
         } else {
           router.push("/");
         }
+        return null; // 成功時はエラーなし
       } catch (error: any) {
         // メール未認証エラーの場合は、メール確認ページへリダイレクト
         if (error?.code === "EMAIL_NOT_VERIFIED") {
           router.push("/verify-email-sent");
-          return;
+          return null;
         }
 
+        // エラーメッセージを返す
         if (error instanceof Error) {
-          alert(error.message);
+          return error.message;
         } else {
-          alert("ログインに失敗しました");
+          return "ログインに失敗しました";
         }
       }
     },

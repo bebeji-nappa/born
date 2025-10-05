@@ -8,6 +8,7 @@ import {
   BsQuote,
   BsTypeStrikethrough,
 } from "react-icons/bs";
+import { useToast } from "@/hooks/useToast";
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
@@ -105,6 +106,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   previewComponent,
   textareaProps,
 }) => {
+  const { showToast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -156,7 +158,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
       }
     } catch (error) {
       console.error("Image upload failed:", error);
-      alert("画像のアップロードに失敗しました");
+      showToast("画像のアップロードに失敗しました", "error");
     }
   };
 

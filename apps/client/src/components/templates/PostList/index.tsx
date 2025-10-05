@@ -47,7 +47,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 24px 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px 16px 0;
   }
 `;
@@ -64,7 +64,7 @@ const BlogDetailSection = styled.div<{ bgColor?: string }>`
   gap: 16px;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 20px;
     margin-bottom: 16px;
   }
@@ -84,7 +84,7 @@ const UserAvatar = styled.div`
   font-size: 1.5rem;
   overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 50px;
     height: 50px;
     min-width: 50px;
@@ -111,7 +111,7 @@ const BlogTitle = styled.h2<{ textColor?: string }>`
   font-size: 1.75rem;
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -123,7 +123,7 @@ const BlogDescription = styled.p<{ textColor?: string }>`
   margin: 0;
   opacity: 0.8;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 0.875rem;
   }
 `;
@@ -134,8 +134,7 @@ const SettingsButton = styled.button`
   color: #000;
   border: none;
   border-radius: 30px;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
 
@@ -143,7 +142,7 @@ const SettingsButton = styled.button`
     background: #e5e5e5;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 6px 12px;
     font-size: 0.75rem;
   }
@@ -156,7 +155,7 @@ const ContentWrapper = styled.div`
   display: flex;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     flex-direction: column;
     padding: 16px;
   }
@@ -172,7 +171,7 @@ const PostListContainer = styled.div`
   flex-direction: column;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     gap: 16px;
   }
 `;
@@ -244,7 +243,7 @@ const Header = styled.header`
   flex-direction: column;
   gap: 12px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 `;
@@ -259,7 +258,7 @@ const Title = styled.h1`
   white-space: nowrap;
   overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -312,7 +311,7 @@ const DateSection = styled.div<{ textColor?: string }>`
 const Sidebar = styled.aside`
   flex: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 100%;
   }
 `;
@@ -331,7 +330,7 @@ const ProfileCard = styled.div<{ bgColor?: string }>`
   top: 79px;
   padding: 24px 36px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     position: static;
   }
 `;
@@ -339,6 +338,7 @@ const ProfileCard = styled.div<{ bgColor?: string }>`
 const ProfileAvatar = styled.div`
   width: 80px;
   height: 80px;
+  min-width: 80px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -443,12 +443,7 @@ const PostListTemplate = ({
   const { user } = useAuth();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+    return name.charAt(0).toUpperCase();
   };
 
   const defaultTheme: ThemeConfig = {
