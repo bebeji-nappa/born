@@ -59,7 +59,7 @@ export const users = sqliteTable(
   {
     id: text("id").primaryKey(),
     name: text("name"),
-    screen_name: text("screen_name"),
+    screen_name: text("screen_name").unique(),
     email: text("email").unique(),
     emailVerified: text("emailVerified"),
     image: text("image"),
@@ -70,6 +70,7 @@ export const users = sqliteTable(
   },
   (table) => ({
     emailIdx: uniqueIndex("User_email_key").on(table.email),
+    screenNameIdx: uniqueIndex("User_screen_name_key").on(table.screen_name),
   }),
 );
 
