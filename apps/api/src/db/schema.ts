@@ -47,15 +47,26 @@ export const users = sqliteTable('User', {
   emailIdx: uniqueIndex('User_email_key').on(table.email),
 }));
 
-// VerificationToken table
-export const verificationTokens = sqliteTable('VerificationToken', {
-  identifier: text('identifier').notNull(),
+// EmailVerificationToken table
+export const emailVerificationTokens = sqliteTable('EmailVerificationToken', {
+  id: text('id').primaryKey(),
+  userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
   token: text('token').notNull().unique(),
   expires: integer('expires', { mode: 'timestamp' }).notNull(),
+  createdAt: text('createdAt').notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => ({
-  tokenIdx: uniqueIndex('VerificationToken_token_key').on(table.token),
-  identifierTokenIdx: uniqueIndex('VerificationToken_identifier_token_key').on(table.identifier, table.token),
+  userIdIdx: index('EmailVerificationToken_userId_idx').on(table.userId),
+  tokenIdx: uniqueIndex('EmailVerificationToken_token_key').on(table.token),
 }));
+
+// RateLimit table
+export const rateLimits = sqliteTable('RateLimit', {
+  key: text('key').primaryKey(), // IPアドレス + エンドポイント (例: "192.168.1.1:signup")
+  requestCount: integer('requestCount').notNull().default(0),
+  windowStart: integer('windowStart').notNull(), // Unix timestamp
+  blockedUntil: integer('blockedUntil'), // ブロック解除時刻 (NULLならブロックなし)
+  expiresAt: integer('expiresAt').notNull(), // レコード削除用
+});
 
 // Blog table
 export const blogs = sqliteTable('Blog', {
@@ -96,3 +107,7 @@ export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 export type Account = typeof accounts.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
+export type EmailVerificationToken = typeof emailVerificationTokens.$inferSelect;
+export type NewEmailVerificationToken = typeof emailVerificationTokens.$inferInsert;
+export type RateLimit = typeof rateLimits.$inferSelect;
+export type NewRateLimit = typeof rateLimits.$inferInsert;

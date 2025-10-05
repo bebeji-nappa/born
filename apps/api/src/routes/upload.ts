@@ -1,10 +1,12 @@
 import { Hono } from 'hono'
 import { getCookie } from 'hono/cookie'
+import { csrfProtection } from '../middleware/csrf'
 
 type Bindings = {
   STORAGE: R2Bucket
   FRONTEND_URL: string
   STORAGE_URL: string
+  NODE_ENV: string
 }
 
 const upload = new Hono<{ Bindings: Bindings }>()
@@ -12,6 +14,12 @@ const upload = new Hono<{ Bindings: Bindings }>()
 // 画像アップロード
 upload.post('/', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -67,6 +75,12 @@ upload.post('/', async (c) => {
 // 画像削除
 upload.delete('/:key', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
