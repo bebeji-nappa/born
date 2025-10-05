@@ -8,7 +8,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: "ページタイトルを設定するコンポーネント。document.titleを動的に変更します。",
+        component:
+          "ページタイトルを設定するコンポーネント。document.titleを動的に変更します。",
       },
     },
   },

@@ -108,7 +108,9 @@ const LinkButton = styled(Link)`
 const VerifyEmailTemplate = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading",
+  );
   const [message, setMessage] = useState("");
   const hasVerified = useRef(false);
 
@@ -134,7 +136,7 @@ const VerifyEmailTemplate = () => {
         setMessage(
           errorMessage.includes("expired")
             ? "確認リンクの有効期限が切れています。再度サインアップしてください。"
-            : errorMessage
+            : errorMessage,
         );
       }
     };
@@ -169,7 +171,9 @@ const VerifyEmailTemplate = () => {
           {status === "error" && "確認失敗"}
         </Title>
 
-        <Description>{message || "メールアドレスを確認しています..."}</Description>
+        <Description>
+          {message || "メールアドレスを確認しています..."}
+        </Description>
 
         {status === "success" && (
           <LinkButton href="/signin">ログインページへ</LinkButton>

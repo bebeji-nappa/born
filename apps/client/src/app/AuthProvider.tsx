@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoading } from "@/contexts/LoadingContext";
-import LoadingSpinner from "./common/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export type AuthGuardProps = {
   children: React.ReactNode;

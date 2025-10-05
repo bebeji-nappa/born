@@ -155,7 +155,8 @@ const HomeTemplate = () => {
         <Title>あなたの発想を、形にする</Title>
 
         <Description>
-          Bornは、Markdown でシンプルに書けるブログ型プラットフォームです。<br/>
+          Bornは、Markdown でシンプルに書けるブログ型プラットフォームです。
+          <br />
           あなたのアイデアや体験を、自由に表現し、色々な人々と共有しましょう。
         </Description>
 
@@ -165,7 +166,15 @@ const HomeTemplate = () => {
 
       <Footer>
         <Copyright>
-          © {new Date().getFullYear()} <a href="https://born-docs.com" target="_blank" rel="noopener noreferrer">born-docs.com</a>. All rights reserved.
+          © {new Date().getFullYear()}{" "}
+          <a
+            href="https://born-docs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            born-docs.com
+          </a>
+          . All rights reserved.
         </Copyright>
       </Footer>
     </Wrapper>

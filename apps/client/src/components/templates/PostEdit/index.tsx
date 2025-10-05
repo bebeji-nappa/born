@@ -247,12 +247,19 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
           <MarkdownEditor
             value={contentValue || ""}
             onChange={(value) => {
-              setValue("content", value, { shouldValidate: false, shouldDirty: true });
+              setValue("content", value, {
+                shouldValidate: false,
+                shouldDirty: true,
+              });
             }}
             isEdit={isEdit}
             onToggleEdit={handleIsEdit}
             previewComponent={
-              <Preview text={contentValue || ""} textColor={theme.textColor} linkColor={theme.linkColor} />
+              <Preview
+                text={contentValue || ""}
+                textColor={theme.textColor}
+                linkColor={theme.linkColor}
+              />
             }
           />
         </Form>
