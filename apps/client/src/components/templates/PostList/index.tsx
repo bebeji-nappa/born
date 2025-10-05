@@ -33,8 +33,9 @@ const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: b
     }
     return props.bgColor || "#dae2e6";
   }};
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - (60px + 46px));
   position: relative;
+  padding-bottom: 46px;
 `;
 
 const PageContainer = styled.div`
@@ -47,7 +48,7 @@ const PageContainer = styled.div`
   }
 `;
 
-const UserProfileSection = styled.div<{ bgColor?: string }>`
+const BlogDetailSection = styled.div<{ bgColor?: string }>`
   background-color: ${(props) => props.bgColor || "#fff"};
   border-radius: 12px;
   box-shadow:
@@ -57,7 +58,7 @@ const UserProfileSection = styled.div<{ bgColor?: string }>`
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 
   @media (max-width: 768px) {
     padding: 20px;
@@ -93,7 +94,7 @@ const UserImage = styled.img`
   object-fit: cover;
 `;
 
-const UserInfo = styled.div`
+const BlogInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -404,6 +405,14 @@ const PaginationInfo = styled.span<{ textColor?: string }>`
   font-weight: 500;
 `;
 
+const Footer = styled.footer`
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+  padding: 16px;
+  font-size: 0.75rem;
+`;
+
 type Pagination = {
   page: number;
   limit: number;
@@ -479,127 +488,130 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
   const profileUser = firstPostUser || (blog && user);
 
   return (
-    <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
-      {showBlogInfo && blog && (
-        <PageContainer>
-          <UserProfileSection bgColor={theme.sectionBackgroundColor}>
-            <UserInfo>
-              <BlogTitle textColor={theme.textColor}>
-                {blog.title || `${profileUser?.name || ""}のページ`}
-              </BlogTitle>
-              <BlogDescription textColor={theme.textColor}>
-                {blog.description || `${profileUser?.name || ""}のページです。`}
-              </BlogDescription>
-            </UserInfo>
-            {user && profileUser && user.id === profileUser.id && (
-              <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
-                ブログ設定
-              </SettingsButton>
-            )}
-          </UserProfileSection>
-        </PageContainer>
-      )}
-      {posts.length ? (
-        <ContentWrapper>
-          <MainContent>
-            <PostListContainer>
-              {posts.map((post) => {
-                const { id, title, user, createdAt } = post;
-                return (
-                  <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
-                    <Header>
-                      <Title>{title}</Title>
-                      <AuthorSection>
-                        <AuthorAvatar>
-                          {user.image ? (
-                            <AuthorImage
-                              src={user.image}
-                              alt={user.name || "Author"}
-                            />
-                          ) : (
-                            getInitials(user.name)
-                          )}
-                        </AuthorAvatar>
-                        <AuthorInfo>
-                          <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
-                        </AuthorInfo>
-                      </AuthorSection>
-                      <DateSection textColor={theme.textColor}>
-                        公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
-                      </DateSection>
-                    </Header>
-                  </Article>
-                );
-              })}
-            </PostListContainer>
-            {pagination && (
-              <PaginationContainer>
-                {pagination.page > 1 &&(
-                   <PaginationButton
-                    disabled={!pagination.hasPrev}
-                    onClick={() => onPageChange(pagination.page - 1)}
-                  >
-                    前の10件
-                  </PaginationButton>
-                )}
-                {pagination.page < pagination.totalPages && (
-                  <PaginationButton
-                    disabled={!pagination.hasNext}
-                    onClick={() => onPageChange(pagination.page + 1)}
-                  >
-                    次の10件
-                  </PaginationButton>
-                )}
-              </PaginationContainer>
-            )}
-          </MainContent>
-          {profileUser && (
-            <Sidebar>
-              <ProfileCard bgColor={theme.sectionBackgroundColor}>
-                <ProfileAvatar>
-                  {profileUser.image ? (
-                    <ProfileImage
-                      src={profileUser.image}
-                      alt={profileUser.name || "User"}
-                    />
-                  ) : (
-                    getInitials(profileUser.name)
+    <>
+      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+        {showBlogInfo && blog && (
+          <PageContainer>
+            <BlogDetailSection bgColor={theme.sectionBackgroundColor}>
+              <BlogInfo>
+                <BlogTitle textColor={theme.textColor}>
+                  {blog.title || `${profileUser?.name || ""}のページ`}
+                </BlogTitle>
+                <BlogDescription textColor={theme.textColor}>
+                  {blog.description || `${profileUser?.name || ""}のページです。`}
+                </BlogDescription>
+              </BlogInfo>
+              {user && profileUser && user.id === profileUser.id && (
+                <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
+                  ブログ設定
+                </SettingsButton>
+              )}
+            </BlogDetailSection>
+          </PageContainer>
+        )}
+        {posts.length ? (
+          <ContentWrapper>
+            <MainContent>
+              <PostListContainer>
+                {posts.map((post) => {
+                  const { id, title, user, createdAt } = post;
+                  return (
+                    <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
+                      <Header>
+                        <Title>{title}</Title>
+                        <AuthorSection>
+                          <AuthorAvatar>
+                            {user.image ? (
+                              <AuthorImage
+                                src={user.image}
+                                alt={user.name || "Author"}
+                              />
+                            ) : (
+                              getInitials(user.name)
+                            )}
+                          </AuthorAvatar>
+                          <AuthorInfo>
+                            <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                          </AuthorInfo>
+                        </AuthorSection>
+                        <DateSection textColor={theme.textColor}>
+                          公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                        </DateSection>
+                      </Header>
+                    </Article>
+                  );
+                })}
+              </PostListContainer>
+              {pagination && (
+                <PaginationContainer>
+                  {pagination.page > 1 &&(
+                     <PaginationButton
+                      disabled={!pagination.hasPrev}
+                      onClick={() => onPageChange(pagination.page - 1)}
+                    >
+                      前の10件
+                    </PaginationButton>
                   )}
-                </ProfileAvatar>
-                <ProfileWrapper>
-                  <ProfileName textColor={theme.textColor}>
-                    {profileUser.name || "Unknown User"}
-                  </ProfileName>
-                  <ProfileBio textColor={theme.textColor}>
-                    {profileUser.description || ""}
-                  </ProfileBio>
-                </ProfileWrapper>
-              </ProfileCard>
-            </Sidebar>
-          )}
-        </ContentWrapper>
-      ) : (
-        <EmptyStateContainer>
-          <EmptyStateCard bgColor={theme.sectionBackgroundColor}>
-            <EmptyStateTitle textColor={theme.textColor}>
-              まだ投稿がありません
-            </EmptyStateTitle>
-            {user && profileUser && user.id === profileUser.id && (
-              <>
-                <EmptyStateMessage textColor={theme.textColor}>
-                  最初の記事を書いて、あなたの考えや知識を共有しましょう。
-                  <br />
-                  記事を投稿することで、多くの人にあなたの情報を届けることができます。
-                </EmptyStateMessage>
-                <CreatePostButtonLarge onClick={() => router.push("/post/create")}>
-                  記事を作成
-                </CreatePostButtonLarge>
-              </>
+                  {pagination.page < pagination.totalPages && (
+                    <PaginationButton
+                      disabled={!pagination.hasNext}
+                      onClick={() => onPageChange(pagination.page + 1)}
+                    >
+                      次の10件
+                    </PaginationButton>
+                  )}
+                </PaginationContainer>
+              )}
+            </MainContent>
+            {profileUser && (
+              <Sidebar>
+                <ProfileCard bgColor={theme.sectionBackgroundColor}>
+                  <ProfileAvatar>
+                    {profileUser.image ? (
+                      <ProfileImage
+                        src={profileUser.image}
+                        alt={profileUser.name || "User"}
+                      />
+                    ) : (
+                      getInitials(profileUser.name)
+                    )}
+                  </ProfileAvatar>
+                  <ProfileWrapper>
+                    <ProfileName textColor={theme.textColor}>
+                      {profileUser.name || "Unknown User"}
+                    </ProfileName>
+                    <ProfileBio textColor={theme.textColor}>
+                      {profileUser.description || ""}
+                    </ProfileBio>
+                  </ProfileWrapper>
+                </ProfileCard>
+              </Sidebar>
             )}
-          </EmptyStateCard>
-        </EmptyStateContainer>
-      )}
-    </Background>
+          </ContentWrapper>
+        ) : (
+          <EmptyStateContainer>
+            <EmptyStateCard bgColor={theme.sectionBackgroundColor}>
+              <EmptyStateTitle textColor={theme.textColor}>
+                まだ投稿がありません
+              </EmptyStateTitle>
+              {user && profileUser && user.id === profileUser.id && (
+                <>
+                  <EmptyStateMessage textColor={theme.textColor}>
+                    最初の記事を書いて、あなたの考えや知識を共有しましょう。
+                    <br />
+                    記事を投稿することで、多くの人にあなたの情報を届けることができます。
+                  </EmptyStateMessage>
+                  <CreatePostButtonLarge onClick={() => router.push("/post/create")}>
+                    記事を作成
+                  </CreatePostButtonLarge>
+                </>
+              )}
+            </EmptyStateCard>
+          </EmptyStateContainer>
+        )}
+      </Background>
+      <Footer>powered by Born</Footer>
+    </>
   );
 };
 

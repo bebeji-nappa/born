@@ -37,8 +37,9 @@ const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: b
     }
     return props.bgColor || "#dae2e6";
   }};
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - (60px + 46px));
   position: relative;
+  padding-bottom: 46px;
 `;
 
 const PageContainer = styled.div`
@@ -338,6 +339,14 @@ const DeleteButton = styled.button`
   }
 `;
 
+const Footer = styled.footer`
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+  padding: 16px;
+  font-size: 0.75rem;
+`;
+
 export type PostDetailTemplateProps = {
   post: Pick<Post, "id" | "title" | "content"> & {
     createdAt: string;
@@ -418,57 +427,60 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
   const backgroundImageUrl = getBackgroundImageUrl(blog?.backgroundImage);
 
   return (
-    <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
-      <PageContainer>
-        <BlogInfoSection bgColor={theme.sectionBackgroundColor}>
-          <BlogInfo>
-            <Link href={`/${user.screen_name}`} style={{ textDecoration: 'none' }}>
-              <BlogTitle textColor={theme.textColor}>
-                {blog?.title || `${user.name}のページ`}
-              </BlogTitle>
-            </Link>
-            <BlogDescription textColor={theme.textColor}>
-              {blog?.description || `${user.name}のページです。`}
-            </BlogDescription>
-          </BlogInfo>
-        </BlogInfoSection>
-      </PageContainer>
-      <Container>
-        <TwoColumnLayout>
-          <Article bgColor={theme.sectionBackgroundColor}>
-            <Header>
-              <HeaderContent>
-                <Title textColor={theme.textColor}>{title}</Title>
-                <DateSection textColor={theme.textColor}>
-                  公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
-                </DateSection>
-              </HeaderContent>
-              {authUserEmail === user.email && (
-                <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
-              )}
-            </Header>
-            <Content textColor={theme.textColor} linkColor={theme.linkColor}>
-              <Richmd text={content} />
-            </Content>
-          </Article>
-          <AuthorProfile bgColor={theme.sectionBackgroundColor}>
-            <AuthorAvatar>
-              {user.image ? (
-                <AuthorImage src={user.image} alt={user.name || "Author"} />
-              ) : (
-                getInitials(user.name)
-              )}
-            </AuthorAvatar>
-            <AuthorProfileDetail>
-              <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
-              <AuthorBio textColor={theme.textColor}>
-                {user.description || ""}
-              </AuthorBio>
-            </AuthorProfileDetail>
-          </AuthorProfile>
-        </TwoColumnLayout>
-      </Container>
-    </Background>
+    <>
+      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+        <PageContainer>
+          <BlogInfoSection bgColor={theme.sectionBackgroundColor}>
+            <BlogInfo>
+              <Link href={`/${user.screen_name}`} style={{ textDecoration: 'none' }}>
+                <BlogTitle textColor={theme.textColor}>
+                  {blog?.title || `${user.name}のページ`}
+                </BlogTitle>
+              </Link>
+              <BlogDescription textColor={theme.textColor}>
+                {blog?.description || `${user.name}のページです。`}
+              </BlogDescription>
+            </BlogInfo>
+          </BlogInfoSection>
+        </PageContainer>
+        <Container>
+          <TwoColumnLayout>
+            <Article bgColor={theme.sectionBackgroundColor}>
+              <Header>
+                <HeaderContent>
+                  <Title textColor={theme.textColor}>{title}</Title>
+                  <DateSection textColor={theme.textColor}>
+                    公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                  </DateSection>
+                </HeaderContent>
+                {authUserEmail === user.email && (
+                  <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
+                )}
+              </Header>
+              <Content textColor={theme.textColor} linkColor={theme.linkColor}>
+                <Richmd text={content} />
+              </Content>
+            </Article>
+            <AuthorProfile bgColor={theme.sectionBackgroundColor}>
+              <AuthorAvatar>
+                {user.image ? (
+                  <AuthorImage src={user.image} alt={user.name || "Author"} />
+                ) : (
+                  getInitials(user.name)
+                )}
+              </AuthorAvatar>
+              <AuthorProfileDetail>
+                <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                <AuthorBio textColor={theme.textColor}>
+                  {user.description || ""}
+                </AuthorBio>
+              </AuthorProfileDetail>
+            </AuthorProfile>
+          </TwoColumnLayout>
+        </Container>
+      </Background>
+      <Footer>powered by Born</Footer>
+    </>
   );
 };
 
