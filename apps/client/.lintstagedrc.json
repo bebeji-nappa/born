@@ -1,0 +1,6 @@
+{
+  "src/**/*.{ts,tsx,js,jsx,json}": [
+    "prettier --write",
+    "biome format --write"
+  ]
+}
