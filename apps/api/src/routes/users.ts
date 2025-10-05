@@ -11,6 +11,7 @@ import {
   getUserbyId,
 } from '../services/users.service'
 import * as bcrypt from 'bcryptjs'
+import { sanitizeText, sanitizeDescription, sanitizeScreenName } from '../lib/sanitize'
 
 type Bindings = {
   DATABASE_URL: string
@@ -114,10 +115,14 @@ users.put('/profile', async (c) => {
     const body = await c.req.json()
     const { name, description } = body
 
-    // 更新データの準備
-    const updateData: { name?: string; description?: string | null } = {}
-    if (name !== undefined) updateData.name = name
-    if (description !== undefined) updateData.description = description
+    // 更新データの準備（サニタイズ）
+    const updateData: { name?: string | null; description?: string | null } = {}
+    if (name !== undefined) {
+      updateData.name = sanitizeText(name)
+    }
+    if (description !== undefined) {
+      updateData.description = sanitizeDescription(description)
+    }
 
     // ユーザー情報を更新
     const updatedUser = await db.update(usersTable)
@@ -172,9 +177,16 @@ users.put('/screen-name', async (c) => {
       return c.json({ error: 'screen_name is required' }, 400)
     }
 
+    // screen_nameをサニタイズ
+    const sanitizedScreenName = sanitizeScreenName(screen_name)
+
+    if (!sanitizedScreenName) {
+      return c.json({ error: 'Invalid screen_name. Only alphanumeric characters, hyphens, and underscores are allowed.' }, 400)
+    }
+
     // ユーザIDを更新
     const updatedUser = await db.update(usersTable)
-      .set({ screen_name: screen_name || null })
+      .set({ screen_name: sanitizedScreenName })
       .where(eq(usersTable.id, result.user.id))
       .returning()
       .get()

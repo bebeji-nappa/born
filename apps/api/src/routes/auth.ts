@@ -8,6 +8,7 @@ import { eq, and, lt } from 'drizzle-orm'
 import { getDB, users, accounts, blogs, emailVerificationTokens } from '../db'
 import * as bcrypt from 'bcryptjs'
 import { sendEmail, generateVerificationEmailHTML } from '../services/email.service'
+import { isValidEmail, sanitizeText } from '../lib/sanitize'
 
 type Bindings = {
   DB: D1Database
@@ -293,6 +294,12 @@ auth.post(
   async (c) => {
     try {
       const { email, password } = c.req.valid('json')
+
+      // 追加のメールアドレス検証
+      if (!isValidEmail(email)) {
+        return c.json({ error: 'Invalid email address' }, 400)
+      }
+
       const db = getDB(c.env.DB)
 
       // ユーザーの存在確認
@@ -452,6 +459,11 @@ auth.post(
   async (c) => {
     try {
       const { email, password, passwordConfirmation } = c.req.valid('json')
+
+      // 追加のメールアドレス検証
+      if (!isValidEmail(email)) {
+        return c.json({ error: 'Invalid email address' }, 400)
+      }
 
       // パスワード確認チェック
       if (password !== passwordConfirmation) {

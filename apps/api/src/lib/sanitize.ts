@@ -31,14 +31,21 @@ export function sanitizeText(input: string | null | undefined): string | null {
 
 /**
  * screen_name用: 英数字、ハイフン、アンダースコアのみ許可
+ * スペースや他の記号は全て削除
  */
 export function sanitizeScreenName(input: string | null | undefined): string | null {
   if (!input) return null;
 
-  // 英数字、ハイフン、アンダースコアのみ許可
-  const sanitized = input.replace(/[^a-zA-Z0-9_-]/g, '');
+  // 前後の空白を削除
+  const trimmed = input.trim();
 
-  // 最大長制限（例: 30文字）
+  // 英数字、ハイフン、アンダースコアのみ許可（スペース含む全ての記号を削除）
+  const sanitized = trimmed.replace(/[^a-zA-Z0-9_-]/g, '');
+
+  // 空文字列の場合はnullを返す
+  if (!sanitized) return null;
+
+  // 最大長制限（30文字）
   return sanitized.slice(0, 30);
 }
 
