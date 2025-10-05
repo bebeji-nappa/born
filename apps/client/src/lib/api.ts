@@ -4,9 +4,9 @@ const API_BASE_URL =
 // Helper function to normalize date fields
 function normalizeDate(value: any): string {
   if (!value) return new Date().toISOString();
-  if (typeof value === 'string') return value;
+  if (typeof value === "string") return value;
   if (value instanceof Date) return value.toISOString();
-  if (typeof value === 'number') return new Date(value).toISOString();
+  if (typeof value === "number") return new Date(value).toISOString();
   return new Date(value).toISOString();
 }
 
@@ -45,8 +45,8 @@ class ApiClient {
    * LocalStorageからCSRFトークンを読み込む
    */
   private loadCsrfToken() {
-    if (typeof window !== 'undefined') {
-      this.csrfToken = localStorage.getItem('csrf-token');
+    if (typeof window !== "undefined") {
+      this.csrfToken = localStorage.getItem("csrf-token");
     }
   }
 
@@ -54,8 +54,8 @@ class ApiClient {
    * CSRFトークンをLocalStorageに保存
    */
   private saveCsrfToken(token: string) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('csrf-token', token);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("csrf-token", token);
       this.csrfToken = token;
     }
   }
@@ -64,8 +64,8 @@ class ApiClient {
    * CSRFトークンを削除
    */
   private clearCsrfToken() {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('csrf-token');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("csrf-token");
       this.csrfToken = null;
     }
   }
@@ -93,7 +93,6 @@ class ApiClient {
         headers: { "Content-Type": "application/json" },
       });
 
-
       if (!response.ok) {
         return null;
       }
@@ -115,10 +114,11 @@ class ApiClient {
     this.clearCsrfToken();
   }
 
-  async signIn(data: {
-    email: string;
-    password: string;
-  }): Promise<{ success: boolean; message: string; user: { id: string; email: string; name: string | null } }> {
+  async signIn(data: { email: string; password: string }): Promise<{
+    success: boolean;
+    message: string;
+    user: { id: string; email: string; name: string | null };
+  }> {
     const response = await fetch(`${this.baseUrl}/api/auth/signin`, {
       method: "POST",
       credentials: "include",
@@ -130,15 +130,17 @@ class ApiClient {
       const errorData = await response.json();
 
       // レート制限ブロックの場合、ブロックページにリダイレクト（エラーをthrowしない）
-      if (errorData.code === 'RATE_LIMIT_BLOCKED') {
-        if (typeof window !== 'undefined') {
-          window.location.href = '/blocked';
+      if (errorData.code === "RATE_LIMIT_BLOCKED") {
+        if (typeof window !== "undefined") {
+          window.location.href = "/blocked";
         }
         // エラーをthrowせず、Promiseを保留状態にする（リダイレクトが完了するまで）
         return new Promise(() => {});
       }
 
-      const error: any = new Error(errorData.error || `API Error: ${response.status}`);
+      const error: any = new Error(
+        errorData.error || `API Error: ${response.status}`,
+      );
       // エラーコードを保持
       if (errorData.code) {
         error.code = errorData.code;
@@ -160,7 +162,11 @@ class ApiClient {
     email: string;
     password: string;
     passwordConfirmation: string;
-  }): Promise<{ success: boolean; message: string; user: { id: string; email: string; name: string | null } }> {
+  }): Promise<{
+    success: boolean;
+    message: string;
+    user: { id: string; email: string; name: string | null };
+  }> {
     const response = await fetch(`${this.baseUrl}/api/auth/signup`, {
       method: "POST",
       credentials: "include",
@@ -183,12 +189,17 @@ class ApiClient {
     return result;
   }
 
-  async verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(`${this.baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
+  async verifyEmail(
+    token: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(
+      `${this.baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -198,7 +209,10 @@ class ApiClient {
     return response.json();
   }
 
-  async getRateLimitStatus(): Promise<{ blocked: boolean; retryAfter: number }> {
+  async getRateLimitStatus(): Promise<{
+    blocked: boolean;
+    retryAfter: number;
+  }> {
     const response = await fetch(`${this.baseUrl}/api/auth/rate-limit-status`, {
       method: "GET",
       credentials: "include",
@@ -287,7 +301,9 @@ class ApiClient {
     return response.json();
   }
 
-  async updateUserAvatar(file: File): Promise<{ success: boolean; url: string; user: User }> {
+  async updateUserAvatar(
+    file: File,
+  ): Promise<{ success: boolean; url: string; user: User }> {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -310,7 +326,9 @@ class ApiClient {
     return response.json();
   }
 
-  async updateUserScreenName(screen_name: string): Promise<{ success: boolean; user: User }> {
+  async updateUserScreenName(
+    screen_name: string,
+  ): Promise<{ success: boolean; user: User }> {
     const response = await fetch(`${this.baseUrl}/api/users/screen-name`, {
       method: "PUT",
       credentials: "include",
@@ -326,6 +344,7 @@ class ApiClient {
   }
 
   async updatePassword(data: {
+    currentPassword: string;
     password: string;
     passwordConfirmation: string;
   }): Promise<{ success: boolean; message: string }> {
@@ -351,6 +370,62 @@ class ApiClient {
     return result;
   }
 
+  async getPendingEmailChange(): Promise<{
+    pending: boolean;
+    newEmail?: string;
+    expiresAt?: string;
+  }> {
+    const response = await fetch(`${this.baseUrl}/api/users/email/pending`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async requestEmailChange(
+    newEmail: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/users/email/request`, {
+      method: "POST",
+      credentials: "include",
+      headers: this.getHeaders(true), // CSRF保護
+      body: JSON.stringify({ newEmail }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async verifyEmailChange(
+    token: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(
+      `${this.baseUrl}/api/users/email/verify?token=${encodeURIComponent(token)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   // Post APIs
   async getPostById(id: number): Promise<{ post: Post }> {
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {
@@ -370,11 +445,22 @@ class ApiClient {
     published?: 1 | 0,
     page: number = 1,
     limit: number = 10,
-  ): Promise<{ posts: Post[]; pagination: { page: number; limit: number; total: number; totalPages: number; hasNext: boolean; hasPrev: boolean } }> {
+  ): Promise<{
+    posts: Post[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }> {
     const params = new URLSearchParams();
-    if (published !== undefined) params.append('published', published.toString());
-    params.append('page', page.toString());
-    params.append('limit', limit.toString());
+    if (published !== undefined)
+      params.append("published", published.toString());
+    params.append("page", page.toString());
+    params.append("limit", limit.toString());
 
     const response = await fetch(
       `${this.baseUrl}/api/posts/user/${userId}?${params.toString()}`,
@@ -448,4 +534,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
-

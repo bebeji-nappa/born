@@ -144,5 +144,7 @@ export default async function PostDetailPage({
 
   const blog = await getBlog(post.blogId);
 
-  return <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />;
+  return (
+    <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />
+  );
 }

@@ -31,7 +31,11 @@ export default function UserBlogPage() {
   const [user, setUser] = useState<User | null>(null);
   const [blog, setBlog] = useState<Blog | null>(null);
   const [page, setPage] = useState(1);
-  const { posts, pagination, isLoading: postsLoading } = usePosts(userId || undefined, true, page, 10);
+  const {
+    posts,
+    pagination,
+    isLoading: postsLoading,
+  } = usePosts(userId || undefined, true, page, 10);
 
   useEffect(() => {
     const fetchUserAndBlog = async () => {
@@ -39,7 +43,7 @@ export default function UserBlogPage() {
         if (screenName) {
           // screen_nameからuserIdを取得
           const userRes = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/users/by-screen-name/${screenName}`
+            `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/users/by-screen-name/${screenName}`,
           );
           const userData = await userRes.json();
 
@@ -49,7 +53,7 @@ export default function UserBlogPage() {
 
             // Blogデータを取得
             const blogRes = await fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/user/${userData.user.id}`
+              `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/user/${userData.user.id}`,
             );
             const blogData = await blogRes.json();
             setBlog(blogData.blog);

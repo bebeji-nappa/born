@@ -24,11 +24,15 @@ type ThemeConfig = {
   backgroundRepeat?: boolean;
 };
 
-const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: boolean }>`
+const Background = styled.div<{
+  bgColor?: string;
+  bgImage?: string;
+  bgRepeat?: boolean;
+}>`
   background: ${(props) => {
     if (props.bgImage) {
-      const repeat = props.bgRepeat ? 'repeat' : 'no-repeat';
-      const size = props.bgRepeat ? 'auto' : 'cover';
+      const repeat = props.bgRepeat ? "repeat" : "no-repeat";
+      const size = props.bgRepeat ? "auto" : "cover";
       return `url(${props.bgImage}) center/${size} ${repeat}`;
     }
     return props.bgColor || "#dae2e6";
@@ -43,7 +47,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 24px 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px 16px 0;
   }
 `;
@@ -60,7 +64,7 @@ const BlogDetailSection = styled.div<{ bgColor?: string }>`
   gap: 16px;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 20px;
     margin-bottom: 16px;
   }
@@ -80,7 +84,7 @@ const UserAvatar = styled.div`
   font-size: 1.5rem;
   overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 50px;
     height: 50px;
     min-width: 50px;
@@ -107,7 +111,7 @@ const BlogTitle = styled.h2<{ textColor?: string }>`
   font-size: 1.75rem;
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -119,7 +123,7 @@ const BlogDescription = styled.p<{ textColor?: string }>`
   margin: 0;
   opacity: 0.8;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 0.875rem;
   }
 `;
@@ -130,8 +134,7 @@ const SettingsButton = styled.button`
   color: #000;
   border: none;
   border-radius: 30px;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
 
@@ -139,7 +142,7 @@ const SettingsButton = styled.button`
     background: #e5e5e5;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 6px 12px;
     font-size: 0.75rem;
   }
@@ -152,7 +155,7 @@ const ContentWrapper = styled.div`
   display: flex;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     flex-direction: column;
     padding: 16px;
   }
@@ -168,7 +171,7 @@ const PostListContainer = styled.div`
   flex-direction: column;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     gap: 16px;
   }
 `;
@@ -240,7 +243,7 @@ const Header = styled.header`
   flex-direction: column;
   gap: 12px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 `;
@@ -255,7 +258,7 @@ const Title = styled.h1`
   white-space: nowrap;
   overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1.5rem;
   }
 `;
@@ -308,7 +311,7 @@ const DateSection = styled.div<{ textColor?: string }>`
 const Sidebar = styled.aside`
   flex: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 100%;
   }
 `;
@@ -327,7 +330,7 @@ const ProfileCard = styled.div<{ bgColor?: string }>`
   top: 79px;
   padding: 24px 36px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     position: static;
   }
 `;
@@ -335,6 +338,7 @@ const ProfileCard = styled.div<{ bgColor?: string }>`
 const ProfileAvatar = styled.div`
   width: 80px;
   height: 80px;
+  min-width: 80px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -385,17 +389,17 @@ const PaginationContainer = styled.div`
 
 const PaginationButton = styled.button<{ disabled?: boolean }>`
   padding: 12px 24px;
-  background: ${(props) => props.disabled ? "#e5e7eb" : "#000000"};
-  color: ${(props) => props.disabled ? "#9ca3af" : "white"};
+  background: ${(props) => (props.disabled ? "#e5e7eb" : "#000000")};
+  color: ${(props) => (props.disabled ? "#9ca3af" : "white")};
   border: none;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
-  cursor: ${(props) => props.disabled ? "not-allowed" : "pointer"};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: background 0.2s;
 
   &:hover {
-    background: ${(props) => props.disabled ? "#e5e7eb" : "#333333"};
+    background: ${(props) => (props.disabled ? "#e5e7eb" : "#333333")};
   }
 `;
 
@@ -429,17 +433,17 @@ export type PostListTemplateProps = {
   onPageChange: (page: number) => void;
 };
 
-const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTemplateProps) => {
+const PostListTemplate = ({
+  posts,
+  blog,
+  pagination,
+  onPageChange,
+}: PostListTemplateProps) => {
   const router = useRouter();
   const { user } = useAuth();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+    return name.charAt(0).toUpperCase();
   };
 
   const defaultTheme: ThemeConfig = {
@@ -456,11 +460,15 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
     try {
       const parsedTheme = JSON.parse(blog.theme) as ThemeConfig;
       theme = {
-        backgroundColor: parsedTheme.backgroundColor || defaultTheme.backgroundColor,
+        backgroundColor:
+          parsedTheme.backgroundColor || defaultTheme.backgroundColor,
         textColor: parsedTheme.textColor || defaultTheme.textColor,
         linkColor: parsedTheme.linkColor || defaultTheme.linkColor,
-        sectionBackgroundColor: parsedTheme.sectionBackgroundColor || defaultTheme.sectionBackgroundColor,
-        backgroundRepeat: parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
+        sectionBackgroundColor:
+          parsedTheme.sectionBackgroundColor ||
+          defaultTheme.sectionBackgroundColor,
+        backgroundRepeat:
+          parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
       };
     } catch {
       // JSONパースに失敗した場合はデフォルト値を使用
@@ -470,13 +478,18 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
   const firstPostUser = posts.length > 0 ? posts[0].user : null;
 
   // 環境に応じて背景画像URLを変換
-  const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
+  const getBackgroundImageUrl = (
+    url: string | null | undefined,
+  ): string | undefined => {
     if (!url) return undefined;
 
     // ローカル開発環境の場合、APIサーバー経由のURLに変換
-    if (process.env.NODE_ENV === 'development' && url.includes('storage-dev.bebeji-nappa.com')) {
-      const key = url.split('.com/')[1];
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image/${key}`;
+    if (
+      process.env.NODE_ENV === "development" &&
+      url.includes("storage-dev.bebeji-nappa.com")
+    ) {
+      const key = url.split(".com/")[1];
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/background-image/${key}`;
     }
 
     return url;
@@ -489,7 +502,11 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
 
   return (
     <>
-      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+      <Background
+        bgColor={theme.backgroundColor}
+        bgImage={backgroundImageUrl}
+        bgRepeat={theme.backgroundRepeat}
+      >
         {showBlogInfo && blog && (
           <PageContainer>
             <BlogDetailSection bgColor={theme.sectionBackgroundColor}>
@@ -498,11 +515,14 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                   {blog.title || `${profileUser?.name || ""}のページ`}
                 </BlogTitle>
                 <BlogDescription textColor={theme.textColor}>
-                  {blog.description || `${profileUser?.name || ""}のページです。`}
+                  {blog.description ||
+                    `${profileUser?.name || ""}のページです。`}
                 </BlogDescription>
               </BlogInfo>
               {user && profileUser && user.id === profileUser.id && (
-                <SettingsButton onClick={() => router.push(`/setting/blog/${blog.id}`)}>
+                <SettingsButton
+                  onClick={() => router.push(`/setting/blog/${blog.id}`)}
+                >
                   ブログ設定
                 </SettingsButton>
               )}
@@ -516,7 +536,12 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                 {posts.map((post) => {
                   const { id, title, user, createdAt } = post;
                   return (
-                    <Article key={id} onClick={() => router.push(`/post/${id}`)} bgColor={theme.sectionBackgroundColor} textColor={theme.textColor}>
+                    <Article
+                      key={id}
+                      onClick={() => router.push(`/post/${id}`)}
+                      bgColor={theme.sectionBackgroundColor}
+                      textColor={theme.textColor}
+                    >
                       <Header>
                         <Title>{title}</Title>
                         <AuthorSection>
@@ -531,11 +556,18 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                             )}
                           </AuthorAvatar>
                           <AuthorInfo>
-                            <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                            <AuthorName textColor={theme.textColor}>
+                              {user.name || "Unknown Author"}
+                            </AuthorName>
                           </AuthorInfo>
                         </AuthorSection>
                         <DateSection textColor={theme.textColor}>
-                          公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                          公開日:{" "}
+                          {dayjs(
+                            typeof createdAt === "number"
+                              ? createdAt * 1000
+                              : createdAt,
+                          ).format("YYYY年MM月DD日")}
                         </DateSection>
                       </Header>
                     </Article>
@@ -544,8 +576,8 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
               </PostListContainer>
               {pagination && (
                 <PaginationContainer>
-                  {pagination.page > 1 &&(
-                     <PaginationButton
+                  {pagination.page > 1 && (
+                    <PaginationButton
                       disabled={!pagination.hasPrev}
                       onClick={() => onPageChange(pagination.page - 1)}
                     >
@@ -601,7 +633,9 @@ const PostListTemplate = ({ posts, blog, pagination, onPageChange }: PostListTem
                     <br />
                     記事を投稿することで、多くの人にあなたの情報を届けることができます。
                   </EmptyStateMessage>
-                  <CreatePostButtonLarge onClick={() => router.push("/post/create")}>
+                  <CreatePostButtonLarge
+                    onClick={() => router.push("/post/create")}
+                  >
                     記事を作成
                   </CreatePostButtonLarge>
                 </>

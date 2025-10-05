@@ -10,4 +10,5 @@ export default {
   },
 } as Meta<typeof VerifyEmailTemplate>;
 
-export const Default: StoryObj<typeof VerifyEmailTemplate> = {};
+// TODO: API のモック作成後、有効化
+// export const Default: StoryObj<typeof VerifyEmailTemplate> = {};

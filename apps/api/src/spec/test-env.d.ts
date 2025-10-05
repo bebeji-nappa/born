@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/vitest-pool-workers" />
 
-declare module 'cloudflare:test' {
+declare module "cloudflare:test" {
   interface ProvidedEnv {
     DB: D1Database;
     RESEND_API_KEY: string;

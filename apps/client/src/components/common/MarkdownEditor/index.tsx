@@ -1,7 +1,14 @@
 import React, { useRef, useCallback, FC } from "react";
 import styled from "@emotion/styled";
 import { FiImage, FiLink, FiCode } from "react-icons/fi";
-import { BsTypeH1, BsTypeBold, BsTypeItalic, BsQuote, BsTypeStrikethrough } from "react-icons/bs";
+import {
+  BsTypeH1,
+  BsTypeBold,
+  BsTypeItalic,
+  BsQuote,
+  BsTypeStrikethrough,
+} from "react-icons/bs";
+import { useToast } from "@/hooks/useToast";
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
@@ -99,27 +106,37 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   previewComponent,
   textareaProps,
 }) => {
+  const { showToast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const insertText = useCallback((before: string, after: string = "", setCursorMiddle: boolean = false) => {
-    const textarea = textareaRef.current;
-    if (!textarea) {
-      return;
-    }
+  const insertText = useCallback(
+    (before: string, after: string = "", setCursorMiddle: boolean = false) => {
+      const textarea = textareaRef.current;
+      if (!textarea) {
+        return;
+      }
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const currentValue = value;
-    const newValue = currentValue.substring(0, start) + before + after + currentValue.substring(end);
-    onChange(newValue);
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentValue = value;
+      const newValue =
+        currentValue.substring(0, start) +
+        before +
+        after +
+        currentValue.substring(end);
+      onChange(newValue);
 
-    setTimeout(() => {
-      const newCursorPos = setCursorMiddle ? start + Math.floor(before.length / 2) : start + before.length;
-      textarea.focus();
-      textarea.setSelectionRange(newCursorPos, newCursorPos);
-    }, 0);
-  }, [value, onChange]);
+      setTimeout(() => {
+        const newCursorPos = setCursorMiddle
+          ? start + Math.floor(before.length / 2)
+          : start + before.length;
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+      }, 0);
+    },
+    [value, onChange],
+  );
 
   const handleImageUpload = async (file: File) => {
     try {
@@ -132,7 +149,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
           method: "POST",
           body: formData,
           credentials: "include",
-        }
+        },
       );
 
       const data = await response.json();
@@ -141,7 +158,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
       }
     } catch (error) {
       console.error("Image upload failed:", error);
-      alert("画像のアップロードに失敗しました");
+      showToast("画像のアップロードに失敗しました", "error");
     }
   };
 
@@ -157,7 +174,8 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const handleItalic = () => insertText("**", "", true);
   const handleStrikethrough = () => insertText("~~~~", "", true);
   const handleQuote = () => insertText("> ");
-  const handleCodeBlock = () => insertText("```lang:filename\n\n```", "", false);
+  const handleCodeBlock = () =>
+    insertText("```lang:filename\n\n```", "", false);
   const handleLink = () => insertText("[](url)");
 
   return (
@@ -195,25 +213,13 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
             >
               <FiImage />
             </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleHeading}
-              title="見出し"
-            >
+            <ToolbarButton type="button" onClick={handleHeading} title="見出し">
               <BsTypeH1 />
             </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleBold}
-              title="太字"
-            >
+            <ToolbarButton type="button" onClick={handleBold} title="太字">
               <BsTypeBold />
             </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleItalic}
-              title="斜体"
-            >
+            <ToolbarButton type="button" onClick={handleItalic} title="斜体">
               <BsTypeItalic />
             </ToolbarButton>
             <ToolbarButton
@@ -223,11 +229,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
             >
               <BsTypeStrikethrough />
             </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleQuote}
-              title="引用"
-            >
+            <ToolbarButton type="button" onClick={handleQuote} title="引用">
               <BsQuote />
             </ToolbarButton>
             <ToolbarButton
@@ -237,11 +239,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
             >
               <FiCode />
             </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleLink}
-              title="リンク"
-            >
+            <ToolbarButton type="button" onClick={handleLink} title="リンク">
               <FiLink />
             </ToolbarButton>
           </ToolbarContainer>

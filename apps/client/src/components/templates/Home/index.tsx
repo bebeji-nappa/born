@@ -26,7 +26,7 @@ const LogoImageContainer = styled.div`
   width: 280px;
   height: 80px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 220px;
   }
 `;
@@ -38,7 +38,7 @@ const Title = styled.h1`
   margin-bottom: 24px;
   text-align: center;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 36px;
   }
 `;
@@ -51,12 +51,11 @@ const Description = styled.p`
   margin-bottom: 48px;
   line-height: 1.6;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 16px;
   }
 `;
 
-// リリース後に有効化
 const CTAButton = styled(Link)`
   display: inline-block;
   padding: 16px 48px;
@@ -78,20 +77,6 @@ const CTAButton = styled(Link)`
   &:active {
     transform: translateY(0);
   }
-`;
-
-// TODO: リリース後に削除
-const CTAPreButton = styled.div`
-  display: inline-block;
-  padding: 16px 48px;
-  background: #000000;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 600;
-  border-radius: 50px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;
 
 const LogoContainer = styled.div`
@@ -155,17 +140,25 @@ const HomeTemplate = () => {
         <Title>あなたの発想を、形にする</Title>
 
         <Description>
-          Bornは、Markdown でシンプルに書けるブログ型プラットフォームです。<br/>
+          Bornは、Markdown でシンプルに書けるブログ型プラットフォームです。
+          <br />
           あなたのアイデアや体験を、自由に表現し、色々な人々と共有しましょう。
         </Description>
 
-        {/* <CTAButton href="/signin">はじめる</CTAButton> */}
-        <CTAPreButton>準備中</CTAPreButton>
+        <CTAButton href="/signin">はじめる</CTAButton>
       </MainContent>
 
       <Footer>
         <Copyright>
-          © {new Date().getFullYear()} <a href="https://born-docs.com" target="_blank" rel="noopener noreferrer">born-docs.com</a>. All rights reserved.
+          © {new Date().getFullYear()}{" "}
+          <a
+            href="https://born-docs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            born-docs.com
+          </a>
+          . All rights reserved.
         </Copyright>
       </Footer>
     </Wrapper>

@@ -5,7 +5,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 const mockPost = {
   id: 1,
   title: "サンプル記事のタイトル",
-  content: "# はじめに\n\nこれはサンプル記事です。\n\n## 内容\n\nマークダウン形式で記述されています。",
+  content:
+    "# はじめに\n\nこれはサンプル記事です。\n\n## 内容\n\nマークダウン形式で記述されています。",
   createdAt: new Date().toISOString(),
   user: {
     id: "1",

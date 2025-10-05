@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { usePosts } from "@/hooks/usePosts";
+import { useToast } from "@/hooks/useToast";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";
@@ -28,11 +29,15 @@ type ThemeConfig = {
   backgroundRepeat?: boolean;
 };
 
-const Background = styled.div<{ bgColor?: string; bgImage?: string; bgRepeat?: boolean }>`
+const Background = styled.div<{
+  bgColor?: string;
+  bgImage?: string;
+  bgRepeat?: boolean;
+}>`
   background: ${(props) => {
     if (props.bgImage) {
-      const repeat = props.bgRepeat ? 'repeat' : 'no-repeat';
-      const size = props.bgRepeat ? 'auto' : 'cover';
+      const repeat = props.bgRepeat ? "repeat" : "no-repeat";
+      const size = props.bgRepeat ? "auto" : "cover";
       return `url(${props.bgImage}) center/${size} ${repeat}`;
     }
     return props.bgColor || "#dae2e6";
@@ -47,7 +52,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 24px 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px 16px 0;
   }
 `;
@@ -64,7 +69,7 @@ const BlogInfoSection = styled.div<{ bgColor?: string }>`
   gap: 16px;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 20px;
     margin-bottom: 16px;
   }
@@ -83,7 +88,7 @@ const BlogTitle = styled.h2<{ textColor?: string }>`
   font-size: 1.75rem;
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1rem;
   }
 `;
@@ -95,7 +100,7 @@ const BlogDescription = styled.p<{ textColor?: string }>`
   margin: 0;
   opacity: 0.8;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 0.8125rem;
   }
 `;
@@ -106,7 +111,7 @@ const Container = styled.div`
   padding: 24px;
   min-height: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px;
   }
 `;
@@ -118,7 +123,7 @@ const TwoColumnLayout = styled.div`
   min-height: calc(80vh - 48px);
   align-items: start;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     grid-template-columns: 1fr;
     gap: 16px;
   }
@@ -141,7 +146,7 @@ const Header = styled.header`
   justify-content: space-between;
   align-items: flex-start;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 `;
@@ -160,7 +165,7 @@ const Title = styled.h1<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#111827"};
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 2rem;
   }
 `;
@@ -190,20 +195,19 @@ const AuthorProfile = styled.aside<{ bgColor?: string }>`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => props.bgColor === "transparent" ? "rgba(255, 255, 255, 0.1)" : "#f9fafb"};
+    background-color: ${(props) =>
+      props.bgColor === "transparent" ? "rgba(255, 255, 255, 0.1)" : "#f9fafb"};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px;
     position: static;
   }
 `;
 
 const AuthorAvatar = styled.div`
-  width: 100%;
-  max-width: 70px;
-  min-width: 60px;
-  height: 100%;
+  height: 70px;
+  width: 70px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -213,6 +217,7 @@ const AuthorAvatar = styled.div`
   font-weight: 600;
   font-size: 2rem;
   overflow: hidden;
+  flex-shrink: 0;
 `;
 
 const AuthorImage = styled.img`
@@ -235,7 +240,6 @@ const AuthorBio = styled.p<{ textColor?: string }>`
   margin: 0;
 `;
 
-
 const AuthorProfileDetail = styled.div`
   display: flex;
   flex-direction: column;
@@ -247,7 +251,7 @@ const Content = styled.div<{ textColor?: string; linkColor?: string }>`
   padding: 32px;
   min-height: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 
@@ -262,37 +266,8 @@ const Content = styled.div<{ textColor?: string; linkColor?: string }>`
     h5,
     h6 {
       color: ${(props) => props.textColor || "#111827"};
-      margin-top: 2em;
       margin-bottom: 1em;
       font-weight: 600;
-    }
-
-    p {
-      margin-bottom: 1.25em;
-    }
-
-    code {
-      background-color: #f3f4f6;
-      padding: 0.25em 0.5em;
-      border-radius: 4px;
-      font-size: 0.875em;
-    }
-
-    pre {
-      background-color: #1f2937;
-      color: #f9fafb;
-      padding: 1.5em;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5em 0;
-    }
-
-    blockquote {
-      border-left: 4px solid #e5e7eb;
-      padding-left: 1.5em;
-      margin: 1.5em 0;
-      font-style: italic;
-      color: #6b7280;
     }
 
     img {
@@ -363,14 +338,10 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 }) => {
   const router = useRouter();
   const { deletePost } = usePosts();
+  const { showToast } = useToast();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+    return name.charAt(0).toUpperCase();
   };
 
   const defaultTheme: ThemeConfig = {
@@ -387,11 +358,15 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
     try {
       const parsedTheme = JSON.parse(blog.theme) as ThemeConfig;
       theme = {
-        backgroundColor: parsedTheme.backgroundColor || defaultTheme.backgroundColor,
+        backgroundColor:
+          parsedTheme.backgroundColor || defaultTheme.backgroundColor,
         textColor: parsedTheme.textColor || defaultTheme.textColor,
         linkColor: parsedTheme.linkColor || defaultTheme.linkColor,
-        sectionBackgroundColor: parsedTheme.sectionBackgroundColor || defaultTheme.sectionBackgroundColor,
-        backgroundRepeat: parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
+        sectionBackgroundColor:
+          parsedTheme.sectionBackgroundColor ||
+          defaultTheme.sectionBackgroundColor,
+        backgroundRepeat:
+          parsedTheme.backgroundRepeat ?? defaultTheme.backgroundRepeat,
       };
     } catch {
       // JSONパースに失敗した場合はデフォルト値を使用
@@ -403,22 +378,27 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
     try {
       await deletePost(id);
-      alert("削除しました");
+      showToast("削除しました", "success");
       router.push("/");
     } catch (error) {
       console.error(error);
-      alert("削除に失敗しました");
+      showToast("削除に失敗しました", "error");
     }
   };
 
   // 環境に応じて背景画像URLを変換
-  const getBackgroundImageUrl = (url: string | null | undefined): string | undefined => {
+  const getBackgroundImageUrl = (
+    url: string | null | undefined,
+  ): string | undefined => {
     if (!url) return undefined;
 
     // ローカル開発環境の場合、APIサーバー経由のURLに変換
-    if (process.env.NODE_ENV === 'development' && url.includes('storage-dev.bebeji-nappa.com')) {
-      const key = url.split('.com/')[1];
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/blogs/background-image/${key}`;
+    if (
+      process.env.NODE_ENV === "development" &&
+      url.includes("storage-dev.bebeji-nappa.com")
+    ) {
+      const key = url.split(".com/")[1];
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/background-image/${key}`;
     }
 
     return url;
@@ -428,11 +408,18 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
   return (
     <>
-      <Background bgColor={theme.backgroundColor} bgImage={backgroundImageUrl} bgRepeat={theme.backgroundRepeat}>
+      <Background
+        bgColor={theme.backgroundColor}
+        bgImage={backgroundImageUrl}
+        bgRepeat={theme.backgroundRepeat}
+      >
         <PageContainer>
           <BlogInfoSection bgColor={theme.sectionBackgroundColor}>
             <BlogInfo>
-              <Link href={`/${user.screen_name}`} style={{ textDecoration: 'none' }}>
+              <Link
+                href={`/${user.screen_name}`}
+                style={{ textDecoration: "none" }}
+              >
                 <BlogTitle textColor={theme.textColor}>
                   {blog?.title || `${user.name}のページ`}
                 </BlogTitle>
@@ -450,11 +437,18 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                 <HeaderContent>
                   <Title textColor={theme.textColor}>{title}</Title>
                   <DateSection textColor={theme.textColor}>
-                    公開日: {dayjs(typeof createdAt === 'number' ? createdAt * 1000 : createdAt).format("YYYY年MM月DD日")}
+                    公開日:{" "}
+                    {dayjs(
+                      typeof createdAt === "number"
+                        ? createdAt * 1000
+                        : createdAt,
+                    ).format("YYYY年MM月DD日")}
                   </DateSection>
                 </HeaderContent>
                 {authUserEmail === user.email && (
-                  <DeleteButton onClick={() => handleDelete(id)}>削除</DeleteButton>
+                  <DeleteButton onClick={() => handleDelete(id)}>
+                    削除
+                  </DeleteButton>
                 )}
               </Header>
               <Content textColor={theme.textColor} linkColor={theme.linkColor}>
@@ -470,7 +464,9 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                 )}
               </AuthorAvatar>
               <AuthorProfileDetail>
-                <AuthorName textColor={theme.textColor}>{user.name || "Unknown Author"}</AuthorName>
+                <AuthorName textColor={theme.textColor}>
+                  {user.name || "Unknown Author"}
+                </AuthorName>
                 <AuthorBio textColor={theme.textColor}>
                   {user.description || ""}
                 </AuthorBio>

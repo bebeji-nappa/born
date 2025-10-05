@@ -173,11 +173,11 @@ const RequirementItem = styled.div<{ met: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  color: ${props => props.met ? '#16a34a' : '#dc2626'};
+  color: ${(props) => (props.met ? "#16a34a" : "#dc2626")};
   white-space: nowrap;
 
   &::before {
-    content: '${props => props.met ? '✓' : '✗'}';
+    content: '${(props) => (props.met ? "✓" : "✗")}';
     font-weight: bold;
   }
 `;
@@ -205,7 +205,8 @@ const SignUpTemplate = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -233,7 +234,9 @@ const SignUpTemplate = () => {
     // パスワード強度チェック
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-      setError(passwordValidation.error || "パスワードが要件を満たしていません");
+      setError(
+        passwordValidation.error || "パスワードが要件を満たしていません",
+      );
       return;
     }
 
@@ -254,9 +257,7 @@ const SignUpTemplate = () => {
       router.push("/verify-email-sent");
     } catch (err: any) {
       console.error("Sign up error:", err);
-      setError(
-        err.message || "アカウント作成に失敗しました"
-      );
+      setError(err.message || "アカウント作成に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -308,7 +309,9 @@ const SignUpTemplate = () => {
               <EyeButton
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                aria-label={
+                  showPassword ? "パスワードを隠す" : "パスワードを表示"
+                }
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </EyeButton>
@@ -335,9 +338,7 @@ const SignUpTemplate = () => {
           </InputGroup>
 
           <InputGroup>
-            <Label htmlFor="passwordConfirmation">
-              パスワード（確認用）
-            </Label>
+            <Label htmlFor="passwordConfirmation">パスワード（確認用）</Label>
             <InputWrapper>
               <PasswordInput
                 id="passwordConfirmation"
@@ -350,8 +351,14 @@ const SignUpTemplate = () => {
               />
               <EyeButton
                 type="button"
-                onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                aria-label={showPasswordConfirmation ? "パスワードを隠す" : "パスワードを表示"}
+                onClick={() =>
+                  setShowPasswordConfirmation(!showPasswordConfirmation)
+                }
+                aria-label={
+                  showPasswordConfirmation
+                    ? "パスワードを隠す"
+                    : "パスワードを表示"
+                }
               >
                 {showPasswordConfirmation ? <FiEyeOff /> : <FiEye />}
               </EyeButton>
@@ -367,8 +374,7 @@ const SignUpTemplate = () => {
         </Form>
 
         <LinkText>
-          すでにアカウントをお持ちですか？{" "}
-          <Link href="/signin">ログイン</Link>
+          すでにアカウントをお持ちですか？ <Link href="/signin">ログイン</Link>
         </LinkText>
       </Container>
     </Wrapper>
