@@ -4,6 +4,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 const Wrapper = styled.div`
   min-height: 100vh;
@@ -117,6 +118,11 @@ const Copyright = styled.p`
 `;
 
 const HomeTemplate = () => {
+  const { user } = useAuth();
+
+  // ユーザーがログイン済みの場合はブログトップページへ、未ログインの場合はサインインページへ
+  const ctaHref = user && user.screen_name ? `/${user.screen_name}` : "/signin";
+
   return (
     <Wrapper>
       <MainContent>
@@ -145,7 +151,7 @@ const HomeTemplate = () => {
           あなたのアイデアや体験を、自由に表現し、色々な人々と共有しましょう。
         </Description>
 
-        <CTAButton href="/signin">はじめる</CTAButton>
+        <CTAButton href={ctaHref}>はじめる</CTAButton>
       </MainContent>
 
       <Footer>
