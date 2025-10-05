@@ -149,8 +149,11 @@ const RequirementItem = styled.div<{ met: boolean }>`
 
 const PasswordForm: FC = () => {
   const { showToast } = useToast();
+  const [showForm, setShowForm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
@@ -170,6 +173,12 @@ const PasswordForm: FC = () => {
     e.preventDefault();
     setError(null);
 
+    // 現在のパスワードチェック
+    if (!currentPassword) {
+      setError("現在のパスワードを入力してください");
+      return;
+    }
+
     // パスワード強度チェック
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
@@ -188,19 +197,19 @@ const PasswordForm: FC = () => {
 
     try {
       await apiClient.updatePassword({
+        currentPassword,
         password,
         passwordConfirmation,
       });
-      showToast("パスワードを更新しました", "success");
+      showToast("パスワードを変更しました", "success");
+      setShowForm(false);
+      setCurrentPassword("");
       setPassword("");
       setPasswordConfirmation("");
       setError(null);
     } catch (err: any) {
       console.error("Password update error:", err);
-      showToast(
-        err.response?.data?.error || "パスワードの更新に失敗しました",
-        "error",
-      );
+      setError(err.response?.data?.error || "パスワードの変更に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
@@ -208,89 +217,118 @@ const PasswordForm: FC = () => {
 
   return (
     <Section>
-      <SectionTitle>パスワード設定</SectionTitle>
-      <Description>
-        ログインに使用するパスワードを設定・変更できます。
-      </Description>
+      <SectionTitle>パスワード変更</SectionTitle>
+      <Description>ログインに使用するパスワードを変更できます。</Description>
 
-      <Form onSubmit={handleSubmit}>
-        <InputGroup>
-          <Label htmlFor="password">新しいパスワード</Label>
-          <InputWrapper>
-            <PasswordInput
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="パスワードを入力"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-            />
-            <EyeButton
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={
-                showPassword ? "パスワードを隠す" : "パスワードを表示"
-              }
-            >
-              {showPassword ? <FiEyeOff /> : <FiEye />}
-            </EyeButton>
-          </InputWrapper>
-          {password && (
-            <PasswordRequirements>
-              <RequirementItem met={passwordRequirements.minLength}>
-                8文字以上
-              </RequirementItem>
-              <RequirementItem met={passwordRequirements.hasUpperCase}>
-                英大文字を含む
-              </RequirementItem>
-              <RequirementItem met={passwordRequirements.hasLowerCase}>
-                英小文字を含む
-              </RequirementItem>
-              <RequirementItem met={passwordRequirements.hasNumber}>
-                数字を含む
-              </RequirementItem>
-              <RequirementItem met={passwordRequirements.hasSymbol}>
-                記号を含む
-              </RequirementItem>
-            </PasswordRequirements>
-          )}
-        </InputGroup>
-
-        <InputGroup>
-          <Label htmlFor="passwordConfirmation">パスワード（確認用）</Label>
-          <InputWrapper>
-            <PasswordInput
-              id="passwordConfirmation"
-              type={showPasswordConfirmation ? "text" : "password"}
-              placeholder="もう一度入力してください"
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              required
-              minLength={8}
-            />
-            <EyeButton
-              type="button"
-              onClick={() =>
-                setShowPasswordConfirmation(!showPasswordConfirmation)
-              }
-              aria-label={
-                showPasswordConfirmation
-                  ? "パスワードを隠す"
-                  : "パスワードを表示"
-              }
-            >
-              {showPasswordConfirmation ? <FiEyeOff /> : <FiEye />}
-            </EyeButton>
-          </InputWrapper>
-        </InputGroup>
-
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "更新中..." : "パスワードを更新"}
+      {!showForm ? (
+        <Button type="button" onClick={() => setShowForm(true)}>
+          パスワードを変更
         </Button>
-      </Form>
+      ) : (
+        <Form onSubmit={handleSubmit}>
+          <InputGroup>
+            <Label htmlFor="currentPassword">現在のパスワード</Label>
+            <InputWrapper>
+              <PasswordInput
+                id="currentPassword"
+                type={showCurrentPassword ? "text" : "password"}
+                placeholder="現在のパスワードを入力"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+              <EyeButton
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                aria-label={
+                  showCurrentPassword ? "パスワードを隠す" : "パスワードを表示"
+                }
+              >
+                {showCurrentPassword ? <FiEyeOff /> : <FiEye />}
+              </EyeButton>
+            </InputWrapper>
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="password">新しいパスワード</Label>
+            <InputWrapper>
+              <PasswordInput
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="新しいパスワードを入力"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+              />
+              <EyeButton
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={
+                  showPassword ? "パスワードを隠す" : "パスワードを表示"
+                }
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </EyeButton>
+            </InputWrapper>
+            {password && (
+              <PasswordRequirements>
+                <RequirementItem met={passwordRequirements.minLength}>
+                  8文字以上
+                </RequirementItem>
+                <RequirementItem met={passwordRequirements.hasUpperCase}>
+                  英大文字を含む
+                </RequirementItem>
+                <RequirementItem met={passwordRequirements.hasLowerCase}>
+                  英小文字を含む
+                </RequirementItem>
+                <RequirementItem met={passwordRequirements.hasNumber}>
+                  数字を含む
+                </RequirementItem>
+                <RequirementItem met={passwordRequirements.hasSymbol}>
+                  記号を含む
+                </RequirementItem>
+              </PasswordRequirements>
+            )}
+          </InputGroup>
+
+          <InputGroup>
+            <Label htmlFor="passwordConfirmation">
+              新しいパスワード（確認用）
+            </Label>
+            <InputWrapper>
+              <PasswordInput
+                id="passwordConfirmation"
+                type={showPasswordConfirmation ? "text" : "password"}
+                placeholder="もう一度入力してください"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                required
+                minLength={8}
+              />
+              <EyeButton
+                type="button"
+                onClick={() =>
+                  setShowPasswordConfirmation(!showPasswordConfirmation)
+                }
+                aria-label={
+                  showPasswordConfirmation
+                    ? "パスワードを隠す"
+                    : "パスワードを表示"
+                }
+              >
+                {showPasswordConfirmation ? <FiEyeOff /> : <FiEye />}
+              </EyeButton>
+            </InputWrapper>
+          </InputGroup>
+
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "変更中..." : "変更する"}
+          </Button>
+        </Form>
+      )}
     </Section>
   );
 };

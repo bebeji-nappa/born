@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/useToast";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 import ScreenNameForm from "./parts/ScreenNameForm";
+import EmailForm from "./parts/EmailForm";
 import PasswordForm from "./parts/PasswordForm";
 import GitHubConnectForm from "./parts/GitHubConnectForm";
 
@@ -92,6 +93,8 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
       </ProfileFormWrapper>
 
       <ScreenNameForm user={user} />
+
+      <EmailForm user={user} />
 
       {/* <GitHubConnectForm user={user} /> */}
 

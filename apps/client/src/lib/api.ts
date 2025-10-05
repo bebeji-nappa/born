@@ -344,6 +344,7 @@ class ApiClient {
   }
 
   async updatePassword(data: {
+    currentPassword: string;
     password: string;
     passwordConfirmation: string;
   }): Promise<{ success: boolean; message: string }> {
@@ -367,6 +368,44 @@ class ApiClient {
     }
 
     return result;
+  }
+
+  async requestEmailChange(
+    newEmail: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/users/email/request`, {
+      method: "POST",
+      credentials: "include",
+      headers: this.getHeaders(true), // CSRF保護
+      body: JSON.stringify({ newEmail }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async verifyEmailChange(
+    token: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(
+      `${this.baseUrl}/api/users/email/verify?token=${encodeURIComponent(token)}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
   }
 
   // Post APIs
