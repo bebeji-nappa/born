@@ -336,9 +336,9 @@ const ProfileCard = styled.div<{ bgColor?: string }>`
 `;
 
 const ProfileAvatar = styled.div`
-  width: 80px;
-  height: 80px;
-  min-width: 80px;
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -367,7 +367,6 @@ const ProfileName = styled.h2<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#111827"};
   font-size: 1.25rem;
   margin: 0;
-  text-align: center;
 `;
 
 const ProfileBio = styled.p<{ textColor?: string }>`
@@ -375,7 +374,6 @@ const ProfileBio = styled.p<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#6b7280"};
   line-height: 1.6;
   margin: 0;
-  text-align: center;
 `;
 
 const PaginationContainer = styled.div`

@@ -120,7 +120,7 @@ const TwoColumnLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 24px;
-  min-height: calc(80vh - 48px);
+  min-height: calc(60vh - 48px);
   align-items: start;
 
   @media (max-width: 860px) {
