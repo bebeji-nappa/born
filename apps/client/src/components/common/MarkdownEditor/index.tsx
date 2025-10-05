@@ -143,12 +143,19 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
       const formData = new FormData();
       formData.append("file", file);
 
+      const csrfToken = localStorage.getItem("csrf-token");
+      const headers: HeadersInit = {};
+      if (csrfToken) {
+        headers["X-CSRF-Token"] = csrfToken;
+      }
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/upload`,
         {
           method: "POST",
           body: formData,
           credentials: "include",
+          headers,
         },
       );
 

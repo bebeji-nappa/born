@@ -477,11 +477,18 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
     if (!confirm("背景画像を削除しますか？")) return;
 
     try {
+      const csrfToken = localStorage.getItem("csrf-token");
+      const headers: HeadersInit = {};
+      if (csrfToken) {
+        headers["X-CSRF-Token"] = csrfToken;
+      }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}/background-image`,
         {
           method: "DELETE",
           credentials: "include",
+          headers,
         },
       );
 
@@ -515,11 +522,18 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         const formData = new FormData();
         formData.append("file", backgroundImageFile);
 
+        const csrfToken = localStorage.getItem("csrf-token");
+        const uploadHeaders: HeadersInit = {};
+        if (csrfToken) {
+          uploadHeaders["X-CSRF-Token"] = csrfToken;
+        }
+
         const uploadRes = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}/background-image`,
           {
             method: "POST",
             credentials: "include",
+            headers: uploadHeaders,
             body: formData,
           },
         );
@@ -556,14 +570,20 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
       };
 
       // ブログ情報の更新
+      const csrfToken = localStorage.getItem("csrf-token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (csrfToken) {
+        headers["X-CSRF-Token"] = csrfToken;
+      }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/blogs/${blogId}`,
         {
           method: "PUT",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
           body: JSON.stringify({
             title: title || null,
             description: description || null,
