@@ -29,7 +29,6 @@ type Bindings = {
   AUTH_GITHUB_SECRET: string;
   API_BASE_URL: string;
   FRONTEND_URL: string;
-  ALLOW_EMAIL: string;
   NODE_ENV: string;
   RESEND_API_KEY: string;
   EMAIL_FROM: string;
@@ -172,8 +171,8 @@ auth.get("/callback/github", async (c) => {
     const primaryEmail =
       emails.find((email) => email.primary)?.email || githubUser.email;
 
-    if (!primaryEmail || primaryEmail !== c.env.ALLOW_EMAIL) {
-      return c.json({ error: "Unauthorized email address" }, 403);
+    if (!primaryEmail) {
+      return c.json({ error: "Email not found" }, 400);
     }
 
     let user = await db

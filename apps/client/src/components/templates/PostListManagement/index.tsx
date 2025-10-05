@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/hooks/useToast";
 
 import { FC } from "react";
 import { Post } from "@/lib/api";
@@ -16,7 +17,7 @@ const Container = styled.div`
   position: relative;
   min-height: 100vh;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px;
   }
 `;
@@ -40,7 +41,7 @@ const PostCard = styled.div`
   align-items: flex-start;
   gap: 16px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     flex-direction: column;
     gap: 12px;
   }
@@ -102,7 +103,7 @@ const Actions = styled.div`
   gap: 8px;
   flex-shrink: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     width: 100%;
     justify-content: flex-end;
   }
@@ -178,16 +179,17 @@ const PostListManagement: FC<PostListManagementProps> = ({
   onDelete,
 }) => {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleDelete = async (id: number, title: string) => {
     if (!confirm(`「${title}」を削除しますか？`)) return;
 
     try {
       await onDelete(id);
-      alert("削除しました");
+      showToast("削除しました", "success");
     } catch (error) {
       console.error(error);
-      alert("削除に失敗しました");
+      showToast("削除に失敗しました", "error");
     }
   };
 

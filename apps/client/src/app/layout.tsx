@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import AuthProvider from "./AuthProvider";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
+import { ToastProvider } from "@/hooks/useToast";
 import "../styles/reset.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -42,9 +43,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <LoadingProvider>
-          <LayoutContent>{children}</LayoutContent>
-        </LoadingProvider>
+        <ToastProvider>
+          <LoadingProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </LoadingProvider>
+        </ToastProvider>
       </body>
     </html>
   );

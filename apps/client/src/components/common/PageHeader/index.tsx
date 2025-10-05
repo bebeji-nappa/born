@@ -15,7 +15,7 @@ const StyledPageHeader = styled.header`
   top: 0;
   z-index: 100;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 12px 16px;
   }
 `;

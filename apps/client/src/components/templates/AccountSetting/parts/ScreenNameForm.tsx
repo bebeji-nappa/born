@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
+import { useToast } from "@/hooks/useToast";
 
 const Section = styled.div`
   background: white;
@@ -60,12 +61,6 @@ const SaveButton = styled.button`
   }
 `;
 
-const ErrorMessage = styled.p`
-  color: #d73a49;
-  font-size: 14px;
-  margin-top: 8px;
-`;
-
 interface FormData {
   screen_name: string;
 }
@@ -75,11 +70,11 @@ export type ScreenNameFormProps = {
 };
 
 const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
+  const { showToast } = useToast();
   const {
     register,
     handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       screen_name: user.screen_name || "",
@@ -89,9 +84,10 @@ const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
   const onSubmit = async (data: FormData) => {
     try {
       await apiClient.updateUserScreenName(data.screen_name);
+      showToast("ユーザIDを更新しました", "success");
     } catch (err) {
       console.error("Screen name update error:", err);
-      setError("root", { message: "ユーザIDの更新に失敗しました" });
+      showToast("ユーザIDの更新に失敗しました", "error");
     }
   };
 
@@ -110,7 +106,6 @@ const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
           {isSubmitting ? "保存中..." : "保存"}
         </SaveButton>
       </Form>
-      {errors.root && <ErrorMessage>{errors.root.message}</ErrorMessage>}
     </Section>
   );
 };

@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { usePosts } from "@/hooks/usePosts";
+import { useToast } from "@/hooks/useToast";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";
@@ -51,7 +52,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 24px 24px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px 16px 0;
   }
 `;
@@ -68,7 +69,7 @@ const BlogInfoSection = styled.div<{ bgColor?: string }>`
   gap: 16px;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 20px;
     margin-bottom: 16px;
   }
@@ -87,7 +88,7 @@ const BlogTitle = styled.h2<{ textColor?: string }>`
   font-size: 1.75rem;
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 1rem;
   }
 `;
@@ -99,7 +100,7 @@ const BlogDescription = styled.p<{ textColor?: string }>`
   margin: 0;
   opacity: 0.8;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 0.8125rem;
   }
 `;
@@ -110,7 +111,7 @@ const Container = styled.div`
   padding: 24px;
   min-height: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 16px;
   }
 `;
@@ -122,7 +123,7 @@ const TwoColumnLayout = styled.div`
   min-height: calc(80vh - 48px);
   align-items: start;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     grid-template-columns: 1fr;
     gap: 16px;
   }
@@ -145,7 +146,7 @@ const Header = styled.header`
   justify-content: space-between;
   align-items: flex-start;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 `;
@@ -164,7 +165,7 @@ const Title = styled.h1<{ textColor?: string }>`
   color: ${(props) => props.textColor || "#111827"};
   margin: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     font-size: 2rem;
   }
 `;
@@ -198,17 +199,15 @@ const AuthorProfile = styled.aside<{ bgColor?: string }>`
       props.bgColor === "transparent" ? "rgba(255, 255, 255, 0.1)" : "#f9fafb"};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px;
     position: static;
   }
 `;
 
 const AuthorAvatar = styled.div`
-  width: 100%;
-  max-width: 70px;
-  min-width: 60px;
-  height: 100%;
+  height: 70px;
+  width: 70px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   display: flex;
@@ -218,6 +217,7 @@ const AuthorAvatar = styled.div`
   font-weight: 600;
   font-size: 2rem;
   overflow: hidden;
+  flex-shrink: 0;
 `;
 
 const AuthorImage = styled.img`
@@ -251,7 +251,7 @@ const Content = styled.div<{ textColor?: string; linkColor?: string }>`
   padding: 32px;
   min-height: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 860px) {
     padding: 24px 20px;
   }
 
@@ -266,37 +266,8 @@ const Content = styled.div<{ textColor?: string; linkColor?: string }>`
     h5,
     h6 {
       color: ${(props) => props.textColor || "#111827"};
-      margin-top: 2em;
       margin-bottom: 1em;
       font-weight: 600;
-    }
-
-    p {
-      margin-bottom: 1.25em;
-    }
-
-    code {
-      background-color: #f3f4f6;
-      padding: 0.25em 0.5em;
-      border-radius: 4px;
-      font-size: 0.875em;
-    }
-
-    pre {
-      background-color: #1f2937;
-      color: #f9fafb;
-      padding: 1.5em;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5em 0;
-    }
-
-    blockquote {
-      border-left: 4px solid #e5e7eb;
-      padding-left: 1.5em;
-      margin: 1.5em 0;
-      font-style: italic;
-      color: #6b7280;
     }
 
     img {
@@ -367,14 +338,10 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 }) => {
   const router = useRouter();
   const { deletePost } = usePosts();
+  const { showToast } = useToast();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+    return name.charAt(0).toUpperCase();
   };
 
   const defaultTheme: ThemeConfig = {
@@ -411,11 +378,11 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
 
     try {
       await deletePost(id);
-      alert("削除しました");
+      showToast("削除しました", "success");
       router.push("/");
     } catch (error) {
       console.error(error);
-      alert("削除に失敗しました");
+      showToast("削除に失敗しました", "error");
     }
   };
 
