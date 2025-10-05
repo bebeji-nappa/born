@@ -4,6 +4,7 @@ import { FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { User } from "@/lib/api";
 import { useToast } from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};
@@ -412,6 +413,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -574,6 +576,7 @@ const BlogSettingTemplate: FC<BlogSettingTemplateProps> = ({
         showToast("保存しました", "success");
         setBackgroundImageFile(null);
         setTheme(themeToSave);
+        router.push(`/${user.screen_name}`);
       } else {
         showToast("保存に失敗しました", "error");
       }
