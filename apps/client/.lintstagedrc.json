@@ -1,5 +1,5 @@
 {
-  "src/**/*.{ts,tsx,js,jsx,json}": [
+  "src/**/*.{ts,tsx,js,jsx}": [
     "prettier --write",
     "biome format --write"
   ]
