@@ -34,4 +34,4 @@ lerna-debug.log*
 *.db-journal
 
 # Database backups
-db/backup/
+**/backup

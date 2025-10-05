@@ -10,6 +10,7 @@ import {
   updatePostById,
 } from '../services/posts.service'
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth'
+import { csrfProtection } from '../middleware/csrf'
 
 type Bindings = {
   DATABASE_URL: string
@@ -85,6 +86,12 @@ posts.post(
   ),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const user = c.get('user')
       const { title, content, published } = c.req.valid('json')
       const result = await createPost(title, content, user.id, published, c.env)
@@ -109,6 +116,12 @@ posts.put(
   ),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const { id } = c.req.valid('param')
       const { title, content, published } = c.req.valid('json')
       const result = await updatePostById(id, title, content, published, c.env)
@@ -125,6 +138,11 @@ posts.delete(
   zValidator('param', z.object({ id: z.string().transform(Number) })),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
       const { id } = c.req.valid('param')
       const result = await deletePostById(id, c.env)
       return c.json(result)

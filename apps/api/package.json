@@ -17,6 +17,8 @@
     "bcryptjs": "^3.0.2",
     "drizzle-orm": "^0.44.6",
     "hono": "^4.9.9",
+    "mimetext": "^3.0.27",
+    "resend": "^6.1.2",
     "zod": "^4.1.11"
   },
   "devDependencies": {

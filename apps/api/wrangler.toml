@@ -30,6 +30,8 @@ bucket_name = "born-storage-dev"
 
 [env.development.vars]
 STORAGE_URL = "https://storage-dev.bebeji-nappa.com"
+EMAIL_FROM = "noreply@born-docs.com"
+EMAIL_FROM_NAME = "Born"
 
 # Staging environment
 [env.staging]
@@ -50,6 +52,8 @@ bucket_name = "born-storage-staging"
 [env.staging.vars]
 NODE_ENV = "staging"
 STORAGE_URL = "https://staging-storage.born-docs.com"
+EMAIL_FROM = "noreply@born-docs.com"
+EMAIL_FROM_NAME = "Born"
 
 # Production environment
 [env.production]
