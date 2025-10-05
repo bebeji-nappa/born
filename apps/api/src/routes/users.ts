@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { getCookie } from 'hono/cookie'
+import { getCookie, setCookie } from 'hono/cookie'
 import { eq } from 'drizzle-orm'
 import { getDB, users as usersTable, sessions } from '../db'
 import {
@@ -11,6 +11,10 @@ import {
   getUserbyId,
 } from '../services/users.service'
 import * as bcrypt from 'bcryptjs'
+import { sanitizeText, sanitizeDescription, sanitizeScreenName } from '../lib/sanitize'
+import { csrfProtection } from '../middleware/csrf'
+import { deleteAllUserSessions, createSession } from '../lib/auth'
+import { generateCsrfToken } from '../lib/csrf'
 
 type Bindings = {
   DATABASE_URL: string
@@ -93,6 +97,12 @@ users.get(
 // ユーザー情報更新
 users.put('/profile', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -114,10 +124,14 @@ users.put('/profile', async (c) => {
     const body = await c.req.json()
     const { name, description } = body
 
-    // 更新データの準備
-    const updateData: { name?: string; description?: string | null } = {}
-    if (name !== undefined) updateData.name = name
-    if (description !== undefined) updateData.description = description
+    // 更新データの準備（サニタイズ）
+    const updateData: { name?: string | null; description?: string | null } = {}
+    if (name !== undefined) {
+      updateData.name = sanitizeText(name)
+    }
+    if (description !== undefined) {
+      updateData.description = sanitizeDescription(description)
+    }
 
     // ユーザー情報を更新
     const updatedUser = await db.update(usersTable)
@@ -147,6 +161,12 @@ users.put('/profile', async (c) => {
 // ユーザID（screen_name）更新
 users.put('/screen-name', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -172,9 +192,16 @@ users.put('/screen-name', async (c) => {
       return c.json({ error: 'screen_name is required' }, 400)
     }
 
+    // screen_nameをサニタイズ
+    const sanitizedScreenName = sanitizeScreenName(screen_name)
+
+    if (!sanitizedScreenName) {
+      return c.json({ error: 'Invalid screen_name. Only alphanumeric characters, hyphens, and underscores are allowed.' }, 400)
+    }
+
     // ユーザIDを更新
     const updatedUser = await db.update(usersTable)
-      .set({ screen_name: screen_name || null })
+      .set({ screen_name: sanitizedScreenName })
       .where(eq(usersTable.id, result.user.id))
       .returning()
       .get()
@@ -200,6 +227,12 @@ users.put('/screen-name', async (c) => {
 // アバター画像更新
 users.put('/avatar/image', async (c) => {
   try {
+    // CSRF保護
+    const csrfError = await csrfProtection(c)
+    if (csrfError) {
+      return csrfError
+    }
+
     const sessionToken = getCookie(c, 'session-token')
     if (!sessionToken) {
       return c.json({ error: 'Unauthorized' }, 401)
@@ -334,6 +367,12 @@ users.put(
   })),
   async (c) => {
     try {
+      // CSRF保護
+      const csrfError = await csrfProtection(c)
+      if (csrfError) {
+        return csrfError
+      }
+
       const sessionToken = getCookie(c, 'session-token')
       if (!sessionToken) {
         return c.json({ error: 'Unauthorized' }, 401)
@@ -379,9 +418,33 @@ users.put(
         .where(eq(usersTable.id, result.user.id))
         .run()
 
+      // セキュリティ強化: 全セッションを無効化
+      await deleteAllUserSessions(result.user.id, c.env)
+
+      // 新しいセッションを作成
+      const newSessionToken = await createSession(result.user.id, c.env)
+
+      // 新しいセッションCookieを設定
+      setCookie(c, 'session-token', newSessionToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
+      // 新しいCSRFトークンを生成
+      const csrfToken = generateCsrfToken()
+      setCookie(c, 'csrf-token', csrfToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
       return c.json({
         success: true,
-        message: 'Password updated successfully'
+        message: 'Password updated successfully. All sessions have been invalidated.',
+        csrfToken, // 新しいCSRFトークンをフロントエンドに返す
       })
     } catch (error) {
       console.error('Password update error:', error)
