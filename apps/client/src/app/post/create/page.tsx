@@ -4,6 +4,7 @@ import PostCreateTemplate from "@/components/templates/PostCreate";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useEffect, useState } from "react";
+import { PageTitle } from "@/components/common/PageTitle";
 
 interface ThemeConfig {
   backgroundColor: string;
@@ -59,5 +60,10 @@ export default function PostCreatePage() {
     return <LoadingSpinner />;
   }
 
-  return <PostCreateTemplate userId={user.id} theme={theme} />;
+  return (
+    <>
+      <PageTitle title="新規投稿" />
+      <PostCreateTemplate userId={user.id} theme={theme} />
+    </>
+  );
 }
