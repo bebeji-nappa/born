@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { getCookie } from 'hono/cookie'
+import { getCookie, setCookie } from 'hono/cookie'
 import { eq } from 'drizzle-orm'
 import { getDB, users as usersTable, sessions } from '../db'
 import {
@@ -13,6 +13,8 @@ import {
 import * as bcrypt from 'bcryptjs'
 import { sanitizeText, sanitizeDescription, sanitizeScreenName } from '../lib/sanitize'
 import { csrfProtection } from '../middleware/csrf'
+import { deleteAllUserSessions, createSession } from '../lib/auth'
+import { generateCsrfToken } from '../lib/csrf'
 
 type Bindings = {
   DATABASE_URL: string
@@ -416,9 +418,33 @@ users.put(
         .where(eq(usersTable.id, result.user.id))
         .run()
 
+      // セキュリティ強化: 全セッションを無効化
+      await deleteAllUserSessions(result.user.id, c.env)
+
+      // 新しいセッションを作成
+      const newSessionToken = await createSession(result.user.id, c.env)
+
+      // 新しいセッションCookieを設定
+      setCookie(c, 'session-token', newSessionToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
+      // 新しいCSRFトークンを生成
+      const csrfToken = generateCsrfToken()
+      setCookie(c, 'csrf-token', csrfToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
+
       return c.json({
         success: true,
-        message: 'Password updated successfully'
+        message: 'Password updated successfully. All sessions have been invalidated.',
+        csrfToken, // 新しいCSRFトークンをフロントエンドに返す
       })
     } catch (error) {
       console.error('Password update error:', error)

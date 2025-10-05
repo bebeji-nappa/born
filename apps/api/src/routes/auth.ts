@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
-import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, type AuthUser } from '../lib/auth'
+import { createSession, getSessionUser, deleteSession, getGitHubOAuthConfig, refreshSession, type AuthUser } from '../lib/auth'
 import { createId } from '@paralleldrive/cuid2'
 import { eq, and, lt } from 'drizzle-orm'
 import { getDB, users, accounts, blogs, emailVerificationTokens } from '../db'
@@ -290,6 +290,9 @@ auth.get('/current_user', async (c) => {
       screen_name: updatedUser.screen_name,
     }
   }
+
+  // セッションの有効期限を延長（アクティブユーザーの維持）
+  await refreshSession(sessionToken, c.env)
 
   return c.json({ user })
 })

@@ -317,7 +317,14 @@ class ApiClient {
       throw new Error(errorData.error || `API Error: ${response.status}`);
     }
 
-    return response.json();
+    const result = await response.json();
+
+    // パスワード変更後、新しいCSRFトークンを保存
+    if (result.csrfToken) {
+      this.saveCsrfToken(result.csrfToken);
+    }
+
+    return result;
   }
 
   // Post APIs
