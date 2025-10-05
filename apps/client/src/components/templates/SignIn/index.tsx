@@ -259,7 +259,7 @@ const SignInTemplate = () => {
           <PrimaryButton type="submit">ログイン</PrimaryButton>
         </Form>
 
-        <Divider>または</Divider>
+        {/* <Divider>または</Divider>
 
         <GitHubButton type="button" onClick={githubSignIn}>
           <Image
@@ -269,7 +269,7 @@ const SignInTemplate = () => {
             height={20}
           />
           GitHub でログイン
-        </GitHubButton>
+        </GitHubButton> */}
 
         <LinkText>
           アカウントをお持ちでない方は{" "}

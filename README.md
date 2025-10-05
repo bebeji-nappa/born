@@ -18,7 +18,7 @@
 - Storage
   - Cloudflare R2
 - Deployment
-  - Cloudflare Pages (Client)
+  - Vercel (Client)
   - Cloudflare Workers (API)
 
 ## 事前準備
@@ -39,7 +39,7 @@ cd apps/api
 pnpm db:generate
 
 # ローカルDBにマイグレーション適用
-pnpm wrangler d1 migrations apply born-db-local --local --env=development
+pnpm d1:migrate:local
 ```
 
 ## 環境変数の設定
@@ -105,26 +105,20 @@ http://localhost:3000 にアクセスして動作を確認してください。
 
 環境変数 `NEXT_PUBLIC_EMAIL` に設定したメールアドレスで登録された GitHub アカウントのみ、すべての機能を使用できます。それ以外のアカウントはブログ記事の閲覧のみ可能です。
 
-## ビルド・デプロイ
+## ビルド
 
 ```bash
-# ビルド
 pnpm build
-
-# デプロイ（Staging）
-cd apps/api
-pnpm deploy:staging
-
-cd apps/client
-pnpm deploy:staging
-
-# デプロイ（Production）
-cd apps/api
-pnpm deploy:production
-
-cd apps/client
-pnpm deploy:production
 ```
+
+## デプロイ
+
+デプロイはブランチマージ後、自動で行われます。
+
+### デプロイ環境
+
+- Client: Vercel
+- API: Cloudflare Workers
 
 ### マイグレーション（本番環境）
 
@@ -132,10 +126,10 @@ pnpm deploy:production
 cd apps/api
 
 # Staging環境
-pnpm wrangler d1 migrations apply born-db-staging --env=staging
+pnpm d1:migrate:staging
 
 # Production環境
-pnpm wrangler d1 migrations apply born-db --env=production
+pnpm d1:migrate:prod
 ```
 
 ## テスト

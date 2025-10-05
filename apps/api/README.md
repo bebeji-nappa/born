@@ -9,18 +9,18 @@ pnpm dev
 ## データベース
 
 ```bash
-# マイグレーション実行
-pnpm db:migrate
-
-# Prisma Client 生成
+# マイグレーション生成
 pnpm db:generate
 
-# Prisma Studio（DB管理画面）
+# Drizzle Studio（DB管理画面）
 pnpm db:studio
-```
 
-## デプロイ
+# ローカル環境にマイグレーション適用
+pnpm d1:migrate:local
 
-```bash
-pnpm deploy
+# Staging環境にマイグレーション適用
+pnpm d1:migrate:staging
+
+# Production環境にマイグレーション適用
+pnpm d1:migrate:prod
 ```

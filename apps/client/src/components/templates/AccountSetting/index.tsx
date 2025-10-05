@@ -88,7 +88,7 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
 
       <ScreenNameForm user={user} />
 
-      <GitHubConnectForm user={user} />
+      {/* <GitHubConnectForm user={user} /> */}
 
       <PasswordForm />
     </Wrapper>
