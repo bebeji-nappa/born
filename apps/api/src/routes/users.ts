@@ -28,7 +28,7 @@ import {
 // Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
 function getCookieDomain(nodeEnv?: string): string | undefined {
   if (nodeEnv === "production") {
-    return ".born-docs.com";
+    return "born-docs.com";
   } else if (nodeEnv === "staging") {
     return ".born-docs.com";
   }
