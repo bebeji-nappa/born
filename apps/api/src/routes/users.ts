@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { getCookie, setCookie } from "hono/cookie";
+import { getCookie } from "hono/cookie";
 import { eq } from "drizzle-orm";
 import { getDB, users as usersTable, sessions, emailChangeTokens } from "../db";
 import {
@@ -11,14 +11,9 @@ import {
   getUserbyId,
 } from "../services/users.service";
 import * as bcrypt from "bcryptjs";
-import {
-  sanitizeText,
-  sanitizeDescription,
-  sanitizeScreenName,
-} from "../lib/sanitize";
+import { sanitizeText, sanitizeScreenName } from "../lib/sanitize";
 import { csrfProtection } from "../middleware/csrf";
-import { deleteAllUserSessions, createSession } from "../lib/auth";
-import { generateCsrfToken } from "../lib/csrf";
+import { deleteAllUserSessions } from "../lib/auth";
 import { randomBytes } from "node:crypto";
 import {
   sendEmail,
@@ -28,7 +23,7 @@ import {
 // Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
 function getCookieDomain(nodeEnv?: string): string | undefined {
   if (nodeEnv === "production") {
-    return ".born-docs.com";
+    return "born-docs.com";
   } else if (nodeEnv === "staging") {
     return ".born-docs.com";
   }
@@ -158,7 +153,7 @@ users.put("/profile", async (c) => {
       updateData.name = sanitizeText(name);
     }
     if (description !== undefined) {
-      updateData.description = sanitizeDescription(description);
+      updateData.description = description;
     }
 
     // ユーザー情報を更新
@@ -486,37 +481,14 @@ users.put(
         .where(eq(usersTable.id, result.user.id))
         .run();
 
-      // セキュリティ強化: 全セッションを無効化
+      // セキュリティ強化: 全セッションを無効化（現在のセッションも含む）
+      // パスワード変更後は再認証を必須とするため、新しいセッションは作成しない
       await deleteAllUserSessions(result.user.id, c.env);
-
-      // 新しいセッションを作成
-      const newSessionToken = await createSession(result.user.id, c.env);
-
-      // 新しいセッションCookieを設定
-      const cookieDomain = getCookieDomain(c.env.NODE_ENV);
-      setCookie(c, "session-token", newSessionToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        domain: cookieDomain,
-      });
-
-      // 新しいCSRFトークンを生成
-      const csrfToken = generateCsrfToken();
-      setCookie(c, "csrf-token", csrfToken, {
-        httpOnly: false,
-        secure: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      });
 
       return c.json({
         success: true,
         message:
-          "Password updated successfully. All sessions have been invalidated.",
-        csrfToken, // 新しいCSRFトークンをフロントエンドに返す
+          "Password updated successfully. Please sign in again with your new password.",
       });
     } catch (error) {
       console.error("Password update error:", error);
