@@ -8,7 +8,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import PostListManagement from "@/components/templates/PostListManagement";
 import { PageTitle } from "@/components/common/PageTitle";
 
-export default function PostListPage() {
+export default function PostDashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
   const {
     posts,

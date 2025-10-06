@@ -15,7 +15,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 24px;
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
 
   @media (max-width: 860px) {
     padding: 16px;
@@ -203,7 +203,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
 
   return (
     <Container>
-      <Title>投稿管理</Title>
+      <Title>記事の管理</Title>
       <CreateButton onClick={handleCreate}>新規投稿</CreateButton>
       {posts.length === 0 ? (
         <EmptyState>

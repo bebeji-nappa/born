@@ -254,7 +254,7 @@ export const PageHeader = () => {
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(() => router.push("/post/list"))
+                      handleMenuItemClick(() => router.push("/post/dashboard"))
                     }
                   >
                     記事の管理
