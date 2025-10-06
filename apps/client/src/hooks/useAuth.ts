@@ -15,6 +15,7 @@ export function useAuth() {
     try {
       const response = await apiClient.getCurrentUser();
       console.log("Auth check response:", response);
+      console.log("Auth check user:", response?.user || null);
       setUser(response?.user || null);
     } catch (error) {
       console.error("Auth check error:", error);
@@ -22,9 +23,9 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  }, [apiClient]);
+  }, [apiClient, setUser, setIsLoading]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       await apiClient.signOut();
       setUser(null);
@@ -32,11 +33,11 @@ export function useAuth() {
     } catch (error) {
       console.error("Sign out error:", error);
     }
-  };
+  }, [apiClient, setUser]);
 
-  const signIn = () => {
+  const signIn = useCallback(() => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/auth/signin/github`;
-  };
+  }, []);
 
   console.log("useAuth user:", user);
 

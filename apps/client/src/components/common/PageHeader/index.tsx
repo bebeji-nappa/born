@@ -5,6 +5,7 @@ import Image from "next/image";
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const StyledPageHeader = styled.header`
   background: #ffffff;
@@ -158,6 +159,7 @@ const MenuItem = styled.button<{ hasBorderTop?: boolean }>`
 
 export const PageHeader = () => {
   const { user, isAuthenticated, signOut } = useAuth();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -205,9 +207,7 @@ export const PageHeader = () => {
         <RightSection>
           {isAuthenticated && user?.name ? (
             <>
-              <CreatePostButton
-                onClick={() => (window.location.href = "/post/create")}
-              >
+              <CreatePostButton onClick={() => router.push("/post/create")}>
                 記事を作成
               </CreatePostButton>
 
@@ -232,8 +232,8 @@ export const PageHeader = () => {
                 <DropdownMenu isOpen={isMenuOpen}>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = `/${user.screen_name}`),
+                      handleMenuItemClick(() =>
+                        router.push(`/${user.screen_name}`),
                       )
                     }
                   >
@@ -241,18 +241,14 @@ export const PageHeader = () => {
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = "/post/list"),
-                      )
+                      handleMenuItemClick(() => router.push("/post/list"))
                     }
                   >
                     記事の管理
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = "/setting/account"),
-                      )
+                      handleMenuItemClick(() => router.push("/setting/account"))
                     }
                   >
                     アカウント設定
@@ -267,9 +263,7 @@ export const PageHeader = () => {
               </UserMenuContainer>
             </>
           ) : (
-            <CreatePostButton
-              onClick={() => (window.location.href = "/signin")}
-            >
+            <CreatePostButton onClick={() => router.push("/signin")}>
               ログイン
             </CreatePostButton>
           )}
