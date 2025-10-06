@@ -26,12 +26,11 @@ export function useAuth() {
   const signOut = useCallback(async () => {
     try {
       await apiClient.signOut();
-      setUser(null);
       window.location.href = "/signin";
     } catch (error) {
       console.error("Sign out error:", error);
     }
-  }, [apiClient, setUser]);
+  }, [apiClient]);
 
   const signIn = useCallback(() => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/auth/signin/github`;
