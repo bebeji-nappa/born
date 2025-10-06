@@ -75,10 +75,6 @@ export default function UserBlogPage() {
 
   const pageTitle = blog?.title || (user ? `${user.name}のブログ` : "");
 
-  console.log("UserBlogPage user:", user);
-  console.log("UserBlogPage blog:", blog);
-  console.log("UserBlogPage posts:", posts);
-
   return (
     <>
       {pageTitle && <PageTitle title={pageTitle} />}
