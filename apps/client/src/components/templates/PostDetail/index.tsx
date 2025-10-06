@@ -5,9 +5,6 @@ import { User, Post } from "@/lib/api";
 import { Richmd } from "@richmd/react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import { usePosts } from "@/hooks/usePosts";
-import { useToast } from "@/hooks/useToast";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";
@@ -288,32 +285,6 @@ const Content = styled.div<{ textColor?: string; linkColor?: string }>`
   }
 `;
 
-const RedirectButton = styled.button`
-  background: none;
-  border: none;
-  color: #000;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-bottom: 16px;
-  padding: 0;
-`;
-
-const DeleteButton = styled.button`
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  margin-left: auto;
-  height: fit-content;
-
-  &:hover {
-    background-color: #dc2626;
-  }
-`;
-
 const Footer = styled.footer`
   background-color: #000000;
   color: #ffffff;
@@ -332,13 +303,9 @@ export type PostDetailTemplateProps = {
 };
 
 const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
-  post: { id, title, content, user, createdAt },
+  post: { title, content, user, createdAt },
   blog,
-  authUserEmail,
 }) => {
-  const router = useRouter();
-  const { deletePost } = usePosts();
-  const { showToast } = useToast();
   const getInitials = (name: string | null) => {
     if (!name) return "U";
     return name.charAt(0).toUpperCase();
@@ -372,19 +339,6 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
       // JSONパースに失敗した場合はデフォルト値を使用
     }
   }
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("本当に削除しますか？")) return;
-
-    try {
-      await deletePost(id);
-      showToast("削除しました", "success");
-      router.push("/");
-    } catch (error) {
-      console.error(error);
-      showToast("削除に失敗しました", "error");
-    }
-  };
 
   // 環境に応じて背景画像URLを変換
   const getBackgroundImageUrl = (
