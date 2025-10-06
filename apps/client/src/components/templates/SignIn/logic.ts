@@ -15,18 +15,9 @@ export const useSignIn = () => {
     async (email: string, password: string) => {
       try {
         await apiClient.signIn({ email, password });
-
-        // ログイン成功後、現在のユーザー情報を取得
-        const userData = await apiClient.getCurrentUser();
-
-        // nameがnullの場合は初回ログインとみなす
-        if (userData?.user && !userData.user.name) {
-          router.push("/setup/profile");
-        } else if (userData?.user && userData.user.screen_name) {
-          router.push(`/${userData.user.screen_name}`);
-        } else {
-          router.push("/");
-        }
+        // ログイン成功後、AuthProviderがリダイレクトを処理
+        // ページをリロードして認証状態を反映
+        window.location.href = "/signin";
         return null; // 成功時はエラーなし
       } catch (error: any) {
         // メール未認証エラーの場合は、メール確認ページへリダイレクト

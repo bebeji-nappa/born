@@ -18,6 +18,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const isPostEditPage = pathname?.match(/^\/post\/[^/]+\/edit$/);
   const isPostCreatePage = pathname === "/post/create";
   const isBlockedPage = pathname === "/blocked";
+  const isVerifyEmailPage =
+    pathname === "/verify-email-sent" ||
+    pathname === "/verify-email" ||
+    pathname === "/verify-email-change";
 
   const shouldShowHeader =
     !isAuthPage &&
@@ -25,13 +29,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     !isPostEditPage &&
     !isPostCreatePage &&
     !isBlockedPage &&
+    !isVerifyEmailPage &&
     !isGlobalLoading;
 
   return (
-    <>
+    <AuthProvider>
       {shouldShowHeader && <PageHeader />}
-      <AuthProvider>{children}</AuthProvider>
-    </>
+      {children}
+    </AuthProvider>
   );
 }
 

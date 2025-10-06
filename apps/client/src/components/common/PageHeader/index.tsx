@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 const StyledPageHeader = styled.header`
   background: #ffffff;
@@ -14,6 +14,7 @@ const StyledPageHeader = styled.header`
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 60px;
 
   @media (max-width: 860px) {
     padding: 12px 16px;
@@ -155,8 +156,20 @@ const MenuItem = styled.button<{ hasBorderTop?: boolean }>`
   }
 `;
 
+const DefaultAvatar = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+`;
+
 export const PageHeader = () => {
   const { user, isAuthenticated, signOut } = useAuth();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -186,17 +199,15 @@ export const PageHeader = () => {
       <HeaderContent>
         <LogoContainer>
           <LogoImageWrapper>
-            <Link href="/">
-              <Image
-                src="/born_logo.svg"
-                alt="logo"
-                sizes="100vw"
-                fill
-                style={{
-                  width: "100%",
-                }}
-              />
-            </Link>
+            <Image
+              src="/born_logo.svg"
+              alt="logo"
+              sizes="100vw"
+              fill
+              style={{
+                width: "100%",
+              }}
+            />
           </LogoImageWrapper>
           <BetaBadge>ベータ版</BetaBadge>
         </LogoContainer>
@@ -204,9 +215,7 @@ export const PageHeader = () => {
         <RightSection>
           {isAuthenticated && user?.name ? (
             <>
-              <CreatePostButton
-                onClick={() => (window.location.href = "/post/create")}
-              >
+              <CreatePostButton onClick={() => router.push("/post/create")}>
                 記事を作成
               </CreatePostButton>
 
@@ -224,15 +233,17 @@ export const PageHeader = () => {
                       height={40}
                     />
                   ) : (
-                    <div>{user.name.charAt(0).toUpperCase()}</div>
+                    <DefaultAvatar>
+                      {user.name.charAt(0).toUpperCase()}
+                    </DefaultAvatar>
                   )}
                 </AvatarButton>
 
                 <DropdownMenu isOpen={isMenuOpen}>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = `/${user.screen_name}`),
+                      handleMenuItemClick(() =>
+                        router.push(`/${user.screen_name}`),
                       )
                     }
                   >
@@ -240,18 +251,14 @@ export const PageHeader = () => {
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = "/post/list"),
-                      )
+                      handleMenuItemClick(() => router.push("/post/dashboard"))
                     }
                   >
                     記事の管理
                   </MenuItem>
                   <MenuItem
                     onClick={() =>
-                      handleMenuItemClick(
-                        () => (window.location.href = "/setting/account"),
-                      )
+                      handleMenuItemClick(() => router.push("/setting/account"))
                     }
                   >
                     アカウント設定
@@ -266,9 +273,7 @@ export const PageHeader = () => {
               </UserMenuContainer>
             </>
           ) : (
-            <CreatePostButton
-              onClick={() => (window.location.href = "/signin")}
-            >
+            <CreatePostButton onClick={() => router.push("/signin")}>
               ログイン
             </CreatePostButton>
           )}

@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import {
+  AuthProvider as AuthContextProvider,
+  useAuth,
+} from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
@@ -10,10 +13,7 @@ export type AuthGuardProps = {
   children: React.ReactNode;
 };
 
-/**
- * 認証済みかどうかを判定し、リダイレクト先を変更する
- */
-export default function AuthProvider({ children }: AuthGuardProps) {
+function AuthGuard({ children }: AuthGuardProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -32,17 +32,17 @@ export default function AuthProvider({ children }: AuthGuardProps) {
     const isEditPage = /^\/post\/\d+\/edit$/.test(pathname);
     const isSigninPage = pathname === "/signin";
 
-    console.log(user);
-
     // 投稿作成・編集ページで未認証の場合、サインインページにリダイレクト
     if ((isCreatePage || isEditPage) && !user) {
       router.push("/signin");
       return;
-    }
-
-    // 認証済みでサインインページにいる場合、トップページにリダイレクト
-    if (user && isSigninPage) {
-      router.push("/");
+    } else if (user && isSigninPage) {
+      // 初回ログイン（nameがnull）の場合はプロフィール設定へ
+      if (!user.name) {
+        router.push("/setup/profile");
+      } else {
+        router.push(`/${user.screen_name}`);
+      }
       return;
     }
 
@@ -56,4 +56,12 @@ export default function AuthProvider({ children }: AuthGuardProps) {
   }
 
   return <>{children}</>;
+}
+
+export default function AuthProvider({ children }: AuthGuardProps) {
+  return (
+    <AuthContextProvider>
+      <AuthGuard>{children}</AuthGuard>
+    </AuthContextProvider>
+  );
 }

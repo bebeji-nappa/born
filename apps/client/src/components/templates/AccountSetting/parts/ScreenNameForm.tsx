@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
 import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Section = styled.div`
   background: white;
@@ -71,6 +72,7 @@ export type ScreenNameFormProps = {
 
 const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
   const { showToast } = useToast();
+  const { refetch } = useAuth();
   const {
     register,
     handleSubmit,
@@ -84,6 +86,7 @@ const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
   const onSubmit = async (data: FormData) => {
     try {
       await apiClient.updateUserScreenName(data.screen_name);
+      await refetch();
       showToast("ユーザIDを更新しました", "success");
     } catch (err) {
       console.error("Screen name update error:", err);

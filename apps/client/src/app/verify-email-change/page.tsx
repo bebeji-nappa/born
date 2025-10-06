@@ -3,10 +3,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { apiClient } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import VerifyEmailChangeTemplate from "@/components/templates/VerifyEmailChange";
 
 const VerifyEmailChangePage: React.FC = () => {
   const searchParams = useSearchParams();
+  const { refetch } = useAuth();
   const [verificationState, setVerificationState] = useState<{
     success: boolean;
     message: string;
@@ -31,6 +33,9 @@ const VerifyEmailChangePage: React.FC = () => {
 
       try {
         const result = await apiClient.verifyEmailChange(token);
+        if (result.success) {
+          await refetch();
+        }
         setVerificationState({
           success: result.success,
           message: result.message || "メールアドレスが正常に変更されました。",
@@ -47,7 +52,7 @@ const VerifyEmailChangePage: React.FC = () => {
     };
 
     verifyEmail();
-  }, [searchParams]);
+  }, [searchParams, refetch]);
 
   if (!verificationState) {
     return (

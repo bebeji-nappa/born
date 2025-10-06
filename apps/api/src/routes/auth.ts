@@ -12,7 +12,14 @@ import {
 } from "../lib/auth";
 import { createId } from "@paralleldrive/cuid2";
 import { eq, and, lt } from "drizzle-orm";
-import { getDB, users, accounts, blogs, emailVerificationTokens } from "../db";
+import {
+  getDB,
+  users,
+  accounts,
+  blogs,
+  emailVerificationTokens,
+  rateLimits,
+} from "../db";
 import * as bcrypt from "bcryptjs";
 import {
   sendEmail,
@@ -22,6 +29,17 @@ import { isValidEmail, sanitizeText } from "../lib/sanitize";
 import { rateLimitMiddleware } from "../middleware/rateLimit";
 import { generateCsrfToken } from "../lib/csrf";
 import { csrfProtection } from "../middleware/csrf";
+
+// Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
+function getCookieDomain(nodeEnv?: string): string | undefined {
+  if (nodeEnv === "production") {
+    return ".born-docs.com";
+  } else if (nodeEnv === "staging") {
+    return ".born-docs.com";
+  }
+  // ローカル開発環境ではdomainを指定しない
+  return undefined;
+}
 
 type Bindings = {
   DB: D1Database;
@@ -267,13 +285,28 @@ auth.get("/callback/github", async (c) => {
         .where(eq(accounts.id, account.id));
     }
 
+    // ログイン成功時、レート制限をリセット
+    const loginIp =
+      c.req.header("cf-connecting-ip") ||
+      c.req.header("x-forwarded-for") ||
+      c.req.header("x-real-ip") ||
+      "unknown";
+    const loginRateLimitKey = `${loginIp}:signin`;
+    await db
+      .delete(rateLimits)
+      .where(eq(rateLimits.key, loginRateLimitKey))
+      .run();
+
     const sessionToken = await createSession(user.id, c.env);
 
+    const cookieDomain = getCookieDomain(c.env.NODE_ENV);
     setCookie(c, "session-token", sessionToken, {
       httpOnly: true,
       secure: true, // Always secure in Workers
       sameSite: "lax",
+      path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
+      domain: cookieDomain,
     });
 
     const frontendUrl = c.env.FRONTEND_URL || "http://localhost:3000";
@@ -298,8 +331,19 @@ auth.post("/signout", async (c) => {
     await deleteSession(sessionToken, c.env);
   }
 
-  deleteCookie(c, "session-token");
-  deleteCookie(c, "csrf-token");
+  const cookieDomain = getCookieDomain(c.env.NODE_ENV);
+  deleteCookie(c, "session-token", {
+    domain: cookieDomain,
+    path: "/",
+    secure: true,
+    sameSite: "lax",
+  });
+  deleteCookie(c, "csrf-token", {
+    domain: cookieDomain,
+    path: "/",
+    secure: true,
+    sameSite: "lax",
+  });
   return c.json({ message: "Signed out successfully" });
 });
 
@@ -395,14 +439,26 @@ auth.post(
         );
       }
 
+      // ログイン成功時、レート制限をリセット
+      const ip =
+        c.req.header("cf-connecting-ip") ||
+        c.req.header("x-forwarded-for") ||
+        c.req.header("x-real-ip") ||
+        "unknown";
+      const rateLimitKey = `${ip}:signin`;
+      await db.delete(rateLimits).where(eq(rateLimits.key, rateLimitKey)).run();
+
       // セッション作成
       const sessionToken = await createSession(user.id, c.env);
 
+      const cookieDomain = getCookieDomain(c.env.NODE_ENV);
       setCookie(c, "session-token", sessionToken, {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        path: "/",
         maxAge: 60 * 60 * 24 * 7, // 7 days
+        domain: cookieDomain,
       });
 
       // CSRFトークン生成

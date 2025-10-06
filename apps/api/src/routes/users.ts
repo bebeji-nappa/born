@@ -25,6 +25,17 @@ import {
   generateEmailChangeVerificationHTML,
 } from "../services/email.service";
 
+// Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
+function getCookieDomain(nodeEnv?: string): string | undefined {
+  if (nodeEnv === "production") {
+    return ".born-docs.com";
+  } else if (nodeEnv === "staging") {
+    return ".born-docs.com";
+  }
+  // ローカル開発環境ではdomainを指定しない
+  return undefined;
+}
+
 type Bindings = {
   DATABASE_URL: string;
   DB: D1Database;
@@ -482,11 +493,14 @@ users.put(
       const newSessionToken = await createSession(result.user.id, c.env);
 
       // 新しいセッションCookieを設定
+      const cookieDomain = getCookieDomain(c.env.NODE_ENV);
       setCookie(c, "session-token", newSessionToken, {
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        path: "/",
         maxAge: 60 * 60 * 24 * 7, // 7 days
+        domain: cookieDomain,
       });
 
       // 新しいCSRFトークンを生成

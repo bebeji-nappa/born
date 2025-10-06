@@ -108,8 +108,6 @@ const GitHubConnectForm: FC<Props> = ({ user }) => {
     window.location.href = `${apiBaseUrl}/api/auth/connect/github`;
   };
 
-  console.log(user);
-
   return (
     <FormSection>
       <SectionTitle>GitHub連携</SectionTitle>
