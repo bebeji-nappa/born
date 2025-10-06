@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
 import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Section = styled.div`
   background: white;
@@ -101,10 +102,11 @@ export type ProfileFormProps = {
 
 const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
   const { showToast } = useToast();
+  const { refetch } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       name: user.name || "",
@@ -118,6 +120,7 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
         name: data.name,
         description: data.description || null,
       });
+      await refetch();
       showToast("プロフィールを更新しました", "success");
     } catch (err) {
       console.error("Profile update error:", err);
