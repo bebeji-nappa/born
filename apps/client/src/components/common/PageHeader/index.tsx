@@ -157,6 +157,17 @@ const MenuItem = styled.button<{ hasBorderTop?: boolean }>`
   }
 `;
 
+const DefaultAvatar = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+`;
+
 export const PageHeader = () => {
   const { user, isAuthenticated, signOut } = useAuth();
   const router = useRouter();
@@ -225,7 +236,9 @@ export const PageHeader = () => {
                       height={40}
                     />
                   ) : (
-                    <div>{user.name.charAt(0).toUpperCase()}</div>
+                    <DefaultAvatar>
+                      {user.name.charAt(0).toUpperCase()}
+                    </DefaultAvatar>
                   )}
                 </AvatarButton>
 
