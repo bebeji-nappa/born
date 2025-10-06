@@ -94,7 +94,7 @@ const VerifyEmailChangeTemplate: FC<VerifyEmailChangeTemplateProps> = ({
 
         <Description>{message}</Description>
 
-        <HomeButton href="/">ホームに戻る</HomeButton>
+        <HomeButton href="/setting/account">アカウント設定に戻る</HomeButton>
       </Card>
     </Wrapper>
   );
