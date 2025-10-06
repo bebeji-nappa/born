@@ -11,11 +11,7 @@ import {
   getUserbyId,
 } from "../services/users.service";
 import * as bcrypt from "bcryptjs";
-import {
-  sanitizeText,
-  sanitizeDescription,
-  sanitizeScreenName,
-} from "../lib/sanitize";
+import { sanitizeText, sanitizeScreenName } from "../lib/sanitize";
 import { csrfProtection } from "../middleware/csrf";
 import { deleteAllUserSessions, createSession } from "../lib/auth";
 import { generateCsrfToken } from "../lib/csrf";
@@ -158,7 +154,7 @@ users.put("/profile", async (c) => {
       updateData.name = sanitizeText(name);
     }
     if (description !== undefined) {
-      updateData.description = sanitizeDescription(description);
+      updateData.description = description;
     }
 
     // ユーザー情報を更新
