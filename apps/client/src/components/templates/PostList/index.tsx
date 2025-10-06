@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { Virtuoso } from "react-virtuoso";
 // @ts-ignore-next-line
 import "@richmd/react/dist/richmd.css";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Blog = {
   id: number;

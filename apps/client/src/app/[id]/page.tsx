@@ -2,7 +2,7 @@
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import PostListTemplate from "@/components/templates/PostList";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { usePosts } from "@/hooks/usePosts";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";

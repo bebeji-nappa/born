@@ -1,7 +1,7 @@
 "use client";
 
 import AccountSettingTemplate from "@/components/templates/AccountSetting";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
 

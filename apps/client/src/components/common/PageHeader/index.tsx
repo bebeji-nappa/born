@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 const StyledPageHeader = styled.header`

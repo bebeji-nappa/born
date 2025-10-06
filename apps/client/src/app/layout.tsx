@@ -28,10 +28,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     !isGlobalLoading;
 
   return (
-    <>
+    <AuthProvider>
       {shouldShowHeader && <PageHeader />}
-      <AuthProvider>{children}</AuthProvider>
-    </>
+      {children}
+    </AuthProvider>
   );
 }
 

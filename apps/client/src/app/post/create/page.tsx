@@ -1,7 +1,7 @@
 "use client";
 
 import PostCreateTemplate from "@/components/templates/PostCreate";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useEffect, useState } from "react";
 import { PageTitle } from "@/components/common/PageTitle";
