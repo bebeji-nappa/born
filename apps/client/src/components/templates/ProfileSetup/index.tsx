@@ -2,6 +2,7 @@ import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { User, apiClient } from "@/lib/api";
 import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/contexts/AuthContext";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 
@@ -34,6 +35,7 @@ interface Props {
 
 const ProfileSetupTemplate: FC<Props> = ({ user }) => {
   const { showToast } = useToast();
+  const { refetch } = useAuth();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.image || null,
   );
@@ -66,6 +68,7 @@ const ProfileSetupTemplate: FC<Props> = ({ user }) => {
     try {
       const result = await apiClient.updateUserAvatar(file);
       setAvatarPreview(result.url);
+      await refetch();
     } catch (err) {
       console.error("Avatar update error:", err);
       showToast("アバター画像の更新に失敗しました", "error");

@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { User, apiClient } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Section = styled.div`
   background: white;
@@ -124,6 +125,7 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
   });
 
   const router = useRouter();
+  const { refetch } = useAuth();
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -131,6 +133,9 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
         name: data.name || user.email,
         description: data.description || null,
       });
+
+      // ユーザー情報を最新化
+      await refetch();
 
       // ユーザーのブログトップページにリダイレクト
       router.push(`/${user.screen_name}`);
