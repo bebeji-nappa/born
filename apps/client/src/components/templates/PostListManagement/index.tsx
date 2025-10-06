@@ -203,7 +203,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
 
   return (
     <Container>
-      <Title>投稿管理</Title>
+      <Title>記事の管理</Title>
       <CreateButton onClick={handleCreate}>新規投稿</CreateButton>
       {posts.length === 0 ? (
         <EmptyState>

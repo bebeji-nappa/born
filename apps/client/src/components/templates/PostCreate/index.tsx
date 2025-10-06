@@ -199,7 +199,7 @@ const PostCreateTemplate: FC<PostCreateTemplateProps> = ({ userId, theme }) => {
       if (post.published) {
         router.push(`/post/${post.id}`);
       } else {
-        router.push("/post/list");
+        router.push("/post/dashboard");
       }
     } catch (error) {
       console.error("Failed to create post:", error);

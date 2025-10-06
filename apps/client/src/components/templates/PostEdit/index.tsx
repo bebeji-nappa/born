@@ -208,7 +208,7 @@ const PostEditTemplate: FC<PostEditTemplateProps> = ({
       if (updatedPost.published) {
         router.push(`/post/${id}`);
       } else {
-        router.push("/post/list");
+        router.push("/post/dashboard");
       }
     } catch (error) {
       console.error("Failed to update post:", error);
