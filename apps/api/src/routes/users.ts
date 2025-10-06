@@ -497,7 +497,7 @@ users.put(
       setCookie(c, "session-token", newSessionToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",
+        sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 7 days
         domain: cookieDomain,
