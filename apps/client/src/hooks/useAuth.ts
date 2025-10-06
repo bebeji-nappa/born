@@ -14,8 +14,6 @@ export function useAuth() {
   const checkAuth = useCallback(async () => {
     try {
       const response = await apiClient.getCurrentUser();
-      console.log("Auth check response:", response);
-      console.log("Auth check user:", response?.user || null);
       setUser(response?.user || null);
     } catch (error) {
       console.error("Auth check error:", error);
@@ -38,8 +36,6 @@ export function useAuth() {
   const signIn = useCallback(() => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/api/auth/signin/github`;
   }, []);
-
-  console.log("useAuth user:", user);
 
   return {
     user,
