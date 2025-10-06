@@ -12,7 +12,14 @@ import {
 } from "../lib/auth";
 import { createId } from "@paralleldrive/cuid2";
 import { eq, and, lt } from "drizzle-orm";
-import { getDB, users, accounts, blogs, emailVerificationTokens } from "../db";
+import {
+  getDB,
+  users,
+  accounts,
+  blogs,
+  emailVerificationTokens,
+  rateLimits,
+} from "../db";
 import * as bcrypt from "bcryptjs";
 import {
   sendEmail,
@@ -278,6 +285,18 @@ auth.get("/callback/github", async (c) => {
         .where(eq(accounts.id, account.id));
     }
 
+    // ログイン成功時、レート制限をリセット
+    const loginIp =
+      c.req.header("cf-connecting-ip") ||
+      c.req.header("x-forwarded-for") ||
+      c.req.header("x-real-ip") ||
+      "unknown";
+    const loginRateLimitKey = `${loginIp}:signin`;
+    await db
+      .delete(rateLimits)
+      .where(eq(rateLimits.key, loginRateLimitKey))
+      .run();
+
     const sessionToken = await createSession(user.id, c.env);
 
     const cookieDomain = getCookieDomain(c.env.NODE_ENV);
@@ -412,6 +431,15 @@ auth.post(
           403,
         );
       }
+
+      // ログイン成功時、レート制限をリセット
+      const ip =
+        c.req.header("cf-connecting-ip") ||
+        c.req.header("x-forwarded-for") ||
+        c.req.header("x-real-ip") ||
+        "unknown";
+      const rateLimitKey = `${ip}:signin`;
+      await db.delete(rateLimits).where(eq(rateLimits.key, rateLimitKey)).run();
 
       // セッション作成
       const sessionToken = await createSession(user.id, c.env);

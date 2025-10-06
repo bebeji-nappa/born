@@ -37,7 +37,12 @@ export default function AuthProvider({ children }: AuthGuardProps) {
       router.push("/signin");
       return;
     } else if (user && isSigninPage) {
-      router.push(`/${user.screen_name}`);
+      // 初回ログイン（nameがnull）の場合はプロフィール設定へ
+      if (!user.name) {
+        router.push("/setup/profile");
+      } else {
+        router.push(`/${user.screen_name}`);
+      }
       return;
     }
 
