@@ -304,6 +304,7 @@ auth.get("/callback/github", async (c) => {
       httpOnly: true,
       secure: true, // Always secure in Workers
       sameSite: "lax",
+      path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       domain: cookieDomain,
     });
@@ -455,6 +456,7 @@ auth.post(
         httpOnly: true,
         secure: true,
         sameSite: "lax",
+        path: "/",
         maxAge: 60 * 60 * 24 * 7, // 7 days
         domain: cookieDomain,
       });
