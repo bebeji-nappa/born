@@ -1,6 +1,6 @@
-import React, { useRef, useCallback, FC } from "react";
+import React, { useRef, useCallback, FC, useState } from "react";
 import styled from "@emotion/styled";
-import { FiImage, FiLink, FiCode } from "react-icons/fi";
+import { FiImage, FiLink, FiCode, FiInfo } from "react-icons/fi";
 import {
   BsTypeH1,
   BsTypeBold,
@@ -9,6 +9,7 @@ import {
   BsTypeStrikethrough,
 } from "react-icons/bs";
 import { useToast } from "@/hooks/useToast";
+import MarkdownHelpModal from "@/components/common/MarkdownHelpModal";
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
@@ -89,6 +90,24 @@ const Textarea = styled.textarea`
   font-size: 16px;
 `;
 
+const HelpLink = styled.span`
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 13px;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+  width: fit-content;
+
+  &:hover {
+    color: #111827;
+  }
+`;
+
 interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -109,6 +128,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const { showToast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   const insertText = useCallback(
     (before: string, after: string = "", setCursorMiddle: boolean = false) => {
@@ -186,85 +206,101 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const handleLink = () => insertText("[](url)");
 
   return (
-    <EditorWrapper>
-      <TabAndToolbarContainer>
-        <TabContainer>
-          <Tab
-            type="button"
-            isActive={isEdit}
-            onClick={() => !isEdit && onToggleEdit()}
-          >
-            Edit
-          </Tab>
-          <Tab
-            type="button"
-            isActive={!isEdit}
-            onClick={() => isEdit && onToggleEdit()}
-          >
-            Preview
-          </Tab>
-        </TabContainer>
+    <>
+      <EditorWrapper>
+        <TabAndToolbarContainer>
+          <TabContainer>
+            <Tab
+              type="button"
+              isActive={isEdit}
+              onClick={() => !isEdit && onToggleEdit()}
+            >
+              Edit
+            </Tab>
+            <Tab
+              type="button"
+              isActive={!isEdit}
+              onClick={() => isEdit && onToggleEdit()}
+            >
+              Preview
+            </Tab>
+          </TabContainer>
 
-        {isEdit && (
-          <ToolbarContainer>
-            <FileInput
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-            />
-            <ToolbarButton
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              title="画像をアップロード"
-            >
-              <FiImage />
-            </ToolbarButton>
-            <ToolbarButton type="button" onClick={handleHeading} title="見出し">
-              <BsTypeH1 />
-            </ToolbarButton>
-            <ToolbarButton type="button" onClick={handleBold} title="太字">
-              <BsTypeBold />
-            </ToolbarButton>
-            <ToolbarButton type="button" onClick={handleItalic} title="斜体">
-              <BsTypeItalic />
-            </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleStrikethrough}
-              title="打ち消し線"
-            >
-              <BsTypeStrikethrough />
-            </ToolbarButton>
-            <ToolbarButton type="button" onClick={handleQuote} title="引用">
-              <BsQuote />
-            </ToolbarButton>
-            <ToolbarButton
-              type="button"
-              onClick={handleCodeBlock}
-              title="コードブロック"
-            >
-              <FiCode />
-            </ToolbarButton>
-            <ToolbarButton type="button" onClick={handleLink} title="リンク">
-              <FiLink />
-            </ToolbarButton>
-          </ToolbarContainer>
+          {isEdit && (
+            <ToolbarContainer>
+              <FileInput
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+              />
+              <ToolbarButton
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                title="画像をアップロード"
+              >
+                <FiImage />
+              </ToolbarButton>
+              <ToolbarButton
+                type="button"
+                onClick={handleHeading}
+                title="見出し"
+              >
+                <BsTypeH1 />
+              </ToolbarButton>
+              <ToolbarButton type="button" onClick={handleBold} title="太字">
+                <BsTypeBold />
+              </ToolbarButton>
+              <ToolbarButton type="button" onClick={handleItalic} title="斜体">
+                <BsTypeItalic />
+              </ToolbarButton>
+              <ToolbarButton
+                type="button"
+                onClick={handleStrikethrough}
+                title="打ち消し線"
+              >
+                <BsTypeStrikethrough />
+              </ToolbarButton>
+              <ToolbarButton type="button" onClick={handleQuote} title="引用">
+                <BsQuote />
+              </ToolbarButton>
+              <ToolbarButton
+                type="button"
+                onClick={handleCodeBlock}
+                title="コードブロック"
+              >
+                <FiCode />
+              </ToolbarButton>
+              <ToolbarButton type="button" onClick={handleLink} title="リンク">
+                <FiLink />
+              </ToolbarButton>
+            </ToolbarContainer>
+          )}
+        </TabAndToolbarContainer>
+
+        {isEdit ? (
+          <Textarea
+            ref={textareaRef}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="記事の内容を入力..."
+            {...textareaProps}
+          />
+        ) : (
+          previewComponent
         )}
-      </TabAndToolbarContainer>
+      </EditorWrapper>
 
-      {isEdit ? (
-        <Textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="記事の内容を入力..."
-          {...textareaProps}
-        />
-      ) : (
-        previewComponent
-      )}
-    </EditorWrapper>
+      <HelpLink onClick={() => setIsHelpModalOpen(true)}>
+        <FiInfo style={{ marginRight: 4 }} />
+        Markdownの書き方
+      </HelpLink>
+
+      <MarkdownHelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
+    </>
   );
 };
 
