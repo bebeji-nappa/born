@@ -333,9 +333,15 @@ auth.post("/signout", async (c) => {
   const cookieDomain = getCookieDomain(c.env.NODE_ENV);
   deleteCookie(c, "session-token", {
     domain: cookieDomain,
+    path: "/",
+    secure: true,
+    sameSite: "lax",
   });
   deleteCookie(c, "csrf-token", {
     domain: cookieDomain,
+    path: "/",
+    secure: true,
+    sameSite: "lax",
   });
   return c.json({ message: "Signed out successfully" });
 });
