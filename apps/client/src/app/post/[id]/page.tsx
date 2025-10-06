@@ -1,29 +1,16 @@
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
+"use client";
+
+import { use, useEffect, useState } from "react";
 import PostDetailTemplate from "@/components/templates/PostDetail";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { PageTitle } from "@/components/common/PageTitle";
+import { apiClient } from "@/lib/api";
+import type { Post } from "@/lib/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  published: boolean;
-  userId: string;
-  blogId: number;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    screen_name: string | null;
-    image?: string;
-    description?: string | null;
-    createdAt: string;
-  };
-}
+export const dynamic = "force-dynamic";
 
 interface Blog {
   id: number;
@@ -34,28 +21,14 @@ interface Blog {
   userId: string;
 }
 
-async function getPost(id: string): Promise<Post | null> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/posts/${id}`, {
-      next: { revalidate: 1 },
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data.post;
-  } catch (error) {
-    console.error("Failed to fetch post:", error);
-    return null;
-  }
+interface ExtendedPost extends Post {
+  blogId: number;
 }
 
-async function getBlog(id: number): Promise<Blog | null> {
+async function getBlog(userId: string): Promise<Blog | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/blogs/${id}`, {
-      next: { revalidate: 1 },
+    const response = await fetch(`${API_BASE_URL}/api/blogs/user/${userId}`, {
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -70,63 +43,83 @@ async function getBlog(id: number): Promise<Blog | null> {
   }
 }
 
-// SSGを無効化し、動的レンダリングに変更
-// 投稿の公開/非公開の即時反映のため
-export const dynamic = "force-dynamic";
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPost(id);
-
-  if (!post) {
-    return {
-      title: "Post not found",
-    };
-  }
-
-  return {
-    title: `Born | ${post.title}`,
-    description: post.content.slice(0, 160),
-    openGraph: {
-      title: post.title,
-      description: post.content.slice(0, 160),
-      images: [
-        {
-          url: `/post/${id}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.content.slice(0, 160),
-      images: [`/post/${id}/opengraph-image`],
-    },
-  };
-}
-
-export default async function PostDetailPage({
+export default function PostDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { id } = use(params);
+  const postId = parseInt(id);
+  const [post, setPost] = useState<ExtendedPost | null>(null);
+  const [blog, setBlog] = useState<Blog | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!post || !post.published) {
-    notFound();
+  const fetchPost = async () => {
+    try {
+      setIsLoading(true);
+      const response = await apiClient.getPostById(postId);
+      if (response.post) {
+        setPost(response.post as ExtendedPost);
+        setError(null);
+
+        // ブログ情報を取得
+        const blogData = await getBlog(response.post.userId);
+        setBlog(blogData);
+      } else {
+        setError("Post not found");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch post");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPost();
+  }, [postId]);
+
+  // ページに戻ってきた時に最新データを取得
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchPost();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [postId]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
-  const blog = await getBlog(post.blogId);
+  if (error || !post) {
+    return <div>Post not found</div>;
+  }
+
+  if (!post.published) {
+    return <div>Post not found</div>;
+  }
 
   return (
-    <PostDetailTemplate post={post} blog={blog} authUserEmail={undefined} />
+    <>
+      <PageTitle title={post.title} />
+      <PostDetailTemplate
+        post={{
+          ...post,
+          createdAt:
+            typeof post.createdAt === "string"
+              ? post.createdAt
+              : new Date(post.createdAt).toISOString(),
+        }}
+        blog={blog}
+        authUserEmail={undefined}
+      />
+    </>
   );
 }
