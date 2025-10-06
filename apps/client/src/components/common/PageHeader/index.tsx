@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
@@ -200,17 +199,15 @@ export const PageHeader = () => {
       <HeaderContent>
         <LogoContainer>
           <LogoImageWrapper>
-            <Link href="/">
-              <Image
-                src="/born_logo.svg"
-                alt="logo"
-                sizes="100vw"
-                fill
-                style={{
-                  width: "100%",
-                }}
-              />
-            </Link>
+            <Image
+              src="/born_logo.svg"
+              alt="logo"
+              sizes="100vw"
+              fill
+              style={{
+                width: "100%",
+              }}
+            />
           </LogoImageWrapper>
           <BetaBadge>ベータ版</BetaBadge>
         </LogoContainer>
