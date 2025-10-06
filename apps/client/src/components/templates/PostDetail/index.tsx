@@ -445,11 +445,6 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                     ).format("YYYY年MM月DD日")}
                   </DateSection>
                 </HeaderContent>
-                {authUserEmail === user.email && (
-                  <DeleteButton onClick={() => handleDelete(id)}>
-                    削除
-                  </DeleteButton>
-                )}
               </Header>
               <Content textColor={theme.textColor} linkColor={theme.linkColor}>
                 <Richmd text={content} />
