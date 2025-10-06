@@ -15,7 +15,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 24px;
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
 
   @media (max-width: 860px) {
     padding: 16px;
