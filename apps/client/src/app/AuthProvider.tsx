@@ -31,6 +31,7 @@ function AuthGuard({ children }: AuthGuardProps) {
     const isCreatePage = pathname === "/post/create";
     const isEditPage = /^\/post\/\d+\/edit$/.test(pathname);
     const isSigninPage = pathname === "/signin";
+    const isProfileSetupPage = pathname === "/setup/profile";
 
     // 投稿作成・編集ページで未認証の場合、サインインページにリダイレクト
     if ((isCreatePage || isEditPage) && !user) {
@@ -43,6 +44,13 @@ function AuthGuard({ children }: AuthGuardProps) {
       } else {
         router.push(`/${user.screen_name}`);
       }
+      return;
+    }
+
+    // ログイン済みでnameがnullの場合、プロフィール登録ページへリダイレクト
+    // ただし、すでにプロフィール登録ページにいる場合は除外
+    if (user && !user.name && !isProfileSetupPage) {
+      router.push("/setup/profile");
       return;
     }
 
