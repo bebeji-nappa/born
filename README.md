@@ -18,7 +18,7 @@
   - Cloudflare D1 (SQLite)
 - Storage
   - Cloudflare R2
-- Mail Service
+- Mail Server
   - Resend
 - Deployment
   - Vercel (Client)
@@ -74,6 +74,13 @@ STORAGE_URL=https://storage-dev.bebeji-nappa.com
 
 # Environment
 NODE_ENV=development
+```
+
+メールサーバーは[Resend](https://resend.com/)を採用しています。
+Resend でアカウント登録後、APIキーを発行し、`.dev.vars` ファイルに設定してください。
+
+```bash
+RESEND_API_KEY="{Resendで発行したAPIキー}"
 ```
 
 ## 開発サーバーの起動
