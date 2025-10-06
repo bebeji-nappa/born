@@ -4,8 +4,9 @@
 
 - 技術的な深掘りも目的としてあるので、実験的な技術選定にしています
 - **また、今回はAI駆動開発の知見を増やす目的で、現在はコーディングをほぼ全て Claude Code に任せております。時々自分で書く場合もありますが、大半がAIが書いています**
-- 現在はリリースに向けて、初速をスピード感高めで開発する方針で進めており、リアーキテクチャ等、諸々整備が追いついていません。そのため、タイミングによっては、きれいなコードではない場合がありますのでご了承ください
+- ベータ版リリースで公開しましたが、リアーキテクチャ等、諸々整備が追いついていない状態です。そのため、タイミングによっては、きれいなコードではない場合がありますのでご了承ください。
 
+### 技術スタック
 - Framework
   - Next.js 15 (App Router)
 - API
@@ -17,6 +18,8 @@
   - Cloudflare D1 (SQLite)
 - Storage
   - Cloudflare R2
+- Mail Service
+  - Resend
 - Deployment
   - Vercel (Client)
   - Cloudflare Workers (API)
@@ -51,9 +54,6 @@ pnpm d1:migrate:local
 ```bash
 # API
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
-
-# その他
-NEXT_PUBLIC_EMAIL=[GitHub Accountで登録されているメールアドレス]
 ```
 
 ### API (apps/api)
@@ -64,9 +64,6 @@ NEXT_PUBLIC_EMAIL=[GitHub Accountで登録されているメールアドレス]
 # GitHub OAuth
 AUTH_GITHUB_ID=[Client ID]
 AUTH_GITHUB_SECRET=[Client Secret Key]
-
-# Authentication
-ALLOW_EMAIL=[許可するメールアドレス]
 
 # API Configuration
 API_BASE_URL=http://localhost:8000
@@ -100,10 +97,6 @@ pnpm dev
 ```
 
 http://localhost:3000 にアクセスして動作を確認してください。
-
-### 使用権限について
-
-環境変数 `NEXT_PUBLIC_EMAIL` に設定したメールアドレスで登録された GitHub アカウントのみ、すべての機能を使用できます。それ以外のアカウントはブログ記事の閲覧のみ可能です。
 
 ## ビルド
 
