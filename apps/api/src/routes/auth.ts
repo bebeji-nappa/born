@@ -303,7 +303,7 @@ auth.get("/callback/github", async (c) => {
     setCookie(c, "session-token", sessionToken, {
       httpOnly: true,
       secure: true, // Always secure in Workers
-      sameSite: "lax",
+      sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       domain: cookieDomain,
@@ -336,13 +336,13 @@ auth.post("/signout", async (c) => {
     domain: cookieDomain,
     path: "/",
     secure: true,
-    sameSite: "lax",
+    sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
   });
   deleteCookie(c, "csrf-token", {
     domain: cookieDomain,
     path: "/",
     secure: true,
-    sameSite: "lax",
+    sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
   });
   return c.json({ message: "Signed out successfully" });
 });
@@ -455,7 +455,7 @@ auth.post(
       setCookie(c, "session-token", sessionToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",
+        sameSite: c.env.NODE_ENV === "development" ? "lax" : "none",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 7 days
         domain: cookieDomain,
