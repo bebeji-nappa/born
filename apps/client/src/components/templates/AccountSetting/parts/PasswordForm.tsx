@@ -209,20 +209,17 @@ const PasswordForm: FC = () => {
         password,
         passwordConfirmation,
       });
-      showToast("パスワードを変更しました", "success");
-      setShowForm(false);
-      setCurrentPassword("");
-      setPassword("");
-      setPasswordConfirmation("");
-      // パスワード表示状態をリセット
-      setShowCurrentPassword(false);
-      setShowPassword(false);
-      setShowPasswordConfirmation(false);
-      setError(null);
+      showToast(
+        "パスワードを変更しました。新しいパスワードで再ログインしてください。",
+        "success",
+      );
+      // セッションが無効化されているため、ログインページにリダイレクト
+      setTimeout(() => {
+        window.location.href = "/signin";
+      }, 1500);
     } catch (err: any) {
       console.error("Password update error:", err);
       setError(err.response?.data?.error || "パスワードの変更に失敗しました");
-    } finally {
       setIsSubmitting(false);
     }
   };
