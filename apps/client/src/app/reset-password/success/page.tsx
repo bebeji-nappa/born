@@ -4,6 +4,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PageTitle } from "@/components/common/PageTitle";
 
 const Wrapper = styled.div`
@@ -100,6 +101,12 @@ const LinkButton = styled(Link)`
 `;
 
 export default function ResetPasswordSuccessPage() {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const redirectUrl = redirect === "account" ? "/setting/account" : "/signin";
+  const buttonText =
+    redirect === "account" ? "アカウント設定に戻る" : "ログイン";
+
   return (
     <>
       <PageTitle title="パスワードをリセットしました" />
@@ -123,13 +130,9 @@ export default function ResetPasswordSuccessPage() {
 
           <Title>パスワードをリセットしました</Title>
 
-          <Message>
-            パスワードが正常にリセットされました。
-            <br />
-            新しいパスワードでログインしてください。
-          </Message>
+          <Message>パスワードが正常にリセットされました。</Message>
 
-          <LinkButton href="/signin">ログイン</LinkButton>
+          <LinkButton href={redirectUrl}>{buttonText}</LinkButton>
         </Container>
       </Wrapper>
     </>
