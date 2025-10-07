@@ -18,12 +18,14 @@ import {
   accounts,
   blogs,
   emailVerificationTokens,
+  passwordResetTokens,
   rateLimits,
 } from "../db";
 import * as bcrypt from "bcryptjs";
 import {
   sendEmail,
   generateVerificationEmailHTML,
+  generatePasswordResetHTML,
 } from "../services/email.service";
 import { isValidEmail, sanitizeText } from "../lib/sanitize";
 import { rateLimitMiddleware } from "../middleware/rateLimit";
@@ -826,5 +828,163 @@ auth.get("/rate-limit-status", async (c) => {
     return c.json({ error: "Internal server error" }, 500);
   }
 });
+
+// パスワードリセット用メール送信
+auth.post(
+  "/forgot-password",
+  zValidator(
+    "json",
+    z.object({
+      email: z.string().email(),
+    }),
+  ),
+  async (c) => {
+    try {
+      // レート制限チェック
+      const rateLimitResponse = await rateLimitMiddleware(c, "forgot-password");
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+
+      const { email } = c.req.valid("json");
+      const db = getDB(c.env.DB);
+
+      // メールアドレスが登録されているか確認
+      const user = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email))
+        .get();
+
+      // セキュリティ上、ユーザーが存在しない場合でも同じレスポンスを返す
+      // （アカウントの存在を確認させない）
+      if (!user) {
+        console.error(
+          `Password reset requested for non-existent email: ${email}`,
+        );
+        return c.json({ success: true });
+      }
+
+      // 既存のトークンを削除
+      await db
+        .delete(passwordResetTokens)
+        .where(eq(passwordResetTokens.userId, user.id))
+        .run();
+
+      // 新しいトークンを生成
+      const token = createId();
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1時間後
+
+      await db
+        .insert(passwordResetTokens)
+        .values({
+          id: createId(),
+          userId: user.id,
+          token,
+          expires: expiresAt,
+        })
+        .run();
+
+      // パスワードリセットURLを生成
+      const resetUrl = `${c.env.FRONTEND_URL}/reset-password/${token}`;
+
+      // メール送信
+      const emailSent = await sendEmail(
+        {
+          to: email,
+          subject: "パスワードのリセット - Born",
+          html: generatePasswordResetHTML(resetUrl),
+        },
+        c.env,
+      );
+
+      if (!emailSent) {
+        console.error("Failed to send password reset email");
+        return c.json({ error: "Failed to send email" }, 500);
+      }
+
+      return c.json({ success: true });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      return c.json({ error: "Internal server error" }, 500);
+    }
+  },
+);
+
+// パスワードリセット（トークン検証 & パスワード更新）
+auth.post(
+  "/reset-password",
+  zValidator(
+    "json",
+    z.object({
+      token: z.string(),
+      password: z.string().min(8),
+      passwordConfirmation: z.string().min(8),
+    }),
+  ),
+  async (c) => {
+    try {
+      // レート制限チェック
+      const rateLimitResponse = await rateLimitMiddleware(c, "reset-password");
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+
+      const { token, password, passwordConfirmation } = c.req.valid("json");
+
+      // パスワード一致チェック
+      if (password !== passwordConfirmation) {
+        return c.json({ error: "Passwords do not match" }, 400);
+      }
+
+      const db = getDB(c.env.DB);
+
+      // トークンを検証
+      const resetToken = await db
+        .select()
+        .from(passwordResetTokens)
+        .where(eq(passwordResetTokens.token, token))
+        .get();
+
+      if (!resetToken) {
+        return c.json({ error: "Invalid or expired token" }, 400);
+      }
+
+      // トークンの有効期限チェック
+      if (new Date(resetToken.expires) < new Date()) {
+        // 期限切れトークンを削除
+        await db
+          .delete(passwordResetTokens)
+          .where(eq(passwordResetTokens.token, token))
+          .run();
+        return c.json({ error: "Token has expired" }, 400);
+      }
+
+      // パスワードをハッシュ化
+      const hash = await bcrypt.hash(password, 10);
+
+      // パスワードを更新
+      await db
+        .update(users)
+        .set({ hash })
+        .where(eq(users.id, resetToken.userId))
+        .run();
+
+      // 使用済みトークンを削除
+      await db
+        .delete(passwordResetTokens)
+        .where(eq(passwordResetTokens.token, token))
+        .run();
+
+      return c.json({
+        success: true,
+        message: "Password has been reset successfully",
+      });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      return c.json({ error: "Internal server error" }, 500);
+    }
+  },
+);
 
 export default auth;

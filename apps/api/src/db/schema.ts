@@ -111,6 +111,24 @@ export const emailChangeTokens = sqliteTable(
   }),
 );
 
+// PasswordResetToken table
+export const passwordResetTokens = sqliteTable(
+  "PasswordResetToken",
+  {
+    id: text("id").primaryKey(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    expires: integer("expires", { mode: "timestamp" }).notNull(),
+    createdAt: text("createdAt").notNull().default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => ({
+    userIdIdx: index("PasswordResetToken_userId_idx").on(table.userId),
+    tokenIdx: uniqueIndex("PasswordResetToken_token_key").on(table.token),
+  }),
+);
+
 // RateLimit table
 export const rateLimits = sqliteTable("RateLimit", {
   key: text("key").primaryKey(), // IPアドレス + エンドポイント (例: "192.168.1.1:signup")
@@ -181,5 +199,7 @@ export type NewEmailVerificationToken =
   typeof emailVerificationTokens.$inferInsert;
 export type EmailChangeToken = typeof emailChangeTokens.$inferSelect;
 export type NewEmailChangeToken = typeof emailChangeTokens.$inferInsert;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+export type NewPasswordResetToken = typeof passwordResetTokens.$inferInsert;
 export type RateLimit = typeof rateLimits.$inferSelect;
 export type NewRateLimit = typeof rateLimits.$inferInsert;
