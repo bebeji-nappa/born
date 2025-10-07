@@ -189,6 +189,42 @@ class ApiClient {
     return result;
   }
 
+  async forgotPassword(data: { email: string }): Promise<{ success: boolean }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/forgot-password`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async resetPassword(data: {
+    token: string;
+    password: string;
+    passwordConfirmation: string;
+  }): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/reset-password`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   async verifyEmail(
     token: string,
   ): Promise<{ success: boolean; message: string }> {

@@ -276,6 +276,10 @@ const SignInTemplate = () => {
             </InputWrapper>
           </InputGroup>
 
+          <LinkText style={{ marginTop: 0, textAlign: "right" }}>
+            <Link href="/forgot-password">パスワードをお忘れですか？</Link>
+          </LinkText>
+
           <PrimaryButton type="submit">ログイン</PrimaryButton>
         </Form>
 
