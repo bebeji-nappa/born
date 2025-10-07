@@ -26,6 +26,7 @@ import {
   sendEmail,
   generateVerificationEmailHTML,
   generatePasswordResetHTML,
+  generatePasswordChangedNotificationHTML,
 } from "../services/email.service";
 import { isValidEmail, sanitizeText } from "../lib/sanitize";
 import { rateLimitMiddleware } from "../middleware/rateLimit";
@@ -836,6 +837,7 @@ auth.post(
     "json",
     z.object({
       email: z.string().email(),
+      redirect: z.string().optional(),
     }),
   ),
   async (c) => {
@@ -846,7 +848,7 @@ auth.post(
         return rateLimitResponse;
       }
 
-      const { email } = c.req.valid("json");
+      const { email, redirect } = c.req.valid("json");
       const db = getDB(c.env.DB);
 
       // メールアドレスが登録されているか確認
@@ -886,7 +888,10 @@ auth.post(
         .run();
 
       // パスワードリセットURLを生成
-      const resetUrl = `${c.env.FRONTEND_URL}/reset-password/${token}`;
+      let resetUrl = `${c.env.FRONTEND_URL}/reset-password/${token}`;
+      if (redirect === "account") {
+        resetUrl += "?redirect=account";
+      }
 
       // メール送信
       const emailSent = await sendEmail(
@@ -960,6 +965,17 @@ auth.post(
         return c.json({ error: "Token has expired" }, 400);
       }
 
+      // ユーザー情報を取得（メール送信用）
+      const user = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, resetToken.userId))
+        .get();
+
+      if (!user || !user.email) {
+        return c.json({ error: "User not found" }, 404);
+      }
+
       // パスワードをハッシュ化
       const hash = await bcrypt.hash(password, 10);
 
@@ -975,6 +991,16 @@ auth.post(
         .delete(passwordResetTokens)
         .where(eq(passwordResetTokens.token, token))
         .run();
+
+      // パスワード変更完了通知メールを送信
+      await sendEmail(
+        {
+          to: user.email,
+          subject: "パスワードが変更されました - Born",
+          html: generatePasswordChangedNotificationHTML(c.env.FRONTEND_URL),
+        },
+        c.env,
+      );
 
       return c.json({
         success: true,

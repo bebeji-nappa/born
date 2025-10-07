@@ -189,7 +189,10 @@ class ApiClient {
     return result;
   }
 
-  async forgotPassword(data: { email: string }): Promise<{ success: boolean }> {
+  async forgotPassword(data: {
+    email: string;
+    redirect?: string;
+  }): Promise<{ success: boolean }> {
     const response = await fetch(`${this.baseUrl}/api/auth/forgot-password`, {
       method: "POST",
       credentials: "include",

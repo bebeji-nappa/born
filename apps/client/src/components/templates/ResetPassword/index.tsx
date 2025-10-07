@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { apiClient } from "@/lib/api";
 import { validatePassword } from "@/lib/validation";
@@ -201,6 +201,8 @@ interface ResetPasswordTemplateProps {
 
 const ResetPasswordTemplate = ({ token }: ResetPasswordTemplateProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -245,7 +247,11 @@ const ResetPasswordTemplate = ({ token }: ResetPasswordTemplateProps) => {
         passwordConfirmation,
       });
       // 成功したら完了画面にリダイレクト
-      router.push("/reset-password/success");
+      const successUrl =
+        redirect === "account"
+          ? "/reset-password/success?redirect=account"
+          : "/reset-password/success";
+      router.push(successUrl);
     } catch (err: any) {
       console.error("Reset password error:", err);
       setError(
