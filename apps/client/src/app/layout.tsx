@@ -22,6 +22,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     pathname === "/verify-email-sent" ||
     pathname === "/verify-email" ||
     pathname === "/verify-email-change";
+  const isForgotPasswordPage =
+    pathname === "/forgot-password" || pathname === "/forgot-password/sent";
+  const isResetPasswordPage =
+    pathname?.match(/^\/reset-password\/[^/]+$/) ||
+    pathname === "/reset-password/success";
 
   const shouldShowHeader =
     !isAuthPage &&
@@ -30,6 +35,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     !isPostCreatePage &&
     !isBlockedPage &&
     !isVerifyEmailPage &&
+    !isForgotPasswordPage &&
+    !isResetPasswordPage &&
     !isGlobalLoading;
 
   return (
