@@ -195,6 +195,29 @@ const LinkText = styled.p`
   }
 `;
 
+const CheckboxWrapper = styled.label`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 8px;
+`;
+
+const Checkbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin-top: 2px;
+  accent-color: #000000;
+`;
+
+const CheckboxLabel = styled.span`
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+`;
+
 interface ResetPasswordTemplateProps {
   token: string;
 }
@@ -210,6 +233,7 @@ const ResetPasswordTemplate = ({ token }: ResetPasswordTemplateProps) => {
     useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [logoutOtherDevices, setLogoutOtherDevices] = useState(false);
 
   // パスワード要件のチェック
   const passwordRequirements = {
@@ -245,6 +269,7 @@ const ResetPasswordTemplate = ({ token }: ResetPasswordTemplateProps) => {
         token,
         password,
         passwordConfirmation,
+        logoutOtherDevices,
       });
       // 成功したら完了画面にリダイレクト
       const successUrl =
@@ -356,6 +381,16 @@ const ResetPasswordTemplate = ({ token }: ResetPasswordTemplateProps) => {
               </EyeButton>
             </InputWrapper>
           </InputGroup>
+
+          <CheckboxWrapper htmlFor="logoutOtherDevices">
+            <Checkbox
+              type="checkbox"
+              id="logoutOtherDevices"
+              checked={logoutOtherDevices}
+              onChange={(e) => setLogoutOtherDevices(e.target.checked)}
+            />
+            <CheckboxLabel>全ての端末からログアウトする</CheckboxLabel>
+          </CheckboxWrapper>
 
           <PrimaryButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? "設定中..." : "パスワードを設定"}

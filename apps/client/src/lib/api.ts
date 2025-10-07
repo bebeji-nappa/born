@@ -212,6 +212,7 @@ class ApiClient {
     token: string;
     password: string;
     passwordConfirmation: string;
+    logoutOtherDevices: boolean;
   }): Promise<{ success: boolean; message: string }> {
     const response = await fetch(`${this.baseUrl}/api/auth/reset-password`, {
       method: "POST",

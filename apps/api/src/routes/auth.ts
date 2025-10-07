@@ -8,6 +8,7 @@ import {
   deleteSession,
   getGitHubOAuthConfig,
   refreshSession,
+  deleteAllUserSessions,
   type AuthUser,
 } from "../lib/auth";
 import { createId } from "@paralleldrive/cuid2";
@@ -925,6 +926,7 @@ auth.post(
       token: z.string(),
       password: z.string().min(8),
       passwordConfirmation: z.string().min(8),
+      logoutOtherDevices: z.boolean().optional(),
     }),
   ),
   async (c) => {
@@ -935,7 +937,8 @@ auth.post(
         return rateLimitResponse;
       }
 
-      const { token, password, passwordConfirmation } = c.req.valid("json");
+      const { token, password, passwordConfirmation, logoutOtherDevices } =
+        c.req.valid("json");
 
       // パスワード一致チェック
       if (password !== passwordConfirmation) {
@@ -991,6 +994,11 @@ auth.post(
         .delete(passwordResetTokens)
         .where(eq(passwordResetTokens.token, token))
         .run();
+
+      // オプション: 他のデバイスからログアウト
+      if (logoutOtherDevices) {
+        await deleteAllUserSessions(resetToken.userId, c.env);
+      }
 
       // パスワード変更完了通知メールを送信
       await sendEmail(
