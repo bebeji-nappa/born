@@ -35,7 +35,12 @@ export type PreviewProps = {
 
 const Preview: FC<PreviewProps> = ({ text, textColor, linkColor }) => {
   return (
-    <StyledRichmd text={text} textColor={textColor} linkColor={linkColor} />
+    <StyledRichmd
+      text={text}
+      useSlideMode={false}
+      textColor={textColor}
+      linkColor={linkColor}
+    />
   );
 };
 
