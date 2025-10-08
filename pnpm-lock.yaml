@@ -113,8 +113,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(@prisma/client@6.16.2(prisma@6.17.0(typescript@5.9.3))(typescript@5.9.3))
       '@richmd/react':
-        specifier: ^3.0.1
-        version: 3.0.1(@types/react@19.2.2)
+        specifier: ^2.1.5
+        version: 2.1.5(@types/react@19.2.2)
       '@tanstack/react-query':
         specifier: ^5.90.2
         version: 5.90.2(react@19.2.0)
@@ -2903,14 +2903,14 @@ packages:
     resolution: {integrity: sha512-C7c51Nn4yTxXFKvgh2txJFNweaVcfUPQxwEUFw4aWsCmfiBDJsTSwviIF8EcwjQ6k8bPyMWCl1vw4BdxE569Cg==}
     engines: {node: '>= 10'}
 
-  '@richmd/core@5.0.1':
-    resolution: {integrity: sha512-LTX7vHBeSmxWSPPBUi1kRp1FphjqDbonNQneXIiA4ki4qQnLxmYar6T2PMVEpVcdbrLYjxeui1ifHXhbQnQYZQ==}
+  '@richmd/core@4.0.10':
+    resolution: {integrity: sha512-kE+5iVBgJL7FfjZLu4n2ikDBIAYAA4d+75uD7yO6z3AVKXV3aScJ4DjI4HWgp5Z/L0b1V9dLsehZyL+Q9pC4TQ==}
 
-  '@richmd/js@3.0.1':
-    resolution: {integrity: sha512-lrcS809PK8BMlWmTgNC+PJXXxOYDIL4+gwQ+FhLVvQxgBM0A6CfchQwCk9/71KCOZFMF/vHdTBuzeaqScIaTPA==}
+  '@richmd/js@2.0.14':
+    resolution: {integrity: sha512-hMlwIAXHe6i3b80EhldvFLtjdyL2o3SmxUBB5u2r5XO3i4b0EFMNXOdLERQ1jAFSLQyfQCKjZTTsO3rWfbKpcQ==}
 
-  '@richmd/react@3.0.1':
-    resolution: {integrity: sha512-4/tAJrCl3ioQdVvJ2VPPc9/GLYp1+LkDKfOjDrVtXPAQ7fAY8MDZlLHqJy2dx7fXycFR7oaA9PIBoTcDfPt/mA==}
+  '@richmd/react@2.1.5':
+    resolution: {integrity: sha512-UYeZKcYZZeubzg2lt5DQm1jVWEVadggR/sR5uvf59Ujkq7dowKORropwXAMgUM7wH6oJLHleHcOmpZVf1WD7eA==}
 
   '@rollup/rollup-android-arm-eabi@4.52.4':
     resolution: {integrity: sha512-BTm2qKNnWIQ5auf4deoetINJm2JzvihvGb9R6K/ETwKLql/Bb3Eg2H1FBp1gUb4YGbydMA3jcmQTR73q7J+GAA==}
@@ -11091,25 +11091,24 @@ snapshots:
 
   '@resvg/resvg-wasm@2.4.0': {}
 
-  '@richmd/core@5.0.1':
+  '@richmd/core@4.0.10':
     dependencies:
       highlight.js: 11.11.1
       katex: 0.16.23
       typescript: 5.9.3
 
-  '@richmd/js@3.0.1':
+  '@richmd/js@2.0.14':
     dependencies:
-      '@richmd/core': 5.0.1
+      '@richmd/core': 4.0.10
       highlight.js: 11.11.1
       katex: 0.16.23
-      node-emoji: 2.2.0
       node-html-parser: 7.0.1
       typescript: 5.9.3
 
-  '@richmd/react@3.0.1(@types/react@19.2.2)':
+  '@richmd/react@2.1.5(@types/react@19.2.2)':
     dependencies:
       '@react-hook/event': 1.2.6(react@19.2.0)
-      '@richmd/js': 3.0.1
+      '@richmd/js': 2.0.14
       html-react-parser: 5.2.6(@types/react@19.2.2)(react@19.2.0)
       html2canvas: 1.4.1
       jspdf: 3.0.3
