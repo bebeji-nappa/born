@@ -284,13 +284,13 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
               >
                 <BsTypeStrikethrough />
               </ToolbarButton>
-              <ToolbarButton
+              {/* <ToolbarButton
                 type="button"
                 onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
                 title="絵文字"
               >
                 <FiSmile />
-              </ToolbarButton>
+              </ToolbarButton> */}
               <ToolbarButton type="button" onClick={handleQuote} title="引用">
                 <BsQuote />
               </ToolbarButton>
