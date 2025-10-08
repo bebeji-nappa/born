@@ -34,7 +34,7 @@ const SearchInput = styled.input`
 
 const EmojiGridContainer = styled.div`
   flex: 1;
-  max-height: 280px;
+  max-height: 300px;
   padding: 8px 0;
 `;
 
