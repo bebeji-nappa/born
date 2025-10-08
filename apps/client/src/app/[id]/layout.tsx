@@ -74,6 +74,9 @@ export async function generateMetadata({
   const title = blog?.title || `${user.name}のブログ`;
   const description = blog?.description || `${user.name}のブログです。`;
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const ogImageUrl = `${baseUrl}/${screenName}/opengraph-image`;
+
   return {
     title: `${title} | Born`,
     description,
@@ -83,7 +86,7 @@ export async function generateMetadata({
       type: "website",
       images: [
         {
-          url: `/${screenName}/opengraph-image`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -94,7 +97,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [`/${screenName}/opengraph-image`],
+      images: [ogImageUrl],
     },
   };
 }
