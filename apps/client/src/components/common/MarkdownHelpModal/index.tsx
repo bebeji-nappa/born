@@ -1,6 +1,9 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { FiX } from "react-icons/fi";
+import { Richmd } from "@richmd/react";
+// @ts-ignore-next-line
+import "@richmd/react/dist/richmd.css";
 
 const Overlay = styled.div`
   position: fixed;
@@ -141,65 +144,13 @@ const Result = styled.div`
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 12px;
+  padding: 0 12px;
   font-size: 14px;
   line-height: 1.6;
+  min-height: 40px;
 
-  strong {
-    font-weight: 600;
-  }
-
-  em {
-    font-style: italic;
-  }
-
-  del {
-    text-decoration: line-through;
-  }
-
-  code {
-    background: #f3f4f6;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 13px;
-    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-  }
-
-  blockquote {
-    border-left: 4px solid #e5e7eb;
-    padding-left: 12px;
-    margin: 0;
-    color: #6b7280;
-  }
-
-  hr {
-    border: none;
-    border-top: 1px solid #e5e7eb;
-    margin: 12px 0;
-  }
-
-  ul,
-  ol {
-    margin: 0;
-    padding-left: 24px;
-  }
-
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0;
+  .richmd {
+    font-size: 14px;
   }
 `;
 
@@ -210,6 +161,11 @@ interface MarkdownHelpModalProps {
 
 const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
+
+  const tableText = `| 列1 | 列2 |
+| ---- | ---- |
+| A    | B    |
+`;
 
   return (
     <Overlay onClick={onClose}>
@@ -224,9 +180,23 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
           <Section>
             <SectionTitle>見出し</SectionTitle>
             <Description>#の数で見出しレベルを指定できます（1〜6）</Description>
-            <CodeBlock>
-              <code>{`# 見出し1\n## 見出し2\n### 見出し3\n#### 見出し4\n##### 見出し5\n###### 見出し6`}</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`# 見出し1\n## 見出し2\n### 見出し3`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`# 見出し1\n## 見出し2\n### 見出し3`}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
@@ -242,7 +212,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <strong>太字のテキスト</strong>
+                  <Richmd text="**太字のテキスト**" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -261,7 +231,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <em>斜体のテキスト</em>
+                  <Richmd text="*斜体のテキスト*" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -282,9 +252,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <strong>
-                    <em>太字かつ斜体</em>
-                  </strong>
+                  <Richmd text="***太字かつ斜体***" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -305,7 +273,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <del>打ち消し線</del>
+                  <Richmd text="~~打ち消し線~~" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -314,17 +282,64 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
           <Section>
             <SectionTitle>画像</SectionTitle>
             <Description>画像を挿入できます</Description>
-            <CodeBlock>
-              <code>![画像の説明](画像のURL)</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>![画像の説明](画像のURL)</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text="![Example](https://placehold.jp/3d4070/ffffff/80x80.png)"
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>リンク</SectionTitle>
             <Description>リンクを作成できます</Description>
-            <CodeBlock>
-              <code>[リンクテキスト](https://example.com)</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>[リンクテキスト](https://example.com)</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text="[リンクテキスト](https://example.com)"
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
+          </Section>
+
+          <Section>
+            <SectionTitle>絵文字</SectionTitle>
+            <Description>:emoji_name:の形式で絵文字を挿入できます</Description>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`:tada: :smile: :rocket:`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd text=":tada: :smile: :rocket:" useSlideMode={false} />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
@@ -342,11 +357,10 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <ul>
-                    <li>項目1</li>
-                    <li>項目2</li>
-                    <li>項目3</li>
-                  </ul>
+                  <Richmd
+                    text={`- 項目1\n- 項目2\n- 項目3`}
+                    useSlideMode={false}
+                  />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -367,11 +381,10 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <ol>
-                    <li>項目1</li>
-                    <li>項目2</li>
-                    <li>項目3</li>
-                  </ol>
+                  <Richmd
+                    text={`1. 項目1\n2. 項目2\n3. 項目3`}
+                    useSlideMode={false}
+                  />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -380,9 +393,23 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
           <Section>
             <SectionTitle>チェックリスト</SectionTitle>
             <Description>タスクリストを作成できます</Description>
-            <CodeBlock>
-              <code>{`- [ ] 未完了タスク\n- [x] 完了タスク`}</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`- [ ] 未完了タスク\n- [x] 完了タスク`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`- [ ] 未完了タスク\n- [x] 完了タスク`}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
@@ -400,7 +427,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <blockquote>引用テキスト</blockquote>
+                  <Richmd text="> 引用テキスト" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -419,7 +446,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <hr />
+                  <Richmd text="---" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -440,7 +467,7 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
               <ExampleColumn>
                 <ColumnTitle>表示</ColumnTitle>
                 <Result>
-                  <code>const x = 10;</code>
+                  <Richmd text="`const x = 10;`" useSlideMode={false} />
                 </Result>
               </ExampleColumn>
             </ExampleGrid>
@@ -449,79 +476,137 @@ const MarkdownHelpModal: FC<MarkdownHelpModalProps> = ({ isOpen, onClose }) => {
           <Section>
             <SectionTitle>コードブロック</SectionTitle>
             <Description>```で囲むとコードブロックを作成できます</Description>
-            <CodeBlock>
-              <code>{`\`\`\`javascript\nconst greeting = "Hello, World!";\nconsole.log(greeting);\n\`\`\``}</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`\`\`\`javascript\nconst greeting = "Hello";\nconsole.log(greeting);\n\`\`\``}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`\`\`\`javascript\nconst greeting = "Hello";\nconsole.log(greeting);\n\`\`\``}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>テーブル</SectionTitle>
             <Description>|と-を使ってテーブルを作成できます</Description>
-            <CodeBlock>
-              <code>{`| ヘッダー1 | ヘッダー2 | ヘッダー3 |
-| -------- | -------- | -------- |
-| セル1    | セル2    | セル3    |
-| セル4    | セル5    | セル6    |`}</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`| 列1 | 列2 |
+| ---- | ---- |
+| A    | B    |`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd text={tableText} useSlideMode={false} />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>数式ブロック（KaTeX）</SectionTitle>
             <Description>$$で囲むと数式を表示できます</Description>
-            <CodeBlock>
-              <code>{`$$
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`$$
 \\frac{a}{b}
 $$`}</code>
-            </CodeBlock>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd text={`$$\n\\frac{a}{b}\n$$`} useSlideMode={false} />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>インライン数式</SectionTitle>
             <Description>$で囲むとインラインで数式を表示できます</Description>
-            <CodeBlock>
-              <code>{`これは $a=b+c$ です`}</code>
-            </CodeBlock>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`これは $a=b+c$ です`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd text="これは $a=b+c$ です" useSlideMode={false} />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>カラーブロック</SectionTitle>
             <Description>===で囲むとカラーブロックを作成できます</Description>
-            <CodeBlock>
-              <code>{`===
-デフォルトのカラーブロック
-===
-
-===info
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`===info
 情報ブロック
-===
-
-===success
-成功ブロック
-===
-
-===warning
-警告ブロック
-===
-
-===danger
-危険ブロック
 ===`}</code>
-            </CodeBlock>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`===info\n情報ブロック\n===`}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>ドロップダウン</SectionTitle>
-            <Description>:&gt;で囲むとドロップダウンを作成できます</Description>
-            <CodeBlock>
-              <code>{`:>概要
+            <Description>=&gt;で囲むとドロップダウンを作成できます</Description>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`=>概要
 詳細な内容...
-:>`}</code>
-            </CodeBlock>
+=>`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`=>概要\n詳細な内容...\n=>`}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
 
           <Section>
             <SectionTitle>動画</SectionTitle>
-            <Description>HTML5動画タグを使って動画を埋め込めます</Description>
+            <Description>@[movie]()で動画を埋め込めます</Description>
             <CodeBlock>
               <code>{`@[movie](./movie.mp4)`}</code>
             </CodeBlock>
@@ -529,20 +614,28 @@ $$`}</code>
 
           <Section>
             <SectionTitle>カスタムHTMLタグ</SectionTitle>
-            <Description>::で囲むとカスタムHTMLタグを作成できます</Description>
-            <CodeBlock>
-              <code>{`::div
+            <Description>
+              &lt;&gt;で囲むとカスタムHTMLタグを作成できます
+            </Description>
+            <ExampleGrid>
+              <ExampleColumn>
+                <ColumnTitle>書き方</ColumnTitle>
+                <CodeBlock>
+                  <code>{`<>div
 カスタムdivタグ
-::
-
-::article.className
-クラス付きarticleタグ
-::
-
-::.className
-クラス名のみ（spanタグ）
-::`}</code>
-            </CodeBlock>
+<>`}</code>
+                </CodeBlock>
+              </ExampleColumn>
+              <ExampleColumn>
+                <ColumnTitle>表示</ColumnTitle>
+                <Result>
+                  <Richmd
+                    text={`<>div\nカスタムdivタグ\n<>`}
+                    useSlideMode={false}
+                  />
+                </Result>
+              </ExampleColumn>
+            </ExampleGrid>
           </Section>
         </Content>
       </ModalContainer>
