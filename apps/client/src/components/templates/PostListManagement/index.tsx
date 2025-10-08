@@ -213,7 +213,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
       ) : (
         <Virtuoso
           useWindowScroll
-          style={{ height: "100%", width: "100%", position: "absolute" }}
+          style={{ height: "100%" }}
           data={posts}
           components={{ Footer: () => <div style={{ height: 80 }} /> }}
           itemContent={(_, post) => (

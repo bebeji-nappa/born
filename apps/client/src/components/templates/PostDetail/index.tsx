@@ -401,7 +401,7 @@ const PostDetailTemplate: FC<PostDetailTemplateProps> = ({
                 </HeaderContent>
               </Header>
               <Content textColor={theme.textColor} linkColor={theme.linkColor}>
-                <Richmd text={content} />
+                <Richmd text={content} useSlideMode={false} />
               </Content>
             </Article>
             <AuthorProfile bgColor={theme.sectionBackgroundColor}>

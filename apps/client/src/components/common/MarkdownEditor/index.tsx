@@ -1,6 +1,6 @@
-import React, { useRef, useCallback, FC, useState } from "react";
+import React, { useRef, useCallback, FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { FiImage, FiLink, FiCode, FiInfo } from "react-icons/fi";
+import { FiImage, FiLink, FiCode, FiInfo, FiSmile } from "react-icons/fi";
 import {
   BsTypeH1,
   BsTypeBold,
@@ -10,6 +10,7 @@ import {
 } from "react-icons/bs";
 import { useToast } from "@/hooks/useToast";
 import MarkdownHelpModal from "@/components/common/MarkdownHelpModal";
+import EmojiPicker from "@/components/common/EmojiPicker";
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;
@@ -50,6 +51,7 @@ const ToolbarContainer = styled.div`
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
+  position: relative;
 `;
 
 const ToolbarButton = styled.button`
@@ -129,6 +131,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
   const insertText = useCallback(
     (before: string, after: string = "", setCursorMiddle: boolean = false) => {
@@ -205,6 +208,26 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
     insertText("```lang:filename\n\n```", "", false);
   const handleLink = () => insertText("[](url)");
 
+  const handleEmojiSelect = (emojiName: string) => {
+    insertText(`:${emojiName}:`);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isEmojiPickerOpen) {
+        const target = event.target as HTMLElement;
+        if (!target.closest("[data-emoji-picker]")) {
+          setIsEmojiPickerOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isEmojiPickerOpen]);
+
   return (
     <>
       <EditorWrapper>
@@ -227,7 +250,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
           </TabContainer>
 
           {isEdit && (
-            <ToolbarContainer>
+            <ToolbarContainer data-emoji-picker>
               <FileInput
                 ref={fileInputRef}
                 type="file"
@@ -261,6 +284,13 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
               >
                 <BsTypeStrikethrough />
               </ToolbarButton>
+              <ToolbarButton
+                type="button"
+                onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+                title="絵文字"
+              >
+                <FiSmile />
+              </ToolbarButton>
               <ToolbarButton type="button" onClick={handleQuote} title="引用">
                 <BsQuote />
               </ToolbarButton>
@@ -274,6 +304,12 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
               <ToolbarButton type="button" onClick={handleLink} title="リンク">
                 <FiLink />
               </ToolbarButton>
+              {isEmojiPickerOpen && (
+                <EmojiPicker
+                  onEmojiSelect={handleEmojiSelect}
+                  onClose={() => setIsEmojiPickerOpen(false)}
+                />
+              )}
             </ToolbarContainer>
           )}
         </TabAndToolbarContainer>
