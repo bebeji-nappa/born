@@ -55,6 +55,28 @@ STORAGE_URL = "https://staging-storage.born-docs.com"
 EMAIL_FROM = "noreply@born-docs.com"
 EMAIL_FROM_NAME = "Born"
 
+# Test environment
+[env.test]
+name = "born-api-test"
+
+# D1 Database bindings for test
+[[env.test.d1_databases]]
+binding = "DB"
+database_name = "born-db-test"
+database_id = "411a3846-1968-4f6d-9f37-46c6125746c1"
+migrations_dir = "db/migrations"
+
+[[env.test.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "born-storage-test"
+
+# Environment variables (set via Dashboard or wrangler secret)
+[env.test.vars]
+NODE_ENV = "test"
+STORAGE_URL = "https://test-storage.born-docs.com"
+EMAIL_FROM = "noreply@born-docs.com"
+EMAIL_FROM_NAME = "Born"
+
 # Production environment
 [env.production]
 name = "born-api"
@@ -86,4 +108,8 @@ custom_domain = true
 
 [[env.staging.routes]]
 pattern = "staging-api.born-docs.com"
+custom_domain = true
+
+[[env.test.routes]]
+pattern = "test-api.born-docs.com"
 custom_domain = true

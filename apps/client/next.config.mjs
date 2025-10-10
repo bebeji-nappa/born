@@ -21,6 +21,11 @@ const nextConfig = {
         port: "",
       },
       {
+        protocol: "https",
+        hostname: "test-storage.born-docs.com",
+        port: "",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "8000",
