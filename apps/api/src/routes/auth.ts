@@ -40,6 +40,8 @@ function getCookieDomain(nodeEnv?: string): string | undefined {
     return "born-docs.com";
   } else if (nodeEnv === "staging") {
     return ".born-docs.com";
+  } else if (nodeEnv === "test") {
+    return ".born-docs.com";
   }
   // ローカル開発環境ではdomainを指定しない
   return undefined;
