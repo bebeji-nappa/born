@@ -22,26 +22,25 @@
     "lint-staged": "pnpm lint-staged"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.7.3",
-    "@paralleldrive/cuid2": "^2.2.2",
-    "bcryptjs": "^3.0.2",
-    "drizzle-orm": "^0.44.6",
-    "hono": "^4.9.9",
-    "mimetext": "^3.0.27",
-    "resend": "^6.1.2",
-    "zod": "^4.1.11"
+    "@hono/zod-validator": "^0.7.6",
+    "@paralleldrive/cuid2": "^3.3.0",
+    "bcryptjs": "^3.0.3",
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.11.9",
+    "mimetext": "^3.0.28",
+    "resend": "^6.9.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.5",
-    "@cloudflare/vitest-pool-workers": "^0.9.10",
-    "@cloudflare/workers-types": "^4.20240925.0",
+    "@biomejs/biome": "^2.3.15",
+    "@cloudflare/vitest-pool-workers": "^0.12.12",
+    "@cloudflare/workers-types": "^4.20260213.0",
     "@types/bcryptjs": "^3.0.0",
-    "@types/node": "^20.11.17",
-    "@vitest/ui": "^3.2.4",
-    "drizzle-kit": "^0.30.6",
-    "lint-staged": "^16.2.3",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "wrangler": "^4.40.2"
+    "@types/node": "^25.2.3",
+    "drizzle-kit": "^0.31.9",
+    "lint-staged": "^16.2.7",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "wrangler": "^4.65.0"
   }
 }
