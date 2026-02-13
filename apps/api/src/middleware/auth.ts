@@ -1,6 +1,6 @@
-import { Context, Next } from "hono";
+import type { Context, Next } from "hono";
 import { getCookie } from "hono/cookie";
-import { getSessionUser, type AuthUser } from "../lib/auth";
+import { type AuthUser, getSessionUser } from "../lib/auth";
 
 type Bindings = {
   DATABASE_URL: string;

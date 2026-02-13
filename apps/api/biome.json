@@ -19,7 +19,15 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noExplicitAny": "warn",
+        "noControlCharactersInRegex": "warn"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn"
       }
     }
   },

@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import type React from "react";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import {
   AuthProvider as AuthContextProvider,
   useAuth,
 } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export type AuthGuardProps = {
   children: React.ReactNode;

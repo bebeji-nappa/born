@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FiCheckCircle, FiXCircle, FiLoader } from "react-icons/fi";
+import { useEffect, useRef, useState } from "react";
+import { FiCheckCircle, FiLoader, FiXCircle } from "react-icons/fi";
 import { apiClient } from "@/lib/api";
 
 const Wrapper = styled.div`
@@ -130,13 +130,16 @@ const VerifyEmailTemplate = () => {
         await apiClient.verifyEmail(token);
         setStatus("success");
         setMessage("メールアドレスの確認が完了しました");
-      } catch (error: any) {
+      } catch (error: unknown) {
         setStatus("error");
-        const errorMessage = error.message || "確認に失敗しました";
+        const message =
+          error instanceof Error
+            ? error.message || "確認に失敗しました"
+            : "確認に失敗しました";
         setMessage(
-          errorMessage.includes("expired")
+          message.includes("expired")
             ? "確認リンクの有効期限が切れています。再度サインアップしてください。"
-            : errorMessage,
+            : message,
         );
       }
     };

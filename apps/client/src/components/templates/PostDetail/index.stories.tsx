@@ -1,6 +1,5 @@
-import PostDetailTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import PostDetailTemplate from "./index";
 
 const mockPost = {
   id: 1,

@@ -1,10 +1,10 @@
 "use client";
 
-import { FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { User } from "@/lib/api";
-import { useToast } from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
+import { type FC, useEffect, useState } from "react";
+import { useToast } from "@/hooks/useToast";
+import type { User } from "@/lib/api";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};

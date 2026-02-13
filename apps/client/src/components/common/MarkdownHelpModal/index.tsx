@@ -1,8 +1,8 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { FiX } from "react-icons/fi";
 import { Richmd } from "@richmd/react";
-// @ts-ignore-next-line
+import type { FC } from "react";
+import { FiX } from "react-icons/fi";
+// @ts-expect-error-next-line
 import "@richmd/react/dist/richmd.css";
 
 const Overlay = styled.div`
@@ -113,7 +113,7 @@ const CodeBlock = styled.pre`
   margin: 0;
 
   code {
-    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    font-family: "Menlo", "Monaco", "Courier New", monospace;
     color: #374151;
   }
 `;

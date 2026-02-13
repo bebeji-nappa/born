@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
-import { getDB, sessions, users } from "../db";
 import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
+import { type EnvWithDB, getDB, sessions, users } from "../db";
 
 export interface AuthUser {
   id: string;
@@ -27,7 +27,10 @@ export function generateSessionToken(): string {
   );
 }
 
-export async function createSession(userId: string, env: any): Promise<string> {
+export async function createSession(
+  userId: string,
+  env: EnvWithDB,
+): Promise<string> {
   const db = getDB(env.DB);
   const sessionToken = generateSessionToken();
   const expires = new Date();
@@ -45,7 +48,7 @@ export async function createSession(userId: string, env: any): Promise<string> {
 
 export async function getSessionUser(
   sessionToken: string,
-  env: any,
+  env: EnvWithDB,
 ): Promise<AuthUser | null> {
   const db = getDB(env.DB);
 
@@ -80,7 +83,7 @@ export async function getSessionUser(
 
 export async function deleteSession(
   sessionToken: string,
-  env: any,
+  env: EnvWithDB,
 ): Promise<void> {
   const db = getDB(env.DB);
   try {
@@ -96,7 +99,7 @@ export async function deleteSession(
  */
 export async function deleteAllUserSessions(
   userId: string,
-  env: any,
+  env: EnvWithDB,
 ): Promise<void> {
   const db = getDB(env.DB);
   try {
@@ -110,7 +113,7 @@ export async function deleteAllUserSessions(
  * 期限切れセッションを削除
  * 定期的なクリーンアップ用
  */
-export async function deleteExpiredSessions(env: any): Promise<number> {
+export async function deleteExpiredSessions(env: EnvWithDB): Promise<number> {
   const db = getDB(env.DB);
   const now = new Date();
 
@@ -133,7 +136,7 @@ export async function deleteExpiredSessions(env: any): Promise<number> {
  */
 export async function refreshSession(
   sessionToken: string,
-  env: any,
+  env: EnvWithDB,
 ): Promise<boolean> {
   const db = getDB(env.DB);
   const newExpires = new Date();
@@ -153,11 +156,23 @@ export async function refreshSession(
   }
 }
 
-export function getGitHubOAuthConfig(env: any) {
+export function getGitHubOAuthConfig(
+  env: EnvWithDB & {
+    AUTH_GITHUB_ID?: string;
+    AUTH_GITHUB_SECRET?: string;
+    API_BASE_URL?: string;
+  },
+) {
+  const { AUTH_GITHUB_ID, AUTH_GITHUB_SECRET, API_BASE_URL } = env;
+
+  if (!AUTH_GITHUB_ID || !AUTH_GITHUB_SECRET) {
+    throw new Error("GitHub OAuth configuration is missing in environment");
+  }
+
   return {
-    clientId: env.AUTH_GITHUB_ID!,
-    clientSecret: env.AUTH_GITHUB_SECRET!,
-    redirectUri: `${env.API_BASE_URL || "http://localhost:8000"}/api/auth/callback/github`,
+    clientId: AUTH_GITHUB_ID,
+    clientSecret: AUTH_GITHUB_SECRET,
+    redirectUri: `${API_BASE_URL || "http://localhost:8000"}/api/auth/callback/github`,
     scope: "user:email",
   };
 }

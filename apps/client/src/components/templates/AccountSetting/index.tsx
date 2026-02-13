@@ -1,14 +1,15 @@
-import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
-import { User, apiClient } from "@/lib/api";
+import { type FC, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
+import { apiClient, type User } from "@/lib/api";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
-import ProfileForm from "./parts/ProfileForm";
-import ScreenNameForm from "./parts/ScreenNameForm";
 import EmailForm from "./parts/EmailForm";
 import PasswordForm from "./parts/PasswordForm";
-import GitHubConnectForm from "./parts/GitHubConnectForm";
+import ProfileForm from "./parts/ProfileForm";
+import ScreenNameForm from "./parts/ScreenNameForm";
+
+// import GitHubConnectForm from "./parts/GitHubConnectForm";
 
 const Wrapper = styled.div`
   display: flex;

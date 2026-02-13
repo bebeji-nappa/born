@@ -1,5 +1,5 @@
-import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import { apiClient } from "@/lib/api";
 
 export const useSignIn = () => {
@@ -19,9 +19,14 @@ export const useSignIn = () => {
         // ページをリロードして認証状態を反映
         window.location.href = "/signin";
         return null; // 成功時はエラーなし
-      } catch (error: any) {
+      } catch (error: unknown) {
         // メール未認証エラーの場合は、メール確認ページへリダイレクト
-        if (error?.code === "EMAIL_NOT_VERIFIED") {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          // biome-ignore lint/suspicious/noExplicitAny: API エラーオブジェクトからコードを読むため
+          (error as any).code === "EMAIL_NOT_VERIFIED"
+        ) {
           router.push("/verify-email-sent");
           return null;
         }

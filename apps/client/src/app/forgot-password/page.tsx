@@ -1,7 +1,7 @@
 "use client";
 
-import ForgotPasswordTemplate from "@/components/templates/ForgotPassword";
 import { PageTitle } from "@/components/common/PageTitle";
+import ForgotPasswordTemplate from "@/components/templates/ForgotPassword";
 
 export default function ForgotPasswordPage() {
   return (

@@ -1,8 +1,7 @@
-import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
-import { FiMail, FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle, FiMail } from "react-icons/fi";
 
 const Wrapper = styled.div`
   display: flex;
@@ -107,7 +106,7 @@ const InfoItem = styled.li`
   }
 
   &::before {
-    content: '•';
+    content: "•";
     color: #4f46e5;
     font-weight: bold;
     margin-top: 2px;

@@ -1,6 +1,5 @@
-import BlogSettingTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import BlogSettingTemplate from "./index";
 
 export default {
   title: "Templates/BlogSetting",

@@ -1,6 +1,5 @@
-import PostEditTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import PostEditTemplate from "./index";
 
 export default {
   title: "Templates/PostEdit",

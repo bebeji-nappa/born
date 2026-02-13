@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach } from "vitest";
 import { env } from "cloudflare:test";
 import { eq } from "drizzle-orm";
-import { getDB, posts, users, blogs } from "../../db";
+import { beforeEach, describe, expect, it } from "vitest";
+import { blogs, getDB, posts, users } from "../../db";
 import {
-  getPostById,
-  getAllPostsByUserId,
-  updatePostById,
+  createPost,
   deletePostById,
   getAllPosts,
-  createPost,
+  getAllPostsByUserId,
+  getPostById,
+  updatePostById,
 } from "../../services/posts.service";
 
 describe("Posts Service", () => {

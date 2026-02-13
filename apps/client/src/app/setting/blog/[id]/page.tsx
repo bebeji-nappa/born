@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import BlogSettingTemplate from "@/components/templates/BlogSetting";
-import { apiClient, User } from "@/lib/api";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
+import BlogSettingTemplate from "@/components/templates/BlogSetting";
+import { apiClient, type User } from "@/lib/api";
 
 export default function BlogSettingPage() {
   const params = useParams();

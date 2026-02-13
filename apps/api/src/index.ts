@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import users from "./routes/users";
-import posts from "./routes/posts";
 import auth from "./routes/auth";
-import upload from "./routes/upload";
 import blogs from "./routes/blogs";
+import posts from "./routes/posts";
+import upload from "./routes/upload";
+import users from "./routes/users";
 
 type Bindings = {
   DATABASE_URL: string;

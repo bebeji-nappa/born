@@ -1,6 +1,6 @@
 {
   "src/**/*.{ts,tsx,js,jsx}": [
-    "pnpm prettier --write",
+    "pnpm biome check --write",
     "pnpm biome format --write"
   ]
 }

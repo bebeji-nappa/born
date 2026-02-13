@@ -1,8 +1,9 @@
-import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { apiClient } from "@/lib/api";
 import { validatePassword } from "@/lib/validation";
@@ -217,7 +218,7 @@ const SignUpTemplate = () => {
     hasUpperCase: /[A-Z]/.test(password),
     hasLowerCase: /[a-z]/.test(password),
     hasNumber: /[0-9]/.test(password),
-    hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    hasSymbol: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -255,9 +256,13 @@ const SignUpTemplate = () => {
       });
       // サインアップ成功後、確認メール送信ページへリダイレクト
       router.push("/verify-email-sent");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Sign up error:", err);
-      setError(err.message || "アカウント作成に失敗しました");
+      if (err instanceof Error) {
+        setError(err.message || "アカウント作成に失敗しました");
+      } else {
+        setError("アカウント作成に失敗しました");
+      }
     } finally {
       setIsSubmitting(false);
     }

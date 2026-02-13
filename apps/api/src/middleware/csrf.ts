@@ -1,4 +1,4 @@
-import { Context } from "hono";
+import type { Context } from "hono";
 import { getCookie } from "hono/cookie";
 import { validateCsrfToken } from "../lib/csrf";
 
@@ -6,7 +6,9 @@ import { validateCsrfToken } from "../lib/csrf";
  * CSRF保護ミドルウェア
  * Double Submit Cookie パターンで検証
  */
-export async function csrfProtection(c: Context): Promise<Response | void> {
+export async function csrfProtection(
+  c: Context,
+): Promise<Response | undefined> {
   // 開発環境ではCSRF検証をスキップ（オプション）
   const isDevEnvironment = c.env.NODE_ENV === "development" || !c.env.NODE_ENV;
   if (isDevEnvironment) {
