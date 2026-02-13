@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import type { Post } from "@/lib/api";
-// @ts-expect-error-next-line
+// biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 import { useAuth } from "@/contexts/AuthContext";
 

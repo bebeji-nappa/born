@@ -5,7 +5,7 @@ import { Richmd } from "@richmd/react";
 import dayjs from "dayjs";
 import type { FC } from "react";
 import type { Post, User } from "@/lib/api";
-// @ts-expect-error-next-line
+// biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";
 
