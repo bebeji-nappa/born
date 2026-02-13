@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState } from "react";
 import { apiClient } from "@/lib/api";
 
 const Wrapper = styled.div`

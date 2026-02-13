@@ -1,6 +1,5 @@
-import PostListTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import PostListTemplate from "./index";
 
 export default {
   title: "Templates/PostList",

@@ -1,7 +1,7 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { Richmd } from "@richmd/react";
-// @ts-ignore-next-line
+import type { FC } from "react";
+// biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 
 const StyledRichmd = styled(Richmd)<{ textColor?: string; linkColor?: string }>`

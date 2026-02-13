@@ -1,15 +1,6 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
-// Helper function to normalize date fields
-function normalizeDate(value: any): string {
-  if (!value) return new Date().toISOString();
-  if (typeof value === "string") return value;
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === "number") return new Date(value).toISOString();
-  return new Date(value).toISOString();
-}
-
 export interface User {
   id: string;
   email: string;
@@ -138,12 +129,13 @@ class ApiClient {
         return new Promise(() => {});
       }
 
-      const error: any = new Error(
+      const error = new Error(
         errorData.error || `API Error: ${response.status}`,
       );
       // エラーコードを保持
       if (errorData.code) {
-        error.code = errorData.code;
+        // biome-ignore lint/suspicious/noExplicitAny: ランタイムエラーオブジェクトにコードを付与
+        (error as any).code = errorData.code;
       }
       throw error;
     }
@@ -542,7 +534,11 @@ class ApiClient {
     content: string,
     published: boolean,
   ): Promise<{ updatedPost: Post }> {
-    const body: any = { title, content, published };
+    const body: { title: string; content: string; published: boolean } = {
+      title,
+      content,
+      published,
+    };
 
     const response = await fetch(`${this.baseUrl}/api/posts/${id}`, {
       method: "PUT",

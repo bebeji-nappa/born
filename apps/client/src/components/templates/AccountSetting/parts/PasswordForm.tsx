@@ -1,9 +1,10 @@
-import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
+import type React from "react";
+import { type FC, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { apiClient } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
+import { apiClient } from "@/lib/api";
 
 const Section = styled.section`
   border: 1px solid #e1e5e9;

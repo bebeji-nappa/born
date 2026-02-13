@@ -1,11 +1,11 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import PostDetailTemplate from "@/components/templates/PostDetail";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
-import { apiClient } from "@/lib/api";
+import PostDetailTemplate from "@/components/templates/PostDetail";
 import type { Post } from "@/lib/api";
+import { apiClient } from "@/lib/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";

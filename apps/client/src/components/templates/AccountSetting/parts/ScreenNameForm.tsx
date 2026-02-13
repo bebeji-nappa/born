@@ -1,9 +1,9 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
+import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import { User, apiClient } from "@/lib/api";
-import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/useToast";
+import { apiClient, type User } from "@/lib/api";
 
 const Section = styled.div`
   background: white;

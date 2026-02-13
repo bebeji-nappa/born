@@ -1,7 +1,7 @@
 "use client";
 
-import EmailSentTemplate from "@/components/templates/EmailSent";
 import { PageTitle } from "@/components/common/PageTitle";
+import EmailSentTemplate from "@/components/templates/EmailSent";
 
 export default function VerifyEmailSentPage() {
   return (

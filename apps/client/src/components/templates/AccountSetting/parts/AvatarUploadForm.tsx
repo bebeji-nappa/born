@@ -1,6 +1,6 @@
-import React, { FC, useRef, ChangeEvent } from "react";
 import styled from "@emotion/styled";
-import { User } from "@/lib/api";
+import { type ChangeEvent, type FC, useRef } from "react";
+import type { User } from "@/lib/api";
 
 const Section = styled.div`
   display: flex;

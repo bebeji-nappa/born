@@ -1,12 +1,12 @@
-import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
 import { useBoolean } from "ahooks";
-import { useForm } from "react-hook-form";
-import Preview from "./parts/Preview";
-import { usePosts } from "@/hooks/usePosts";
 import { useRouter } from "next/navigation";
+import { type FC, useState } from "react";
+import { useForm } from "react-hook-form";
 import { FiArrowLeft } from "react-icons/fi";
 import MarkdownEditor from "@/components/common/MarkdownEditor";
+import { usePosts } from "@/hooks/usePosts";
+import Preview from "./parts/Preview";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -143,7 +143,7 @@ const SwitchInput = styled.input`
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 20px;
     height: 20px;

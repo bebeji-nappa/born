@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { apiClient } from "@/lib/api";
-import { useAuth } from "@/contexts/AuthContext";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import VerifyEmailChangeTemplate from "@/components/templates/VerifyEmailChange";
+import { useAuth } from "@/contexts/AuthContext";
+import { apiClient } from "@/lib/api";
 
 const VerifyEmailChangePage: React.FC = () => {
   const searchParams = useSearchParams();

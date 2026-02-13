@@ -1,8 +1,9 @@
-import React, { useState, FC } from "react";
 import styled from "@emotion/styled";
-import { User, apiClient } from "@/lib/api";
-import { useToast } from "@/hooks/useToast";
+import type React from "react";
+import { type FC, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/useToast";
+import { apiClient, type User } from "@/lib/api";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import ProfileForm from "./parts/ProfileForm";
 

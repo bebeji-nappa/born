@@ -1,6 +1,6 @@
-import { Metadata } from "next";
-import HomeTemplate from "@/components/templates/Home";
+import type { Metadata } from "next";
 import { PageTitle } from "@/components/common/PageTitle";
+import HomeTemplate from "@/components/templates/Home";
 
 export const metadata: Metadata = {
   title: "Born - 自分だけのブログを始めよう",

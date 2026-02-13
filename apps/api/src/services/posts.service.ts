@@ -1,7 +1,7 @@
-import { eq, and, desc } from "drizzle-orm";
-import { getDB, posts, users, blogs } from "../db";
+import { and, desc, eq } from "drizzle-orm";
+import { blogs, type EnvWithDB, getDB, posts, users } from "../db";
 
-export const getPostById = async (id: number, env: any) => {
+export const getPostById = async (id: number, env: EnvWithDB) => {
   const db = getDB(env.DB);
 
   const result = await db
@@ -36,7 +36,7 @@ export const getPostById = async (id: number, env: any) => {
 export const getAllPostsByUserId = async (
   userId: string,
   published: true | undefined,
-  env: any,
+  env: EnvWithDB,
   page: number = 1,
   limit: number = 10,
 ) => {
@@ -98,10 +98,15 @@ export const updatePostById = async (
   title: string,
   content: string,
   published: boolean,
-  env: any,
+  env: EnvWithDB,
 ) => {
   const db = getDB(env.DB);
-  const data: any = {
+  const data: {
+    title: string;
+    content: string;
+    updatedAt: string;
+    published?: boolean;
+  } = {
     title,
     content,
     updatedAt: new Date().toISOString(),
@@ -122,7 +127,7 @@ export const updatePostById = async (
   };
 };
 
-export const deletePostById = async (id: number, env: any) => {
+export const deletePostById = async (id: number, env: EnvWithDB) => {
   const db = getDB(env.DB);
   await db.delete(posts).where(eq(posts.id, id));
   return {
@@ -131,7 +136,7 @@ export const deletePostById = async (id: number, env: any) => {
 };
 
 export const getAllPosts = async (
-  env: any,
+  env: EnvWithDB,
   userId: string,
   published: boolean,
 ) => {
@@ -168,7 +173,7 @@ export const createPost = async (
   content: string,
   userId: string,
   published: boolean,
-  env: any,
+  env: EnvWithDB,
 ) => {
   const db = getDB(env.DB);
 

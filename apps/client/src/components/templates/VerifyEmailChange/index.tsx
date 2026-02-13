@@ -1,6 +1,6 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
+import type { FC } from "react";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 const Wrapper = styled.div`

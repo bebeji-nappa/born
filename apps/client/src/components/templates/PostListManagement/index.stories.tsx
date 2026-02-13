@@ -1,6 +1,5 @@
-import PostListManagementTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import PostListManagementTemplate from "./index";
 
 export default {
   title: "Templates/PostListManagement",

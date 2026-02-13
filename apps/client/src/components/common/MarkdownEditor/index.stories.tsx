@@ -1,7 +1,6 @@
+import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import MarkdownEditor from "./index";
-
-import type { Meta, StoryObj } from "@storybook/react";
 
 const PreviewComponent = ({ content }: { content: string }) => (
   <div style={{ padding: "16px" }}>

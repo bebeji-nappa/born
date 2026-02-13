@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
+import type React from "react";
 
 export type LoadingSpinnerProps = {
   size?: number;

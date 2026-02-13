@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { getDB, blogs } from "../db";
+import { blogs, type EnvWithDB, getDB } from "../db";
 
-export const getBlogById = async (id: number, env: any) => {
+export const getBlogById = async (id: number, env: EnvWithDB) => {
   const db = getDB(env.DB);
   const blog = await db.select().from(blogs).where(eq(blogs.id, id)).get();
 
@@ -12,7 +12,7 @@ export const getBlogById = async (id: number, env: any) => {
   return { blog };
 };
 
-export const getBlogByUserId = async (userId: string, env: any) => {
+export const getBlogByUserId = async (userId: string, env: EnvWithDB) => {
   const db = getDB(env.DB);
   const blog = await db
     .select()
@@ -32,7 +32,7 @@ export const updateBlog = async (
   title: string | null,
   description: string | null,
   theme: string | null,
-  env: any,
+  env: EnvWithDB,
 ) => {
   const db = getDB(env.DB);
 
@@ -55,7 +55,7 @@ export const updateBlogBackgroundImage = async (
   id: number,
   backgroundImage: string,
   backgroundImageKey: string,
-  env: any,
+  env: EnvWithDB,
 ) => {
   const db = getDB(env.DB);
 
@@ -83,7 +83,7 @@ export const updateBlogBackgroundImage = async (
   };
 };
 
-export const deleteBlogBackgroundImage = async (id: number, env: any) => {
+export const deleteBlogBackgroundImage = async (id: number, env: EnvWithDB) => {
   const db = getDB(env.DB);
 
   // 現在の背景画像キーを取得

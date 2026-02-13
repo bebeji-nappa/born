@@ -1,24 +1,24 @@
-import { Hono } from "hono";
+import { randomBytes } from "node:crypto";
 import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-import { getCookie } from "hono/cookie";
+import * as bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { getDB, users as usersTable, sessions, emailChangeTokens } from "../db";
+import { Hono } from "hono";
+import { getCookie } from "hono/cookie";
+import { z } from "zod";
+import { emailChangeTokens, getDB, sessions, users as usersTable } from "../db";
+import { deleteAllUserSessions } from "../lib/auth";
+import { sanitizeScreenName, sanitizeText } from "../lib/sanitize";
+import { csrfProtection } from "../middleware/csrf";
+import {
+  generateEmailChangeVerificationHTML,
+  sendEmail,
+} from "../services/email.service";
 import {
   getAll,
   getAuthUserId,
   getUserbyEmail,
   getUserbyId,
 } from "../services/users.service";
-import * as bcrypt from "bcryptjs";
-import { sanitizeText, sanitizeScreenName } from "../lib/sanitize";
-import { csrfProtection } from "../middleware/csrf";
-import { deleteAllUserSessions } from "../lib/auth";
-import { randomBytes } from "node:crypto";
-import {
-  sendEmail,
-  generateEmailChangeVerificationHTML,
-} from "../services/email.service";
 
 // Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
 function getCookieDomain(nodeEnv?: string): string | undefined {
@@ -63,7 +63,7 @@ users.get(
       const { email } = c.req.valid("query");
       const result = await getAuthUserId(email, c.env);
       return c.json(result);
-    } catch (error) {
+    } catch (_error) {
       return c.json({ error: "Failed to fetch user ID" }, 500);
     }
   },
@@ -77,7 +77,7 @@ users.get(
       const { email } = c.req.valid("query");
       const result = await getUserbyEmail(email, c.env);
       return c.json(result);
-    } catch (error) {
+    } catch (_error) {
       return c.json({ error: "Failed to fetch user by email" }, 500);
     }
   },
@@ -458,7 +458,7 @@ users.put(
       const hasUpperCase = /[A-Z]/.test(password);
       const hasLowerCase = /[a-z]/.test(password);
       const hasNumber = /[0-9]/.test(password);
-      const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+      const hasSymbol = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
 
       if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
         return c.json(

@@ -1,6 +1,5 @@
-import BlockedTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import BlockedTemplate from "./index";
 
 export default {
   title: "Templates/Blocked",

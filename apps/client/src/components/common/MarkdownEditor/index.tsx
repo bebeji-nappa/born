@@ -1,16 +1,17 @@
-import React, { useRef, useCallback, FC, useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { FiImage, FiLink, FiCode, FiInfo, FiSmile } from "react-icons/fi";
+import type React from "react";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import {
-  BsTypeH1,
-  BsTypeBold,
-  BsTypeItalic,
   BsQuote,
+  BsTypeBold,
+  BsTypeH1,
+  BsTypeItalic,
   BsTypeStrikethrough,
 } from "react-icons/bs";
-import { useToast } from "@/hooks/useToast";
-import MarkdownHelpModal from "@/components/common/MarkdownHelpModal";
+import { FiCode, FiImage, FiInfo, FiLink, FiSmile } from "react-icons/fi";
 import EmojiPicker from "@/components/common/EmojiPicker";
+import MarkdownHelpModal from "@/components/common/MarkdownHelpModal";
+import { useToast } from "@/hooks/useToast";
 
 const EditorWrapper = styled.div`
   border: 1px solid #e1e5e9;

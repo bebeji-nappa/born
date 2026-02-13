@@ -1,6 +1,6 @@
+import { describe, expect, test } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import SignInTemplate from "@/components/templates/SignIn";
-import { describe, test, expect } from "@jest/globals";
 
 describe("SignInTemplate", () => {
   test("renders correctly", () => {
