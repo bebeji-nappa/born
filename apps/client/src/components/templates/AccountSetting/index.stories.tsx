@@ -1,7 +1,6 @@
-import AccountSettingTemplate from "./index";
-import type { User } from "@/lib/api";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import type { User } from "@/lib/api";
+import AccountSettingTemplate from "./index";
 
 const mockUser: User = {
   id: "1",

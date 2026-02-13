@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  sendEmail,
   generateVerificationEmailHTML,
+  sendEmail,
 } from "../../services/email.service";
 
 describe("Email Service", () => {

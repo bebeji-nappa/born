@@ -1,6 +1,6 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { User } from "@/lib/api";
+import type { FC } from "react";
+import type { User } from "@/lib/api";
 
 const FormSection = styled.section`
   border: 1px solid #e1e5e9;
@@ -76,7 +76,7 @@ const StatusText = styled.div`
   gap: 8px;
 
   &::before {
-    content: '✓';
+    content: "✓";
     font-weight: bold;
   }
 `;

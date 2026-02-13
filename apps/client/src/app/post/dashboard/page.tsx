@@ -1,12 +1,12 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
-import { usePosts } from "@/hooks/usePosts";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import PostListManagement from "@/components/templates/PostListManagement";
 import { PageTitle } from "@/components/common/PageTitle";
+import PostListManagement from "@/components/templates/PostListManagement";
+import { useAuth } from "@/contexts/AuthContext";
+import { usePosts } from "@/hooks/usePosts";
 
 export default function PostDashboardPage() {
   const { user, isLoading: authLoading } = useAuth();

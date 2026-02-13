@@ -1,44 +1,45 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-import { getCookie, setCookie, deleteCookie } from "hono/cookie";
-import {
-  createSession,
-  getSessionUser,
-  deleteSession,
-  getGitHubOAuthConfig,
-  refreshSession,
-  deleteAllUserSessions,
-  type AuthUser,
-} from "../lib/auth";
 import { createId } from "@paralleldrive/cuid2";
-import { eq, and, lt } from "drizzle-orm";
+import * as bcrypt from "bcryptjs";
+import { and, eq } from "drizzle-orm";
+import { Hono } from "hono";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { z } from "zod";
 import {
-  getDB,
-  users,
   accounts,
   blogs,
   emailVerificationTokens,
+  getDB,
   passwordResetTokens,
   rateLimits,
+  users,
 } from "../db";
-import * as bcrypt from "bcryptjs";
 import {
-  sendEmail,
-  generateVerificationEmailHTML,
-  generatePasswordResetHTML,
-  generatePasswordChangedNotificationHTML,
-} from "../services/email.service";
-import { isValidEmail, sanitizeText } from "../lib/sanitize";
-import { rateLimitMiddleware } from "../middleware/rateLimit";
+  createSession,
+  deleteAllUserSessions,
+  deleteSession,
+  getGitHubOAuthConfig,
+  getSessionUser,
+  refreshSession,
+} from "../lib/auth";
 import { generateCsrfToken } from "../lib/csrf";
+import { isValidEmail } from "../lib/sanitize";
 import { csrfProtection } from "../middleware/csrf";
+import { rateLimitMiddleware } from "../middleware/rateLimit";
+import {
+  generatePasswordChangedNotificationHTML,
+  generatePasswordResetHTML,
+  generateVerificationEmailHTML,
+  sendEmail,
+} from "../services/email.service";
 
 // Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
 function getCookieDomain(nodeEnv?: string): string | undefined {
   if (nodeEnv === "production") {
     return "born-docs.com";
   } else if (nodeEnv === "staging") {
+    return ".born-docs.com";
+  } else if (nodeEnv === "test") {
     return ".born-docs.com";
   }
   // ローカル開発環境ではdomainを指定しない
@@ -126,10 +127,17 @@ auth.get("/callback/github", async (c) => {
 
     const tokenText = await tokenResponse.text();
 
-    let tokenData;
+    type GitHubTokenResponse = {
+      access_token?: string;
+      token_type?: string;
+      scope?: string;
+      [key: string]: unknown;
+    };
+
+    let tokenData: GitHubTokenResponse;
     try {
       tokenData = JSON.parse(tokenText);
-    } catch (error) {
+    } catch (_error) {
       console.error(
         "Failed to parse GitHub token response as JSON:",
         tokenText,
@@ -255,7 +263,7 @@ auth.get("/callback/github", async (c) => {
     }
 
     // Check if GitHub account already exists
-    let account = await db
+    const account = await db
       .select()
       .from(accounts)
       .where(
@@ -484,7 +492,7 @@ auth.post(
           name: user.name,
         },
       });
-    } catch (error) {
+    } catch (_error) {
       console.error("Sign in error:", error);
       return c.json({ error: "Internal server error" }, 500);
     }
@@ -638,7 +646,7 @@ auth.post(
       const hasUpperCase = /[A-Z]/.test(password);
       const hasLowerCase = /[a-z]/.test(password);
       const hasNumber = /[0-9]/.test(password);
-      const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+      const hasSymbol = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
 
       if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
         return c.json(

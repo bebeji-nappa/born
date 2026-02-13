@@ -1,7 +1,7 @@
 "use client";
-import React, { FC, useState, useMemo, useCallback } from "react";
 import styled from "@emotion/styled";
 import { search } from "node-emoji";
+import { type FC, useCallback, useMemo, useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 
 const Container = styled.div`

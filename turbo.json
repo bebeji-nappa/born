@@ -30,6 +30,12 @@
     "fix:lint": {
       "cache": false
     },
+    "format": {
+      "cache": false
+    },
+    "fix:format": {
+      "cache": false
+    },
     "lint-staged": {
       "cache": false
     }

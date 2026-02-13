@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { getDB, users } from "../db";
+import { type EnvWithDB, getDB, users } from "../db";
 
-export const getAll = async (env: any) => {
+export const getAll = async (env: EnvWithDB) => {
   const db = getDB(env.DB);
   const allUsers = await db.select().from(users);
   return {
@@ -9,7 +9,7 @@ export const getAll = async (env: any) => {
   };
 };
 
-export const getUserbyId = async (id: string, env: any) => {
+export const getUserbyId = async (id: string, env: EnvWithDB) => {
   const db = getDB(env.DB);
   const data = await db.select().from(users).where(eq(users.id, id)).get();
   return {
@@ -17,7 +17,7 @@ export const getUserbyId = async (id: string, env: any) => {
   };
 };
 
-export const getUserbyEmail = async (email: string, env: any) => {
+export const getUserbyEmail = async (email: string, env: EnvWithDB) => {
   const db = getDB(env.DB);
   const data = await db
     .select()
@@ -29,7 +29,7 @@ export const getUserbyEmail = async (email: string, env: any) => {
   };
 };
 
-export const getAuthUserId = async (email: string, env: any) => {
+export const getAuthUserId = async (email: string, env: EnvWithDB) => {
   const db = getDB(env.DB);
   const data = await db
     .select()

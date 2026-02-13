@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,7 +51,7 @@ const CheckIcon = styled.div`
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 10px;
     top: 5px;

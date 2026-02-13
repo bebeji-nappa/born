@@ -1,6 +1,5 @@
-import { PageTitle } from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import { PageTitle } from "./index";
 
 export default {
   title: "Common/PageTitle",

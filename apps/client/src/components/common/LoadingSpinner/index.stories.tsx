@@ -1,6 +1,5 @@
-import LoadingSpinner from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import LoadingSpinner from "./index";
 
 export default {
   title: "Common/LoadingSpinner",

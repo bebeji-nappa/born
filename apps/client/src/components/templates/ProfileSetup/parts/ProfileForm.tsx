@@ -1,9 +1,9 @@
-import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { useForm } from "react-hook-form";
-import { User, apiClient } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
+import { apiClient, type User } from "@/lib/api";
 
 const Section = styled.div`
   background: white;

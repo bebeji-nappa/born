@@ -1,11 +1,11 @@
 "use client";
 
-import { FC } from "react";
-import { User, Post } from "@/lib/api";
-import { Richmd } from "@richmd/react";
 import styled from "@emotion/styled";
+import { Richmd } from "@richmd/react";
 import dayjs from "dayjs";
-// @ts-ignore-next-line
+import type { FC } from "react";
+import type { Post, User } from "@/lib/api";
+// biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";
 

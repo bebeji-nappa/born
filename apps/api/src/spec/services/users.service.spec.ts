@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach } from "vitest";
 import { env } from "cloudflare:test";
+import { beforeEach, describe, expect, it } from "vitest";
 import { getDB, users } from "../../db";
 import {
   getAll,
-  getUserbyId,
-  getUserbyEmail,
   getAuthUserId,
+  getUserbyEmail,
+  getUserbyId,
 } from "../../services/users.service";
 
 describe("Users Service", () => {
