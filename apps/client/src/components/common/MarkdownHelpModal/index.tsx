@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Richmd } from "@richmd/react";
 import type { FC } from "react";
 import { FiX } from "react-icons/fi";
-// @ts-expect-error-next-line
+// biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 
 const Overlay = styled.div`
