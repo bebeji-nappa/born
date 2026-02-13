@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

@@ -1,6 +1,5 @@
-import BorderedButton from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import BorderedButton from "./index";
 
 export default {
   title: "BorderdButton",

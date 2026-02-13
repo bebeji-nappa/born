@@ -1,6 +1,5 @@
-import PostCreateTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import PostCreateTemplate from "./index";
 
 export default {
   title: "Templates/PostCreate",

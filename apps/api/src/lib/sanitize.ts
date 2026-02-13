@@ -21,7 +21,7 @@ export function sanitizeText(input: string | null | undefined): string | null {
 
   // 制御文字やスクリプトタグを削除
   return input
-    .replace(/[\x00-\x1F\x7F]/g, "") // 制御文字削除
+    .replace(/[\u0000-\u001F\u007F]/g, "") // 制御文字削除
     .replace(/<script[^>]*>.*?<\/script>/gi, "") // scriptタグ削除
     .replace(/<iframe[^>]*>.*?<\/iframe>/gi, "") // iframeタグ削除
     .replace(/javascript:/gi, "") // javascript:プロトコル削除

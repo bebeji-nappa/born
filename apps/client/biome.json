@@ -19,7 +19,29 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noExplicitAny": "warn",
+        "noShadowRestrictedNames": "warn"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
+      "correctness": {
+        "useParseIntRadix": "warn",
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "warn"
+      },
+      "performance": {
+        "noImgElement": "warn"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn"
       }
     },
     "domains": {

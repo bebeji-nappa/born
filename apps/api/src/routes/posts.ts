@@ -1,16 +1,15 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
 import { z } from "zod";
+import { authMiddleware } from "../middleware/auth";
+import { csrfProtection } from "../middleware/csrf";
 import {
   createPost,
   deletePostById,
-  getAllPosts,
   getAllPostsByUserId,
   getPostById,
   updatePostById,
 } from "../services/posts.service";
-import { authMiddleware, optionalAuthMiddleware } from "../middleware/auth";
-import { csrfProtection } from "../middleware/csrf";
 
 type Bindings = {
   DATABASE_URL: string;
@@ -60,8 +59,8 @@ posts.get(
     try {
       const { userId } = c.req.valid("param");
       const { published, page, limit } = c.req.valid("query");
-      const pageNum = page ? parseInt(page) : 1;
-      const limitNum = limit ? parseInt(limit) : 10;
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 10;
       const result = await getAllPostsByUserId(
         userId,
         published === "1" ? true : undefined,

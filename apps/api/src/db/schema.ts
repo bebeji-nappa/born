@@ -1,11 +1,11 @@
+import { sql } from "drizzle-orm";
 import {
+  index,
+  integer,
   sqliteTable,
   text,
-  integer,
-  index,
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
 
 // Account table
 export const accounts = sqliteTable(

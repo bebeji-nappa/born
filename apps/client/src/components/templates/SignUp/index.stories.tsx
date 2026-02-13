@@ -1,6 +1,5 @@
-import SignUpTemplate from "./index";
-
 import type { Meta, StoryObj } from "@storybook/react";
+import SignUpTemplate from "./index";
 
 export default {
   title: "Templates/SignUp",

@@ -1,14 +1,12 @@
 "use client";
-import { useToast } from "@/hooks/useToast";
-
-import { FC } from "react";
-import { Post } from "@/lib/api";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { FC } from "react";
 import { Virtuoso } from "react-virtuoso";
+import { useToast } from "@/hooks/useToast";
+import type { Post } from "@/lib/api";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -227,7 +225,7 @@ const PostListManagement: FC<PostListManagementProps> = ({
                   作成日: {dayjs(post.createdAt).format("YYYY年MM月DD日 HH:mm")}
                 </PostMeta>
                 <PostContent>
-                  {post.content.replace(/[#*`\[\]]/g, "").slice(0, 100)}
+                  {post.content.replace(/[#*`[\]]/g, "").slice(0, 100)}
                   {post.content.length > 100 ? "..." : ""}
                 </PostContent>
               </PostInfo>

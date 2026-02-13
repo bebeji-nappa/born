@@ -1,6 +1,7 @@
-import React, { useState, useEffect, FC } from "react";
 import styled from "@emotion/styled";
-import { User, apiClient } from "@/lib/api";
+import type React from "react";
+import { type FC, useEffect, useState } from "react";
+import { apiClient, type User } from "@/lib/api";
 
 const Section = styled.div`
   background: white;

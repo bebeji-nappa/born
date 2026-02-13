@@ -1,6 +1,6 @@
-import { Context } from "hono";
-import { getDB, rateLimits } from "../db";
 import { eq } from "drizzle-orm";
+import type { Context } from "hono";
+import { getDB, rateLimits } from "../db";
 
 interface RateLimitConfig {
   windowMs: number; // 時間ウィンドウ (ミリ秒)
@@ -23,7 +23,7 @@ export async function rateLimitMiddleware(
   c: Context,
   endpoint: string,
   config: RateLimitConfig = DEFAULT_CONFIG,
-): Promise<Response | void> {
+): Promise<Response | undefined> {
   const db = getDB(c.env.DB);
 
   // IPアドレス取得

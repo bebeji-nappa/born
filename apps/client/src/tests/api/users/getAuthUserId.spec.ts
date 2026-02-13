@@ -1,4 +1,4 @@
-import { test, expect } from "@jest/globals";
+import { expect, test } from "@jest/globals";
 import { getAuthUserIdHandler } from "@/server/api/controllers/users.controller";
 
 test("API Test", async () => {

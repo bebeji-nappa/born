@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { apiClient, type Post } from "@/lib/api";
 
 type Pagination = {
@@ -55,32 +55,14 @@ export function usePosts(
     }
   };
 
-  const fetchPostById = async (id: number) => {
-    try {
-      setIsLoading(true);
-      const response = await apiClient.getPostById(id);
-      setPosts(response.post ? [response.post] : []);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch post");
-      setPosts([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const createPost = async (
     title: string,
     content: string,
     published: boolean = false,
   ) => {
-    try {
-      const post = await apiClient.createPost(title, content, published);
-      await fetchPosts(); // Refetch posts
-      return post.newPost;
-    } catch (err) {
-      throw err;
-    }
+    const post = await apiClient.createPost(title, content, published);
+    await fetchPosts(); // Refetch posts
+    return post.newPost;
   };
 
   const updatePost = async (
@@ -89,22 +71,14 @@ export function usePosts(
     content: string,
     published: boolean,
   ) => {
-    try {
-      const post = await apiClient.updatePost(id, title, content, published);
-      await fetchPosts(); // Refetch posts
-      return post.updatedPost;
-    } catch (err) {
-      throw err;
-    }
+    const post = await apiClient.updatePost(id, title, content, published);
+    await fetchPosts(); // Refetch posts
+    return post.updatedPost;
   };
 
   const deletePost = async (id: number) => {
-    try {
-      await apiClient.deletePost(id);
-      await fetchPosts(); // Refetch posts
-    } catch (err) {
-      throw err;
-    }
+    await apiClient.deletePost(id);
+    await fetchPosts(); // Refetch posts
   };
 
   return {

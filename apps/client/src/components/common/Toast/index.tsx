@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 
 type ToastType = "success" | "error";

@@ -1,9 +1,8 @@
-import { Post } from "@/lib/api";
 import styled from "@emotion/styled";
-import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import { Virtuoso } from "react-virtuoso";
-// @ts-ignore-next-line
+import { useRouter } from "next/navigation";
+import type { Post } from "@/lib/api";
+// @ts-expect-error-next-line
 import "@richmd/react/dist/richmd.css";
 import { useAuth } from "@/contexts/AuthContext";
 

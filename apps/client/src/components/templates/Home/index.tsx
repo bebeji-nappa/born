@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
