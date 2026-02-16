@@ -92,8 +92,8 @@ importers:
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)
       '@richmd/react':
-        specifier: ^3.0.2
-        version: 3.0.3(@types/react@19.2.14)
+        specifier: ^3.0.4
+        version: 3.0.4(@types/react@19.2.14)
       '@tanstack/react-query':
         specifier: ^5.90.2
         version: 5.90.21(react@19.2.4)
@@ -2729,8 +2729,8 @@ packages:
   '@richmd/js@3.0.3':
     resolution: {integrity: sha512-HJDHswnylYXK+lWz0WGt1wT4RP6r83ta0+jz3kd02yRZJKpwKO5sHuksypxD5Xn7t7mRZ+lYQefABMYgTYzo4g==}
 
-  '@richmd/react@3.0.3':
-    resolution: {integrity: sha512-C/lEiqu9afPnu84uT1Iu/swCtT69y3FEDJ07dZMPAMXX1ZHJatX3oJv8KSn+TLcFqz68w6/xSsUstZ+oSvMt7g==}
+  '@richmd/react@3.0.4':
+    resolution: {integrity: sha512-IX8FdzPbZU/Z1fJQU634PQxq2pWUOIWP5zCDC3jkePEFVDmr5lThL+cE378D9t64g6Kw+NeHJg2TRkD7dVW/eA==}
 
   '@rollup/rollup-android-arm-eabi@4.57.1':
     resolution: {integrity: sha512-A6ehUVSiSaaliTxai040ZpZ2zTevHYbvu/lDoeAteHI8QnaosIzm4qwtezfRg1jOYaUmnzLX1AOD6Z+UJjtifg==}
@@ -5748,8 +5748,8 @@ packages:
   jsonfile@6.2.0:
     resolution: {integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==}
 
-  jspdf@3.0.4:
-    resolution: {integrity: sha512-dc6oQ8y37rRcHn316s4ngz/nOjayLF/FFxBF4V9zamQKRqXxyiH1zagkCdktdWhtoQId5K20xt1lB90XzkB+hQ==}
+  jspdf@4.1.0:
+    resolution: {integrity: sha512-xd1d/XRkwqnsq6FP3zH1Q+Ejqn2ULIJeDZ+FTKpaabVpZREjsJKRJwuokTNgdqOU+fl55KgbvgZ1pRTSWCP2kQ==}
 
   katex@0.16.28:
     resolution: {integrity: sha512-YHzO7721WbmAL6Ov1uzN/l5mY5WWWhJBSW+jq4tkfZfsxmo1hu6frS0EOswvjBUnWE6NtjEs48SFn5CQESRLZg==}
@@ -10788,13 +10788,13 @@ snapshots:
       node-html-parser: 7.0.2
       typescript: 5.9.3
 
-  '@richmd/react@3.0.3(@types/react@19.2.14)':
+  '@richmd/react@3.0.4(@types/react@19.2.14)':
     dependencies:
       '@react-hook/event': 1.2.6(react@19.2.4)
       '@richmd/js': 3.0.3
       html-react-parser: 5.2.17(@types/react@19.2.14)(react@19.2.4)
       html2canvas: 1.4.1
-      jspdf: 3.0.4
+      jspdf: 4.1.0
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
     transitivePeerDependencies:
@@ -14488,7 +14488,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  jspdf@3.0.4:
+  jspdf@4.1.0:
     dependencies:
       '@babel/runtime': 7.28.6
       fast-png: 6.4.0
