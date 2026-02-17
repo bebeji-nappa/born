@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["ahooks"],
-  serverExternalPackages: ["jose", "@panva/hkdf", "openid-client"],
   images: {
     remotePatterns: [
       {
