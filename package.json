@@ -14,7 +14,7 @@
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
     "husky": "^9.1.7",
-    "turbo": "^2.5.8"
+    "turbo": "^2.8.9"
   },
   "devDependencies": {
     "lint-staged": "^16.2.3"
