@@ -82,6 +82,7 @@ app.get("/storage/*", async (c) => {
     headers.set("Cache-Control", "public, max-age=31536000");
 
     console.log("API CI テスト");
+    console.log("API CI テスト2");
 
     return new Response(object.body, { headers });
   } catch (error) {
