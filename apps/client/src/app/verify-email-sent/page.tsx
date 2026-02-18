@@ -1,7 +1,7 @@
 "use client";
 
 import { PageTitle } from "@/components/layouts/PageTitle";
-import EmailSent from "@/features/verify-email-sent/components/EmailSent";
+import EmailSent from "@/features/verify-email-sent/components/views/EmailSent";
 
 export default function VerifyEmailSentPage() {
   return (

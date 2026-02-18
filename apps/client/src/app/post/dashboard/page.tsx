@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import PostListManagement from "@/features/post/dashboard/components/PostListManagement";
-import { usePostListManagement } from "@/features/post/dashboard/hooks/usePostListManagement";
+import PostListManagement from "@/features/post/components/views/PostListManagement";
+import { usePostListManagement } from "@/features/post/hooks/usePostListManagement";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
 export default function PostDashboardPage() {

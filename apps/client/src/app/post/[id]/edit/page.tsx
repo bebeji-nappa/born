@@ -3,8 +3,8 @@
 import { use, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import { usePost } from "@/features/post/detail/hooks/usePost";
-import PostEdit from "@/features/post/edit/components/PostEdit";
+import PostEdit from "@/features/post/components/views/PostEdit";
+import { usePost } from "@/features/post/hooks/usePost";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
 export const dynamic = "force-dynamic";
