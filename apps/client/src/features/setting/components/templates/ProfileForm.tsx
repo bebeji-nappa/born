@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/useToast";
-import type { User } from "@/utils/api";
-import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserProfile } from "../../api/account";
+import { updateUserProfile } from "@/features/shared/api/user";
+import { useToast } from "@/features/shared/hooks/useToast";
+import type { User } from "@/features/shared/utils/api";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 const Section = styled.div`
   background: white;

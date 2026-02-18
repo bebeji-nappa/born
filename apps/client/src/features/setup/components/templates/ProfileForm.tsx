@@ -2,9 +2,9 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import type { User } from "@/utils/api";
-import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserProfile } from "../../api/profile";
+import { updateUserProfile } from "@/features/shared/api/user";
+import type { User } from "@/features/shared/utils/api";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 const Section = styled.div`
   background: white;

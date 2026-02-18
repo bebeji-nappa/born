@@ -3,7 +3,7 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 const Wrapper = styled.div`
   min-height: 100vh;

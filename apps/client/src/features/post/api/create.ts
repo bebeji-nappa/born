@@ -1,4 +1,4 @@
-import { apiClient, type Post } from "@/utils/api";
+import { apiClient, type Post } from "@/features/shared/utils/api";
 
 export async function createPost(
   title: string,

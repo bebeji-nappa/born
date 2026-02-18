@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { type FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiArrowLeft } from "react-icons/fi";
-import MarkdownEditor from "@/components/elements/MarkdownEditor";
+import MarkdownEditor from "@/features/shared/components/templates/MarkdownEditor";
 import { createPost } from "../../api/create";
 import Preview from "../templates/Preview";
 

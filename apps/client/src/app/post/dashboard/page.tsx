@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import LoadingSpinner from "@/components/elements/LoadingSpinner";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import PostListManagement from "@/features/post/components/views/PostListManagement";
 import { usePostListManagement } from "@/features/post/hooks/usePostListManagement";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 export default function PostDashboardPage() {
   const { user, isLoading: authLoading } = useAuth();

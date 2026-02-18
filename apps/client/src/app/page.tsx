@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import Home from "@/features/home/components/views/Home";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
 
 export const metadata: Metadata = {
   title: "Born - 自分だけのブログを始めよう",

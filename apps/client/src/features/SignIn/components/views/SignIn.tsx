@@ -4,7 +4,7 @@ import Link from "next/link";
 import type React from "react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useSignIn } from "../../logic";
+import { useSignIn } from "../../hooks/useSignIn";
 
 const Wrapper = styled.div`
   display: flex;

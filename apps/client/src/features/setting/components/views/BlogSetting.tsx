@@ -3,8 +3,8 @@
 import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import { type FC, useEffect, useState } from "react";
-import { useToast } from "@/hooks/useToast";
-import type { User } from "@/utils/api";
+import { useToast } from "@/features/shared/hooks/useToast";
+import type { User } from "@/features/shared/utils/api";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};

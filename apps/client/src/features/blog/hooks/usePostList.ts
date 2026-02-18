@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Post } from "@/utils/api";
+import type { Post } from "@/features/shared/utils/api";
 import { getAllPostsByUserId } from "../api/blog";
 
 type Pagination = {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/elements/LoadingSpinner";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import PostCreate from "@/features/post/components/views/PostCreate";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 interface ThemeConfig {
   backgroundColor: string;

@@ -2,10 +2,10 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/elements/LoadingSpinner";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import BlogSetting from "@/features/setting/components/views/BlogSetting";
-import { getCurrentUser, type User } from "@/utils/api";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { getCurrentUser, type User } from "@/features/shared/utils/api";
 
 export default function BlogSettingPage() {
   const params = useParams();

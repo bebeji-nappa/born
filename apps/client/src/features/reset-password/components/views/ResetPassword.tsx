@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { validatePassword } from "@/utils/validation";
+import { validatePassword } from "@/features/shared/utils/validation";
 import { resetPassword } from "../../api/reset-password";
 
 const Wrapper = styled.div`

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import type { FC } from "react";
-import type { User } from "@/utils/api";
+import type { User } from "@/features/shared/utils/api";
 
 const FormSection = styled.section`
   border: 1px solid #e1e5e9;
