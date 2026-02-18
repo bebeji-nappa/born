@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { apiClient, type User } from "@/lib/api";
+import { apiClient, getCurrentUser, type User } from "@/lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await apiClient.getCurrentUser();
+      const response = await getCurrentUser();
       setUser(response?.user || null);
     } catch (error) {
       console.error("Auth check error:", error);

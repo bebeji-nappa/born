@@ -80,24 +80,6 @@ class ApiClient {
     return headers;
   }
 
-  // Auth APIs
-  async getCurrentUser(): Promise<{ user: User } | null> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/auth/current_user`, {
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        return null;
-      }
-
-      return response.json();
-    } catch {
-      return null;
-    }
-  }
-
   async signOut(): Promise<void> {
     await fetch(`${this.baseUrl}/api/auth/signout`, {
       method: "POST",
@@ -184,104 +166,23 @@ class ApiClient {
 
     return result;
   }
-
-  async forgotPassword(data: {
-    email: string;
-    redirect?: string;
-  }): Promise<{ success: boolean }> {
-    const response = await fetch(`${this.baseUrl}/api/auth/forgot-password`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async resetPassword(data: {
-    token: string;
-    password: string;
-    passwordConfirmation: string;
-    logoutOtherDevices: boolean;
-  }): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(`${this.baseUrl}/api/auth/reset-password`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async verifyEmail(
-    token: string,
-  ): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(
-      `${this.baseUrl}/api/auth/verify-email?token=${encodeURIComponent(token)}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async getRateLimitStatus(): Promise<{
-    blocked: boolean;
-    retryAfter: number;
-  }> {
-    const response = await fetch(`${this.baseUrl}/api/auth/rate-limit-status`, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  // User APIs (認証関連のみ残す)
-  async verifyEmailChange(
-    token: string,
-  ): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(
-      `${this.baseUrl}/api/users/email/verify?token=${encodeURIComponent(token)}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
+
+export async function getCurrentUser(): Promise<{ user: User } | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/current_user`, {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
+  } catch {
+    return null;
+  }
+}

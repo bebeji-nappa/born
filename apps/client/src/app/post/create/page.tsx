@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
-import PostCreate from "@/features/PostCreate";
+import PostCreate from "@/features/post/create/components/PostCreate";
 
 interface ThemeConfig {
   backgroundColor: string;

@@ -3,7 +3,7 @@
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
-import AccountSetting from "@/features/AccountSetting";
+import AccountSetting from "@/features/setting/account/components/AccountSetting";
 
 export default function AccountSettingPage() {
   const { user, isLoading } = useAuth();

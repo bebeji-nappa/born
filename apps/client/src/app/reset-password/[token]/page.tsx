@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import ResetPassword from "@/features/ResetPassword";
+import ResetPassword from "@/features/reset-password/components/ResetPassword";
 
 export default function ResetPasswordPage({
   params,

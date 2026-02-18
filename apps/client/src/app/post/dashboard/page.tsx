@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
-import PostListManagement from "@/features/PostListManagement";
-import { usePostListManagement } from "@/features/PostListManagement/usePostListManagement";
+import PostListManagement from "@/features/post/dashboard/components/PostListManagement";
+import { usePostListManagement } from "@/features/post/dashboard/hooks/usePostListManagement";
 
 export default function PostDashboardPage() {
   const { user, isLoading: authLoading } = useAuth();

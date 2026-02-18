@@ -4,8 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import BlogSetting from "@/features/BlogSetting";
-import { apiClient, type User } from "@/lib/api";
+import BlogSetting from "@/features/setting/blog/components/BlogSetting";
+import { getCurrentUser, type User } from "@/lib/api";
 
 export default function BlogSettingPage() {
   const params = useParams();
@@ -16,7 +16,7 @@ export default function BlogSettingPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const result = await apiClient.getCurrentUser();
+        const result = await getCurrentUser();
         if (!result?.user) {
           router.push("/");
           return;

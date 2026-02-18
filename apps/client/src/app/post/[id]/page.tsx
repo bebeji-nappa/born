@@ -3,8 +3,8 @@
 import { use, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import PostDetail from "@/features/PostDetail";
-import { getPostById } from "@/features/PostDetail/api";
+import { getPostById } from "@/features/post/detail/api";
+import PostDetail from "@/features/post/detail/components/PostDetail";
 import type { Post } from "@/lib/api";
 
 const API_BASE_URL =
