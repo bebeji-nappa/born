@@ -2,10 +2,10 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import BlogSettingTemplate from "@/components/features/BlogSetting";
-import { apiClient, type User } from "@/lib/api";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
+import BlogSetting from "@/features/setting/blog/components/BlogSetting";
+import { getCurrentUser, type User } from "@/utils/api";
 
 export default function BlogSettingPage() {
   const params = useParams();
@@ -16,7 +16,7 @@ export default function BlogSettingPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const result = await apiClient.getCurrentUser();
+        const result = await getCurrentUser();
         if (!result?.user) {
           router.push("/");
           return;
@@ -44,7 +44,7 @@ export default function BlogSettingPage() {
   return (
     <>
       <PageTitle title="ブログ設定" />
-      <BlogSettingTemplate blogId={Number(params.id)} user={user} />
+      <BlogSetting blogId={Number(params.id)} user={user} />
     </>
   );
 }

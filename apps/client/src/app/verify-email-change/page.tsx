@@ -3,9 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import VerifyEmailChangeTemplate from "@/components/features/VerifyEmailChange";
-import { useAuth } from "@/contexts/AuthContext";
-import { apiClient } from "@/lib/api";
+import { verifyEmailChange } from "@/features/verify-email-change/api";
+import VerifyEmailChange from "@/features/verify-email-change/components/VerifyEmailChange";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 const VerifyEmailChangePage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -33,7 +33,7 @@ const VerifyEmailChangePage: React.FC = () => {
       }
 
       try {
-        const result = await apiClient.verifyEmailChange(token);
+        const result = await verifyEmailChange(token);
         if (result.success) {
           await refetch();
         }
@@ -71,7 +71,7 @@ const VerifyEmailChangePage: React.FC = () => {
   }
 
   return (
-    <VerifyEmailChangeTemplate
+    <VerifyEmailChange
       success={verificationState.success}
       message={verificationState.message}
     />

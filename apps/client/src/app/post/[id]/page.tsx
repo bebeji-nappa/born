@@ -1,11 +1,11 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import PostDetailTemplate from "@/components/features/PostDetail";
-import type { Post } from "@/lib/api";
-import { apiClient } from "@/lib/api";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
+import { getPostById } from "@/features/post/detail/api";
+import PostDetail from "@/features/post/detail/components/PostDetail";
+import type { Post } from "@/utils/api";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
@@ -58,7 +58,7 @@ export default function PostDetailPage({
   const fetchPost = async () => {
     try {
       setIsLoading(true);
-      const response = await apiClient.getPostById(postId);
+      const response = await getPostById(postId);
       if (response.post) {
         setPost(response.post as ExtendedPost);
         setError(null);
@@ -109,7 +109,7 @@ export default function PostDetailPage({
   return (
     <>
       <PageTitle title={post.title} />
-      <PostDetailTemplate
+      <PostDetail
         post={{
           ...post,
           createdAt:
