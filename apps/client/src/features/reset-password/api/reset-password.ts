@@ -1,4 +1,4 @@
-import { apiClient } from "@/utils/api";
+import { apiClient } from "@/features/shared/utils/api";
 
 export async function resetPassword(data: {
   token: string;

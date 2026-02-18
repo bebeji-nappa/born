@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import { Virtuoso } from "react-virtuoso";
-import { useToast } from "@/hooks/useToast";
-import type { Post } from "@/utils/api";
+import { useToast } from "@/features/shared/hooks/useToast";
+import type { Post } from "@/features/shared/utils/api";
 
 const Container = styled.div`
   max-width: 1200px;

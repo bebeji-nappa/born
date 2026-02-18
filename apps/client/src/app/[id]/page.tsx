@@ -2,11 +2,11 @@
 
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/elements/LoadingSpinner";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import PostList from "@/features/blog/components/views/PostList";
 import { usePostList } from "@/features/blog/hooks/usePostList";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 type Blog = {
   id: number;

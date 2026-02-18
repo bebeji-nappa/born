@@ -3,9 +3,9 @@ import type React from "react";
 import { type FC, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { forgotPassword } from "@/features/forgot-password/api/forgot-password";
-import { useToast } from "@/hooks/useToast";
-import { apiClient } from "@/utils/api";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import { useToast } from "@/features/shared/hooks/useToast";
+import { apiClient } from "@/features/shared/utils/api";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 const Section = styled.section`
   border: 1px solid #e1e5e9;

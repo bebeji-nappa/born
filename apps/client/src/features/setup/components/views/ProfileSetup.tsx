@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import type React from "react";
 import { type FC, useState } from "react";
-import { useToast } from "@/hooks/useToast";
-import type { User } from "@/utils/api";
-import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserAvatar } from "../../api/profile";
-import AvatarUploadForm from "../templates/AvatarUploadForm";
+import { updateUserAvatar } from "@/features/shared/api/user";
+import AvatarUploadForm from "@/features/shared/components/templates/AvatarUploadForm";
+import { useToast } from "@/features/shared/hooks/useToast";
+import type { User } from "@/features/shared/utils/api";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 import ProfileForm from "../templates/ProfileForm";
 
 const Wrapper = styled.div`

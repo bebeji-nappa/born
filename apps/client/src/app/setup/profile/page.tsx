@@ -1,9 +1,9 @@
 "use client";
 
-import LoadingSpinner from "@/components/elements/LoadingSpinner";
-import { PageTitle } from "@/components/layouts/PageTitle";
 import ProfileSetup from "@/features/setup/components/views/ProfileSetup";
-import { useAuth } from "@/utils/contexts/AuthContext";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 export default function ProfileSetupPage() {
   const { user, isLoading } = useAuth();

@@ -1,6 +1,6 @@
 "use client";
 
-import { PageTitle } from "@/components/layouts/PageTitle";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
 import SignUp from "@/features/signup/components/views/SignUp";
 
 export default function SignUpPage() {
