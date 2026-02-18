@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
 import { getPostById } from "@/features/post/api/detail";
-import PostDetail from "@/features/post/components/PostDetail";
+import PostDetail from "@/features/post/components/views/PostDetail";
 import type { Post } from "@/utils/api";
 
 const API_BASE_URL =

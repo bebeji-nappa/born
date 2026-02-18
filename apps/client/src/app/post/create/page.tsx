@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import PostCreate from "@/features/post/components/PostCreate";
+import PostCreate from "@/features/post/components/views/PostCreate";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
 interface ThemeConfig {

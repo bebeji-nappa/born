@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import PostListManagement from "@/features/post/components/PostListManagement";
+import PostListManagement from "@/features/post/components/views/PostListManagement";
 import { usePostListManagement } from "@/features/post/hooks/usePostListManagement";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
