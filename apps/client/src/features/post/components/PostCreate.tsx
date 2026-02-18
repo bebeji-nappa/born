@@ -5,7 +5,7 @@ import { type FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiArrowLeft } from "react-icons/fi";
 import MarkdownEditor from "@/components/elements/MarkdownEditor";
-import { updatePost } from "../api";
+import { createPost } from "../api/create";
 import Preview from "./Preview";
 
 const PageWrapper = styled.div`
@@ -170,30 +170,21 @@ interface ThemeConfig {
   linkColor: string;
 }
 
-export type PostEditProps = {
-  id: number;
-  title: string;
-  content: string;
-  published: boolean;
+export type PostCreateProps = {
+  userId: string;
   theme: ThemeConfig;
 };
 
-const PostEdit: FC<PostEditProps> = ({
-  id,
-  title,
-  content,
-  published,
-  theme,
-}) => {
+const PostCreate: FC<PostCreateProps> = ({ userId, theme }) => {
   const router = useRouter();
-  const [alertMessage, setAlertMessage] = useState("");
   const [isEdit, { toggle: handleIsEdit }] = useBoolean(true);
-  const [isPublished, setIsPublished] = useState(published);
+  const [isPublished, setIsPublished] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, register, getValues, setValue, watch } = useForm({
     defaultValues: {
-      title: title,
-      content: content,
+      title: "",
+      content: "",
     },
   });
 
@@ -202,20 +193,15 @@ const PostEdit: FC<PostEditProps> = ({
   const onSubmit = async (e: any) => {
     try {
       setIsLoading(true);
-      const { updatedPost } = await updatePost(
-        id,
-        e.title,
-        e.content,
-        isPublished,
-      );
-      if (updatedPost.published) {
-        router.push(`/post/${id}`);
+      const { newPost } = await createPost(e.title, e.content, isPublished);
+      if (newPost.published) {
+        router.push(`/post/${newPost.id}`);
       } else {
         router.push("/post/dashboard");
       }
     } catch (error) {
-      console.error("Failed to update post:", error);
-      setAlertMessage("Failed to update post. Please try again.");
+      console.error("Failed to create post:", error);
+      setAlertMessage("Failed to create post. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -257,8 +243,11 @@ const PostEdit: FC<PostEditProps> = ({
         {alertMessage && <p style={{ color: "red" }}>{alertMessage}</p>}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Label htmlFor="title">タイトル</Label>
-          <Input type="text" defaultValue={title} {...register("title")} />
-
+          <Input
+            type="text"
+            {...register("title")}
+            placeholder="タイトルを入力..."
+          />
           <Label htmlFor="content">内容</Label>
           <MarkdownEditor
             value={contentValue || ""}
@@ -273,10 +262,12 @@ const PostEdit: FC<PostEditProps> = ({
             previewComponent={
               <Preview
                 text={contentValue || ""}
+                id="content"
                 textColor={theme.textColor}
                 linkColor={theme.linkColor}
               />
             }
+            textareaProps={{ placeholder: "記事の内容を入力..." }}
           />
         </Form>
       </Wrapper>
@@ -284,4 +275,4 @@ const PostEdit: FC<PostEditProps> = ({
   );
 };
 
-export default PostEdit;
+export default PostCreate;

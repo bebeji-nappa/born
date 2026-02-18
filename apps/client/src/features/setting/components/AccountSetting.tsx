@@ -1,12 +1,16 @@
 import styled from "@emotion/styled";
-import type React from "react";
 import { type FC, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import type { User } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserAvatar } from "../api";
+import { updateUserAvatar } from "../api/account";
 import AvatarUploadForm from "./AvatarUploadForm";
+import EmailForm from "./EmailForm";
+import PasswordForm from "./PasswordForm";
 import ProfileForm from "./ProfileForm";
+import ScreenNameForm from "./ScreenNameForm";
+
+// import GitHubConnectForm from "./GitHubConnectForm";
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,9 +39,9 @@ interface Props {
   user: User;
 }
 
-const ProfileSetup: FC<Props> = ({ user }) => {
-  const { showToast } = useToast();
+const AccountSetting: FC<Props> = ({ user }) => {
   const { refetch } = useAuth();
+  const { showToast } = useToast();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user.image || null,
   );
@@ -70,6 +74,7 @@ const ProfileSetup: FC<Props> = ({ user }) => {
     try {
       const result = await updateUserAvatar(file);
       setAvatarPreview(result.url);
+      // ヘッダーのアバターを更新
       await refetch();
     } catch (err) {
       console.error("Avatar update error:", err);
@@ -79,7 +84,7 @@ const ProfileSetup: FC<Props> = ({ user }) => {
 
   return (
     <Wrapper>
-      <Title>プロフィールを登録</Title>
+      <Title>アカウント設定</Title>
       <ProfileFormWrapper>
         <AvatarUploadForm
           user={user}
@@ -88,8 +93,16 @@ const ProfileSetup: FC<Props> = ({ user }) => {
         />
         <ProfileForm user={user} />
       </ProfileFormWrapper>
+
+      <ScreenNameForm user={user} />
+
+      <EmailForm user={user} />
+
+      {/* <GitHubConnectForm user={user} /> */}
+
+      <PasswordForm />
     </Wrapper>
   );
 };
 
-export default ProfileSetup;
+export default AccountSetting;

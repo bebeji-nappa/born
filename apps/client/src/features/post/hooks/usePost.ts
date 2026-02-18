@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Post } from "@/utils/api";
-import { getPostById } from "../api";
+import { getPostById } from "../api/detail";
 
 export function usePost(id: number) {
   const [post, setPost] = useState<Post | null>(null);

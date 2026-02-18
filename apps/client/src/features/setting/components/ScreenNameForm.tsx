@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/useToast";
 import type { User } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserScreenName } from "../api";
+import { updateUserScreenName } from "../api/account";
 
 const Section = styled.div`
   background: white;

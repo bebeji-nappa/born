@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
+import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/useToast";
 import type { User } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
-import { updateUserProfile } from "../api";
+import { updateUserProfile } from "../api/profile";
 
 const Section = styled.div`
   background: white;
@@ -34,7 +34,7 @@ const Input = styled.input`
   font-size: 14px;
 
   &:focus {
-    border-color: #000000;
+    border-color: #0366d6;
   }
 `;
 
@@ -50,7 +50,7 @@ const Textarea = styled.textarea`
   font-size: 14px;
 
   &:focus {
-    border-color: #000000;
+    border-color: #0366d6;
   }
 `;
 
@@ -63,7 +63,7 @@ const Form = styled.form`
 const SaveButton = styled.button`
   align-self: center;
   width: 120px;
-  background-color: #000000;
+  background-color: #0366d6;
   color: white;
   font-weight: 600;
   padding: 8px 16px;
@@ -73,11 +73,11 @@ const SaveButton = styled.button`
   font-size: 14px;
 
   &:hover {
-    background-color: #333333;
+    background-color: #0256c7;
   }
 
   &:disabled {
-    background-color: #ccc;
+    background-color: #94d3a2;
     cursor: not-allowed;
   }
 `;
@@ -92,8 +92,19 @@ const UserProfileSection = styled.div`
   }
 `;
 
+const ErrorMessage = styled.p`
+  color: #d73a49;
+  font-size: 14px;
+  margin-top: 8px;
+`;
+
+const RequiredLabel = styled.span`
+  color: #d73a49;
+  margin-left: 4px;
+`;
+
 interface FormData {
-  name: string;
+  name: string | null;
   description: string;
 }
 
@@ -102,12 +113,11 @@ export type ProfileFormProps = {
 };
 
 const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
-  const { showToast } = useToast();
-  const { refetch } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       name: user.name || "",
@@ -115,17 +125,24 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
     },
   });
 
+  const router = useRouter();
+  const { refetch } = useAuth();
+
   const onSubmit = async (data: FormData) => {
     try {
       await updateUserProfile({
-        name: data.name,
+        name: data.name || user.email,
         description: data.description || null,
       });
+
+      // ユーザー情報を最新化
       await refetch();
-      showToast("プロフィールを更新しました", "success");
+
+      // ユーザーのブログトップページにリダイレクト
+      router.push(`/${user.screen_name}`);
     } catch (err) {
       console.error("Profile update error:", err);
-      showToast("プロフィールの更新に失敗しました", "error");
+      setError("root", { message: "プロフィールの更新に失敗しました" });
     }
   };
 
@@ -134,13 +151,16 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
       <UserProfileSection>
         <SectionTitle>基本情報</SectionTitle>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Label htmlFor="name">名前</Label>
+          <Label htmlFor="name">
+            名前<RequiredLabel>*</RequiredLabel>
+          </Label>
           <Input
             id="name"
             type="text"
-            {...register("name", { required: true })}
+            {...register("name", { required: "名前は必須です" })}
             disabled={isSubmitting}
           />
+          {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
 
           <Label htmlFor="description">自己紹介</Label>
           <Textarea
@@ -149,6 +169,8 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
             disabled={isSubmitting}
             placeholder="あなたについて教えてください"
           />
+
+          {errors.root && <ErrorMessage>{errors.root.message}</ErrorMessage>}
 
           <SaveButton type="submit" disabled={isSubmitting}>
             {isSubmitting ? "保存中..." : "保存"}
