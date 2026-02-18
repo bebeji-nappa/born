@@ -175,7 +175,7 @@ pnpm db:generate
 ```
 born/
 ├── apps/
-│   ├── client/     # Next.js アプリケーション
+│   ├── client/     # Next.js アプリケーション(※)
 │   └── api/        # Cloudflare Workers API (Hono)
 │       ├── src/
 │       │   ├── db/
@@ -192,6 +192,9 @@ born/
 ├── pnpm-workspace.yaml
 └── turbo.json      # Turborepo 設定
 ```
+
+※ 現在、client 配下のコンポーネント設計を最新の構成にリファクタリングを実施中です。
+
 
 ## 環境ごとの構成
 
