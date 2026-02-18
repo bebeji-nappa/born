@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PageHeader } from "../../components/layouts/PageHeader";
 
 const meta = {
-  title: "Common/PageHeader",
+  title: "Shared/PageHeader",
   component: PageHeader,
   parameters: {
     layout: "fullscreen",

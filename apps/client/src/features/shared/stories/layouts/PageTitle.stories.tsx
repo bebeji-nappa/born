@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { PageTitle } from "../../components/layouts/PageTitle";
 
 export default {
-  title: "Common/PageTitle",
+  title: "Shared/PageTitle",
   component: PageTitle,
   parameters: {
     docs: {

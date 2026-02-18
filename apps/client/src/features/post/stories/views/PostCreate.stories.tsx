@@ -15,4 +15,13 @@ export default {
   },
 } as Meta<typeof PostCreate>;
 
-export const Default: StoryObj<typeof PostCreate> = {};
+export const Default: StoryObj<typeof PostCreate> = {
+  args: {
+    userId: "user-1",
+    theme: {
+      backgroundColor: "#dae2e6",
+      textColor: "#374151",
+      linkColor: "#3b82f6",
+    },
+  },
+};

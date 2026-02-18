@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Toast } from "../../components/elements/Toast";
 
 const meta = {
-  title: "Common/Toast",
+  title: "Shared/Toast",
   component: Toast,
   parameters: {
     layout: "centered",
