@@ -81,8 +81,6 @@ app.get("/storage/*", async (c) => {
     object.writeHttpMetadata(headers);
     headers.set("Cache-Control", "public, max-age=31536000");
 
-    console.log("API CI テスト");
-
     return new Response(object.body, { headers });
   } catch (error) {
     console.error("Storage error:", error);
