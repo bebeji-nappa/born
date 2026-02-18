@@ -2,7 +2,7 @@
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
-import AccountSettingTemplate from "@/components/templates/AccountSetting";
+import AccountSettingTemplate from "@/components/features/AccountSetting";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function AccountSettingPage() {

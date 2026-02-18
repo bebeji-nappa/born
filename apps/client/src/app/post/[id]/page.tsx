@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
-import PostDetailTemplate from "@/components/templates/PostDetail";
+import PostDetailTemplate from "@/components/features/PostDetail";
 import type { Post } from "@/lib/api";
 import { apiClient } from "@/lib/api";
 

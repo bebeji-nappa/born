@@ -1,7 +1,7 @@
 "use client";
 
 import { PageTitle } from "@/components/common/PageTitle";
-import VerifyEmailTemplate from "@/components/templates/VerifyEmail";
+import VerifyEmailTemplate from "@/components/features/VerifyEmail";
 
 export default function VerifyEmailPage() {
   return (

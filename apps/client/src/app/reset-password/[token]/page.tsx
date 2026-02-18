@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { PageTitle } from "@/components/common/PageTitle";
-import ResetPasswordTemplate from "@/components/templates/ResetPassword";
+import ResetPasswordTemplate from "@/components/features/ResetPassword";
 
 export default function ResetPasswordPage({
   params,

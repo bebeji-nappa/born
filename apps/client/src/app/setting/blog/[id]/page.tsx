@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { PageTitle } from "@/components/common/PageTitle";
-import BlogSettingTemplate from "@/components/templates/BlogSetting";
+import BlogSettingTemplate from "@/components/features/BlogSetting";
 import { apiClient, type User } from "@/lib/api";
 
 export default function BlogSettingPage() {
