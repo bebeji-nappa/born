@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import PostListManagement from "@/components/features/PostListManagement";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { PageTitle } from "@/components/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
-import { usePosts } from "@/hooks/usePosts";
+import PostListManagement from "@/features/PostListManagement";
+import { usePostListManagement } from "@/features/PostListManagement/usePostListManagement";
 
 export default function PostDashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -14,7 +14,7 @@ export default function PostDashboardPage() {
     posts,
     isLoading: postsLoading,
     deletePost,
-  } = usePosts(user?.id, false);
+  } = usePostListManagement(user?.id);
   const router = useRouter();
 
   useEffect(() => {

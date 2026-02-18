@@ -1,13 +1,13 @@
 "use client";
 
-import { PageTitle } from "@/components/common/PageTitle";
-import SignInTemplate from "@/components/features/SignIn";
+import { PageTitle } from "@/components/PageTitle";
+import SignIn from "@/features/SignIn";
 
 export default function SignInPage() {
   return (
     <>
       <PageTitle title="ログイン" />
-      <SignInTemplate />
+      <SignIn />
     </>
   );
 }

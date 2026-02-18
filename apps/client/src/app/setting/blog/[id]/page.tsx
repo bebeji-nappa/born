@@ -2,9 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import BlogSettingTemplate from "@/components/features/BlogSetting";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { PageTitle } from "@/components/PageTitle";
+import BlogSetting from "@/features/BlogSetting";
 import { apiClient, type User } from "@/lib/api";
 
 export default function BlogSettingPage() {
@@ -44,7 +44,7 @@ export default function BlogSettingPage() {
   return (
     <>
       <PageTitle title="ブログ設定" />
-      <BlogSettingTemplate blogId={Number(params.id)} user={user} />
+      <BlogSetting blogId={Number(params.id)} user={user} />
     </>
   );
 }

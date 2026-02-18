@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { composeStories } from "@storybook/react";
 import { render, screen } from "@testing-library/react";
-import * as stories from "@/components/common/BorderdButton/index.stories";
+import * as stories from "@/components/BorderdButton/index.stories";
 
 const { Primary } = composeStories(stories);
 

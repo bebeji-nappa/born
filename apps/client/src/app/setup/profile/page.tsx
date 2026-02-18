@@ -1,9 +1,9 @@
 "use client";
 
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import ProfileSetupTemplate from "@/components/features/ProfileSetup";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { PageTitle } from "@/components/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
+import ProfileSetup from "@/features/ProfileSetup";
 
 export default function ProfileSetupPage() {
   const { user, isLoading } = useAuth();
@@ -15,7 +15,7 @@ export default function ProfileSetupPage() {
   return (
     <>
       <PageTitle title="プロフィール登録" />
-      <ProfileSetupTemplate user={user} />
+      <ProfileSetup user={user} />
     </>
   );
 }

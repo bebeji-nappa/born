@@ -1,9 +1,9 @@
 "use client";
 
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import AccountSettingTemplate from "@/components/features/AccountSetting";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { PageTitle } from "@/components/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
+import AccountSetting from "@/features/AccountSetting";
 
 export default function AccountSettingPage() {
   const { user, isLoading } = useAuth();
@@ -15,7 +15,7 @@ export default function AccountSettingPage() {
   return (
     <>
       <PageTitle title="アカウント設定" />
-      <AccountSettingTemplate user={user} />
+      <AccountSetting user={user} />
     </>
   );
 }

@@ -3,7 +3,7 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
-import { PageTitle } from "@/components/common/PageTitle";
+import { PageTitle } from "@/components/PageTitle";
 
 const Wrapper = styled.div`
   display: flex;
