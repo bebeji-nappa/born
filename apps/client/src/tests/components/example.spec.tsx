@@ -1,10 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
-import SignInTemplate from "@/components/templates/SignIn";
+import SignIn from "@/features/signin/components/views/SignIn";
 
-describe("SignInTemplate", () => {
+describe("SignIn", () => {
   test("renders correctly", () => {
-    render(<SignInTemplate />);
+    render(<SignIn />);
     expect(screen.getByText("Sign in of GitHub")).toBeTruthy();
   });
 });
