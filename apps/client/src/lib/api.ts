@@ -24,12 +24,16 @@ export interface Post {
 }
 
 class ApiClient {
-  private baseUrl: string;
+  readonly baseUrl: string;
   private csrfToken: string | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.loadCsrfToken();
+  }
+
+  getCsrfToken(): string | null {
+    return this.csrfToken;
   }
 
   /**
@@ -64,7 +68,7 @@ class ApiClient {
   /**
    * CSRF保護が必要なリクエスト用のヘッダーを取得
    */
-  private getHeaders(includeCSRF: boolean = false): HeadersInit {
+  getHeaders(includeCSRF: boolean = false): HeadersInit {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
@@ -258,186 +262,7 @@ class ApiClient {
     return response.json();
   }
 
-  // User APIs
-  async getAllUsers(): Promise<{ users: User[] }> {
-    const response = await fetch(`${this.baseUrl}/api/users`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async getUserByEmail(email: string): Promise<{ user: User | null }> {
-    const url = new URL("/api/users/by-email", this.baseUrl);
-
-    const response = await fetch(`${url}?email=${encodeURIComponent(email)}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async getUserById(id: string): Promise<{ user: User | null }> {
-    const response = await fetch(`${this.baseUrl}/api/users/${id}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async getAuthUserId(email: string): Promise<{ userId: string }> {
-    const url = new URL("/api/users/auth-id", this.baseUrl);
-
-    const response = await fetch(`${url}?email=${encodeURIComponent(email)}`, {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async updateUserProfile(data: {
-    name?: string;
-    description?: string | null;
-  }): Promise<{ success: boolean; user: User }> {
-    const response = await fetch(`${this.baseUrl}/api/users/profile`, {
-      method: "PUT",
-      credentials: "include",
-      headers: this.getHeaders(true), // CSRF保護
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async updateUserAvatar(
-    file: File,
-  ): Promise<{ success: boolean; url: string; user: User }> {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const headers: HeadersInit = {};
-    if (this.csrfToken) {
-      headers["X-CSRF-Token"] = this.csrfToken;
-    }
-
-    const response = await fetch(`${this.baseUrl}/api/users/avatar/image`, {
-      method: "PUT",
-      credentials: "include",
-      headers, // CSRF保護（FormDataなのでContent-Typeは自動設定）
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async updateUserScreenName(
-    screen_name: string,
-  ): Promise<{ success: boolean; user: User }> {
-    const response = await fetch(`${this.baseUrl}/api/users/screen-name`, {
-      method: "PUT",
-      credentials: "include",
-      headers: this.getHeaders(true), // CSRF保護
-      body: JSON.stringify({ screen_name }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
-  async updatePassword(data: {
-    currentPassword: string;
-    password: string;
-    passwordConfirmation: string;
-  }): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(`${this.baseUrl}/api/users/password`, {
-      method: "PUT",
-      credentials: "include",
-      headers: this.getHeaders(true), // CSRF保護
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    // パスワード変更後、新しいCSRFトークンを保存
-    if (result.csrfToken) {
-      this.saveCsrfToken(result.csrfToken);
-    }
-
-    return result;
-  }
-
-  async getPendingEmailChange(): Promise<{
-    pending: boolean;
-    newEmail?: string;
-    expiresAt?: string;
-  }> {
-    const response = await fetch(`${this.baseUrl}/api/users/email/pending`, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async requestEmailChange(
-    newEmail: string,
-  ): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(`${this.baseUrl}/api/users/email/request`, {
-      method: "POST",
-      credentials: "include",
-      headers: this.getHeaders(true), // CSRF保護
-      body: JSON.stringify({ newEmail }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
+  // User APIs (認証関連のみ残す)
   async verifyEmailChange(
     token: string,
   ): Promise<{ success: boolean; message: string }> {

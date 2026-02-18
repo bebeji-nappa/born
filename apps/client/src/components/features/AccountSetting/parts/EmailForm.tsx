@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import type React from "react";
 import { type FC, useEffect, useState } from "react";
-import { apiClient, type User } from "@/lib/api";
+import type { User } from "@/lib/api";
+import { getPendingEmailChange, requestEmailChange } from "../api";
 
 const Section = styled.div`
   background: white;
@@ -146,7 +147,7 @@ const EmailForm: FC<EmailFormProps> = ({ user }) => {
   useEffect(() => {
     const checkPending = async () => {
       try {
-        const result = await apiClient.getPendingEmailChange();
+        const result = await getPendingEmailChange();
         if (result.pending && result.newEmail) {
           setIsPending(true);
           setPendingEmail(result.newEmail);
@@ -176,14 +177,14 @@ const EmailForm: FC<EmailFormProps> = ({ user }) => {
     setIsSubmitting(true);
 
     try {
-      await apiClient.requestEmailChange(email);
+      await requestEmailChange(email);
       setSuccess(
         "確認メールを送信しました。メール内のリンクをクリックして変更を完了してください。",
       );
       setEmail("");
       setShowForm(false);
       // 確認待ち状態を更新
-      const result = await apiClient.getPendingEmailChange();
+      const result = await getPendingEmailChange();
       if (result.pending && result.newEmail) {
         setIsPending(true);
         setPendingEmail(result.newEmail);

@@ -3,7 +3,8 @@ import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
-import { apiClient, type User } from "@/lib/api";
+import type { User } from "@/lib/api";
+import { updateUserProfile } from "../api";
 
 const Section = styled.div`
   background: white;
@@ -116,7 +117,7 @@ const ProfileForm: FC<ProfileFormProps> = ({ user }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await apiClient.updateUserProfile({
+      await updateUserProfile({
         name: data.name,
         description: data.description || null,
       });

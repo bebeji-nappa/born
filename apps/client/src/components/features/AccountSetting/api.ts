@@ -1,0 +1,98 @@
+import { apiClient, type User } from "@/lib/api";
+
+export async function updateUserProfile(data: {
+  name?: string;
+  description?: string | null;
+}): Promise<{ success: boolean; user: User }> {
+  const response = await fetch(`${apiClient.baseUrl}/api/users/profile`, {
+    method: "PUT",
+    credentials: "include",
+    headers: apiClient.getHeaders(true),
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function updateUserAvatar(
+  file: File,
+): Promise<{ success: boolean; url: string; user: User }> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const headers: HeadersInit = {};
+  const csrfToken = apiClient.getCsrfToken();
+  if (csrfToken) {
+    headers["X-CSRF-Token"] = csrfToken;
+  }
+
+  const response = await fetch(`${apiClient.baseUrl}/api/users/avatar/image`, {
+    method: "PUT",
+    credentials: "include",
+    headers,
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function updateUserScreenName(
+  screen_name: string,
+): Promise<{ success: boolean; user: User }> {
+  const response = await fetch(`${apiClient.baseUrl}/api/users/screen-name`, {
+    method: "PUT",
+    credentials: "include",
+    headers: apiClient.getHeaders(true),
+    body: JSON.stringify({ screen_name }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+export async function getPendingEmailChange(): Promise<{
+  pending: boolean;
+  newEmail?: string;
+  expiresAt?: string;
+}> {
+  const response = await fetch(`${apiClient.baseUrl}/api/users/email/pending`, {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function requestEmailChange(
+  newEmail: string,
+): Promise<{ success: boolean; message: string }> {
+  const response = await fetch(`${apiClient.baseUrl}/api/users/email/request`, {
+    method: "POST",
+    credentials: "include",
+    headers: apiClient.getHeaders(true),
+    body: JSON.stringify({ newEmail }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || `API Error: ${response.status}`);
+  }
+
+  return response.json();
+}

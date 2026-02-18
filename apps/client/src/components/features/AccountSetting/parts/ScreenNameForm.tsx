@@ -3,7 +3,8 @@ import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
-import { apiClient, type User } from "@/lib/api";
+import type { User } from "@/lib/api";
+import { updateUserScreenName } from "../api";
 
 const Section = styled.div`
   background: white;
@@ -85,7 +86,7 @@ const ScreenNameForm: FC<ScreenNameFormProps> = ({ user }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await apiClient.updateUserScreenName(data.screen_name);
+      await updateUserScreenName(data.screen_name);
       await refetch();
       showToast("ユーザIDを更新しました", "success");
     } catch (err) {

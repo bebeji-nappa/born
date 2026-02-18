@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import { type FC, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
-import { apiClient, type User } from "@/lib/api";
+import type { User } from "@/lib/api";
+import { updateUserAvatar } from "./api";
 import AvatarUploadForm from "./parts/AvatarUploadForm";
 import EmailForm from "./parts/EmailForm";
 import PasswordForm from "./parts/PasswordForm";
@@ -71,7 +72,7 @@ const AccountSettingTemplate: FC<Props> = ({ user }) => {
     }
 
     try {
-      const result = await apiClient.updateUserAvatar(file);
+      const result = await updateUserAvatar(file);
       setAvatarPreview(result.url);
       // ヘッダーのアバターを更新
       await refetch();
