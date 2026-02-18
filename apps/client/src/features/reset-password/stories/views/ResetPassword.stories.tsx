@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import ResetPassword from "../../components/views/ResetPassword";
 
 export default {
-  title: "ResetPassword",
+  title: "Features/ResetPassword",
   component: ResetPassword,
 } as Meta<typeof ResetPassword>;
 

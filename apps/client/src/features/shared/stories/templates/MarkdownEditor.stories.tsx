@@ -11,7 +11,7 @@ const PreviewComponent = ({ content }: { content: string }) => (
 );
 
 const meta = {
-  title: "Common/MarkdownEditor",
+  title: "Shared/MarkdownEditor",
   component: MarkdownEditor,
   parameters: {
     layout: "padded",

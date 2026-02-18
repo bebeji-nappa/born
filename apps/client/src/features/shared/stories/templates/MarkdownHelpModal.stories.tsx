@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import MarkdownHelpModal from "../../components/templates/MarkdownHelpModal";
 
 const meta = {
-  title: "Common/MarkdownHelpModal",
+  title: "Shared/MarkdownHelpModal",
   component: MarkdownHelpModal,
   parameters: {
     layout: "fullscreen",

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import BorderedButton from "../../components/elements/BorderedButton";
 
 export default {
-  title: "BorderedButton",
+  title: "Shared/BorderedButton",
   component: BorderedButton,
   args: {
     children: "Button",

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import LoadingSpinner from "../../components/elements/LoadingSpinner";
 
 export default {
-  title: "Common/LoadingSpinner",
+  title: "Shared/LoadingSpinner",
   component: LoadingSpinner,
   parameters: {
     layout: "fullscreen",

@@ -12,4 +12,11 @@ export default {
   },
 } as Meta<typeof PostList>;
 
-export const Default: StoryObj<typeof PostList> = {};
+export const Default: StoryObj<typeof PostList> = {
+  args: {
+    posts: [],
+    blog: null,
+    pagination: null,
+    onPageChange: () => {},
+  },
+};
