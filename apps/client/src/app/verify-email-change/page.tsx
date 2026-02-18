@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import VerifyEmailChangeTemplate from "@/components/templates/VerifyEmailChange";
+import VerifyEmailChangeTemplate from "@/components/features/VerifyEmailChange";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiClient } from "@/lib/api";
 
