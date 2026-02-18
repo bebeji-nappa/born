@@ -2,11 +2,11 @@
 
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import PostListTemplate from "@/components/templates/PostList";
-import { useAuth } from "@/contexts/AuthContext";
-import { usePosts } from "@/hooks/usePosts";
+import PostList from "@/features/blog/components/views/PostList";
+import { usePostList } from "@/features/blog/hooks/usePostList";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 type Blog = {
   id: number;
@@ -35,7 +35,7 @@ export default function UserBlogPage() {
     posts,
     pagination,
     isLoading: postsLoading,
-  } = usePosts(userId || undefined, true, page, 10);
+  } = usePostList(userId || undefined, true, page, 10);
 
   const fetchUserAndBlog = useCallback(async () => {
     try {
@@ -78,7 +78,7 @@ export default function UserBlogPage() {
   return (
     <>
       {pageTitle && <PageTitle title={pageTitle} />}
-      <PostListTemplate
+      <PostList
         posts={posts}
         blog={blog}
         pagination={pagination}

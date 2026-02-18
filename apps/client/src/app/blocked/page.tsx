@@ -1,7 +1,7 @@
 "use client";
 
-import BlockedTemplate from "@/components/templates/Blocked";
+import Blocked from "@/features/blocked/components/views/Blocked";
 
 export default function BlockedPage() {
-  return <BlockedTemplate />;
+  return <Blocked />;
 }

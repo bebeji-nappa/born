@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import PostCreateTemplate from "@/components/templates/PostCreate";
-import { useAuth } from "@/contexts/AuthContext";
+import PostCreate from "@/features/post/components/views/PostCreate";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 interface ThemeConfig {
   backgroundColor: string;
@@ -63,7 +63,7 @@ export default function PostCreatePage() {
   return (
     <>
       <PageTitle title="新規投稿" />
-      <PostCreateTemplate userId={user.id} theme={theme} />
+      <PostCreate userId={user.id} theme={theme} />
     </>
   );
 }
