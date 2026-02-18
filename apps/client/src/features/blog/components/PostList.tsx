@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { Post } from "@/lib/api";
 // biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 type Blog = {
   id: number;

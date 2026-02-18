@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 const StyledPageHeader = styled.header`
   background: #ffffff;

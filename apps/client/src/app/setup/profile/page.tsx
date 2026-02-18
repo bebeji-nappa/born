@@ -2,8 +2,8 @@
 
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import { useAuth } from "@/contexts/AuthContext";
 import ProfileSetup from "@/features/setup/profile/components/ProfileSetup";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 export default function ProfileSetupPage() {
   const { user, isLoading } = useAuth();

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
-import { useAuth } from "@/contexts/AuthContext";
 import PostCreate from "@/features/post/create/components/PostCreate";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 interface ThemeConfig {
   backgroundColor: string;

@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import type React from "react";
 import { type FC, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
 import type { User } from "@/lib/api";
+import { useAuth } from "@/utils/contexts/AuthContext";
 import { updateUserAvatar } from "../api";
 import AvatarUploadForm from "./AvatarUploadForm";
 import ProfileForm from "./ProfileForm";

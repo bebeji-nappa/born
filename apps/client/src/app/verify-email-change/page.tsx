@@ -3,9 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { verifyEmailChange } from "@/features/verify-email-change/api";
 import VerifyEmailChange from "@/features/verify-email-change/components/VerifyEmailChange";
+import { useAuth } from "@/utils/contexts/AuthContext";
 
 const VerifyEmailChangePage: React.FC = () => {
   const searchParams = useSearchParams();

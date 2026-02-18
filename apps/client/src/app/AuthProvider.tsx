@@ -7,8 +7,8 @@ import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import {
   AuthProvider as AuthContextProvider,
   useAuth,
-} from "@/contexts/AuthContext";
-import { useLoading } from "@/contexts/LoadingContext";
+} from "@/utils/contexts/AuthContext";
+import { useLoading } from "@/utils/contexts/LoadingContext";
 
 export type AuthGuardProps = {
   children: React.ReactNode;
