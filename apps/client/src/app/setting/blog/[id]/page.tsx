@@ -2,8 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { PageTitle } from "@/components/PageTitle";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import BlogSetting from "@/features/BlogSetting";
 import { apiClient, type User } from "@/lib/api";
 

@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { createContext, useCallback, useContext, useState } from "react";
-import { Toast } from "@/components/Toast";
+import { Toast } from "@/components/elements/Toast";
 
 type ToastType = "success" | "error";
 

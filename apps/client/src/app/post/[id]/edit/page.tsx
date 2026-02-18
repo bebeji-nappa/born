@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { PageTitle } from "@/components/PageTitle";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePost } from "@/features/PostDetail/usePost";
 import PostEdit from "@/features/PostEdit";

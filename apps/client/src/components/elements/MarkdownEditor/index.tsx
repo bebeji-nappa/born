@@ -9,8 +9,8 @@ import {
   BsTypeStrikethrough,
 } from "react-icons/bs";
 import { FiCode, FiImage, FiInfo, FiLink, FiSmile } from "react-icons/fi";
-import EmojiPicker from "@/components/EmojiPicker";
-import MarkdownHelpModal from "@/components/MarkdownHelpModal";
+import EmojiPicker from "@/components/elements/EmojiPicker";
+import MarkdownHelpModal from "@/components/elements/MarkdownHelpModal";
 import { useToast } from "@/hooks/useToast";
 
 const EditorWrapper = styled.div`

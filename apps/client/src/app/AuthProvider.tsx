@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import {
   AuthProvider as AuthContextProvider,
   useAuth,

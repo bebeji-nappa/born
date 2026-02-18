@@ -2,8 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { PageTitle } from "@/components/PageTitle";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import { useAuth } from "@/contexts/AuthContext";
 import PostList from "@/features/PostList";
 import { usePostList } from "@/features/PostList/usePostList";

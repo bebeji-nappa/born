@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { PageTitle } from "@/components/PageTitle";
+import LoadingSpinner from "@/components/elements/LoadingSpinner";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import PostDetail from "@/features/PostDetail";
 import { getPostById } from "@/features/PostDetail/api";
 import type { Post } from "@/lib/api";

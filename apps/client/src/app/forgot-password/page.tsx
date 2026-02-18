@@ -1,6 +1,6 @@
 "use client";
 
-import { PageTitle } from "@/components/PageTitle";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import ForgotPassword from "@/features/ForgotPassword";
 
 export default function ForgotPasswordPage() {

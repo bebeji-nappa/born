@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageTitle } from "@/components/PageTitle";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import Home from "@/features/Home";
 
 export const metadata: Metadata = {

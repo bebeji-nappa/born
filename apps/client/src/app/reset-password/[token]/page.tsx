@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { PageTitle } from "@/components/PageTitle";
+import { PageTitle } from "@/components/layouts/PageTitle";
 import ResetPassword from "@/features/ResetPassword";
 
 export default function ResetPasswordPage({
