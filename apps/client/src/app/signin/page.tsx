@@ -1,7 +1,7 @@
 "use client";
 
 import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
-import SignIn from "@/features/signin/components/views/SignIn";
+import SignIn from "@/features/signIn/components/views/SignIn";
 
 export default function SignInPage() {
   return (
