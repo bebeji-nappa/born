@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllPostsByUserId } from "@/features/blog/api";
+import { getAllPostsByUserId } from "@/features/blog/api/blog";
 import type { Post } from "@/utils/api";
 import { deletePost as deletePostApi } from "../api/dashboard";
 

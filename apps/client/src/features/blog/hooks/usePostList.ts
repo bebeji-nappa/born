@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Post } from "@/utils/api";
-import { getAllPostsByUserId } from "../api";
+import { getAllPostsByUserId } from "../api/blog";
 
 type Pagination = {
   page: number;

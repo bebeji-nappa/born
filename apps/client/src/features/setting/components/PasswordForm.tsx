@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import type React from "react";
 import { type FC, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { forgotPassword } from "@/features/forgot-password/api";
+import { forgotPassword } from "@/features/forgot-password/api/forgot-password";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";

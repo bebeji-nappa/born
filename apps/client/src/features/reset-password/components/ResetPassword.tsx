@@ -8,7 +8,7 @@ import type React from "react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { validatePassword } from "@/utils/validation";
-import { resetPassword } from "../api";
+import { resetPassword } from "../api/reset-password";
 
 const Wrapper = styled.div`
   display: flex;

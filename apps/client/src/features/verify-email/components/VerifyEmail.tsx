@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FiCheckCircle, FiLoader, FiXCircle } from "react-icons/fi";
-import { verifyEmail as verifyEmailApi } from "../api";
+import { verifyEmail as verifyEmailApi } from "../api/verify-email";
 
 const Wrapper = styled.div`
   display: flex;

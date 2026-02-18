@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import { forgotPassword } from "../api";
+import { forgotPassword } from "../api/forgot-password";
 
 const Wrapper = styled.div`
   display: flex;

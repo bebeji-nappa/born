@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiAlertTriangle } from "react-icons/fi";
-import { getRateLimitStatus } from "../api";
+import { getRateLimitStatus } from "../api/blocked";
 
 const Wrapper = styled.div`
   display: flex;
