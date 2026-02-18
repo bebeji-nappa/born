@@ -1,13 +1,13 @@
 "use client";
 
-import { PageTitle } from "@/components/common/PageTitle";
-import ForgotPasswordTemplate from "@/components/templates/ForgotPassword";
+import ForgotPassword from "@/features/forgot-password/components/views/ForgotPassword";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
 
 export default function ForgotPasswordPage() {
   return (
     <>
       <PageTitle title="パスワードをお忘れですか" />
-      <ForgotPasswordTemplate />
+      <ForgotPassword />
     </>
   );
 }

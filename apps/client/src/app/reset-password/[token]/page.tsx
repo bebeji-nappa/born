@@ -1,8 +1,8 @@
 "use client";
 
 import { use } from "react";
-import { PageTitle } from "@/components/common/PageTitle";
-import ResetPasswordTemplate from "@/components/templates/ResetPassword";
+import ResetPassword from "@/features/reset-password/components/views/ResetPassword";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
 
 export default function ResetPasswordPage({
   params,
@@ -14,7 +14,7 @@ export default function ResetPasswordPage({
   return (
     <>
       <PageTitle title="パスワードをリセット" />
-      <ResetPasswordTemplate token={token} />
+      <ResetPassword token={token} />
     </>
   );
 }

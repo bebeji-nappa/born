@@ -1,11 +1,11 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { PageTitle } from "@/components/common/PageTitle";
-import PostEditTemplate from "@/components/templates/PostEdit";
-import { useAuth } from "@/contexts/AuthContext";
-import { usePost } from "@/hooks/usePosts";
+import PostEdit from "@/features/post/components/views/PostEdit";
+import { usePost } from "@/features/post/hooks/usePost";
+import LoadingSpinner from "@/features/shared/components/elements/LoadingSpinner";
+import { PageTitle } from "@/features/shared/components/layouts/PageTitle";
+import { useAuth } from "@/features/shared/utils/contexts/AuthContext";
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +73,7 @@ export default function PostEditPage({
   return (
     <>
       <PageTitle title={`${post.title}の編集`} />
-      <PostEditTemplate
+      <PostEdit
         id={post.id}
         title={post.title}
         content={post.content}

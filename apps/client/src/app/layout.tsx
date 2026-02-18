@@ -2,10 +2,13 @@
 
 import { Inter } from "next/font/google";
 import { usePathname } from "next/navigation";
-import { PageHeader } from "@/components/common/PageHeader";
-import { LoadingProvider, useLoading } from "@/contexts/LoadingContext";
-import { ToastProvider } from "@/hooks/useToast";
-import AuthProvider from "./AuthProvider";
+import AuthProvider from "@/features/shared/components/layouts/AuthProvider";
+import { PageHeader } from "@/features/shared/components/layouts/PageHeader";
+import { ToastProvider } from "@/features/shared/hooks/useToast";
+import {
+  LoadingProvider,
+  useLoading,
+} from "@/features/shared/utils/contexts/LoadingContext";
 import "../styles/reset.css";
 
 const inter = Inter({ subsets: ["latin"] });
