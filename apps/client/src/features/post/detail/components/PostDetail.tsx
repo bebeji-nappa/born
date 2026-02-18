@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { Richmd } from "@richmd/react";
 import dayjs from "dayjs";
 import type { FC } from "react";
-import type { Post, User } from "@/lib/api";
+import type { Post, User } from "@/utils/api";
 // biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 import Link from "next/link";

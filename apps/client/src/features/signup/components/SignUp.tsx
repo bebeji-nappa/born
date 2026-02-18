@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { apiClient } from "@/lib/api";
-import { validatePassword } from "@/lib/validation";
+import { apiClient } from "@/utils/api";
+import { validatePassword } from "@/utils/validation";
 
 const Wrapper = styled.div`
   display: flex;

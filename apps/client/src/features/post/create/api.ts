@@ -1,4 +1,4 @@
-import { apiClient, type Post } from "@/lib/api";
+import { apiClient, type Post } from "@/utils/api";
 
 export async function createPost(
   title: string,

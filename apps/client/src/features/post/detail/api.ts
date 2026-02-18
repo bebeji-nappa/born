@@ -1,4 +1,4 @@
-import { apiClient, type Post } from "@/lib/api";
+import { apiClient, type Post } from "@/utils/api";
 
 export async function getPostById(id: number): Promise<{ post: Post }> {
   const response = await fetch(`${apiClient.baseUrl}/api/posts/${id}`, {

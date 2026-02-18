@@ -4,7 +4,7 @@ import { type FC, useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { forgotPassword } from "@/features/forgot-password/api";
 import { useToast } from "@/hooks/useToast";
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
 
 const Section = styled.section`

@@ -1,4 +1,4 @@
-import { apiClient, type User } from "@/lib/api";
+import { apiClient, type User } from "@/utils/api";
 
 export async function updateUserProfile(data: {
   name?: string;

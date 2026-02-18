@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAllPostsByUserId } from "@/features/blog/api";
-import type { Post } from "@/lib/api";
+import type { Post } from "@/utils/api";
 import { deletePost as deletePostApi } from "../api";
 
 export function usePostListManagement(userId?: string) {

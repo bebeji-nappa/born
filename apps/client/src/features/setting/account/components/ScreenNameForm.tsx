@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/useToast";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
 import { updateUserScreenName } from "../api";
 

@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import { type FC, useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 
 const Background = styled.div<{ bgColor?: string }>`
   background: ${(props) => props.bgColor || "#dae2e6"};

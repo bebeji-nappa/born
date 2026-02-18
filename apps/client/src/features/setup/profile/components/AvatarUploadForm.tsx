@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { type ChangeEvent, type FC, useRef } from "react";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 
 const Section = styled.div`
   display: flex;

@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { apiClient, getCurrentUser, type User } from "@/lib/api";
+import { apiClient, getCurrentUser, type User } from "@/utils/api";
 
 interface AuthContextType {
   user: User | null;

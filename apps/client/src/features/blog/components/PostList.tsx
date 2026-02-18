@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import type { Post } from "@/lib/api";
+import type { Post } from "@/utils/api";
 // biome-ignore lint/style/noNonNullAssertion: ignore
 import "@richmd/react/dist/richmd.css";
 import { useAuth } from "@/utils/contexts/AuthContext";

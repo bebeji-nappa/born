@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/utils/api";
 
 export const useSignIn = () => {
   const router = useRouter();

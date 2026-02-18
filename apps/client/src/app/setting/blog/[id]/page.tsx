@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/elements/LoadingSpinner";
 import { PageTitle } from "@/components/layouts/PageTitle";
 import BlogSetting from "@/features/setting/blog/components/BlogSetting";
-import { getCurrentUser, type User } from "@/lib/api";
+import { getCurrentUser, type User } from "@/utils/api";
 
 export default function BlogSettingPage() {
   const params = useParams();

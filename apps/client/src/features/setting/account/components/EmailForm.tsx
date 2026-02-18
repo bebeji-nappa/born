@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import type React from "react";
 import { type FC, useEffect, useState } from "react";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 import { getPendingEmailChange, requestEmailChange } from "../api";
 
 const Section = styled.div`

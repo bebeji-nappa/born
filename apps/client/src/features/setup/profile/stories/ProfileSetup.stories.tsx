@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 import ProfileSetup from "../components/ProfileSetup";
 
 const mockUser: User = {

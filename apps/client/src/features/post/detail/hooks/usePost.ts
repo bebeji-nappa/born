@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Post } from "@/lib/api";
+import type { Post } from "@/utils/api";
 import { getPostById } from "../api";
 
 export function usePost(id: number) {

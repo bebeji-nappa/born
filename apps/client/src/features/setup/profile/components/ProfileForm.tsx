@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import type { User } from "@/lib/api";
+import type { User } from "@/utils/api";
 import { useAuth } from "@/utils/contexts/AuthContext";
 import { updateUserProfile } from "../api";
 
