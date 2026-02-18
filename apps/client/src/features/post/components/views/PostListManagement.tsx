@@ -218,7 +218,15 @@ const PostListManagement: FC<PostListManagementProps> = ({
             <PostCard key={post.id}>
               <PostInfo>
                 <PostTitle>
-                  <Link href={`/post/${post.id}`}>{post.title}</Link>
+                  <Link
+                    href={
+                      post.published
+                        ? `/post/${post.id}`
+                        : `/post/${post.id}/edit`
+                    }
+                  >
+                    {post.title}
+                  </Link>
                   {!post.published && <DraftBadge>下書き</DraftBadge>}
                 </PostTitle>
                 <PostMeta>
