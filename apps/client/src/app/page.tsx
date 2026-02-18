@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  console.log("Client CI テスト");
   return (
     <>
       <PageTitle title="ホーム" />
