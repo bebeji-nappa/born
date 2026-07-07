@@ -34,10 +34,10 @@
     "@trpc/next": "^11.18.0",
     "@trpc/react-query": "^11.18.0",
     "@trpc/server": "^11.18.0",
-    "@vercel/og": "^0.8.6",
+    "@vercel/og": "^0.11.1",
     "ahooks": "^3.9.7",
     "dayjs": "^1.11.21",
-    "next": "16.1.6",
+    "next": "16.2.10",
     "node-emoji": "^2.2.0",
     "react": "^19.2.7",
     "react-aria": "^3.50.0",
@@ -69,6 +69,6 @@
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "webpack": "5.105.2"
+    "webpack": "5.108.4"
   }
 }
