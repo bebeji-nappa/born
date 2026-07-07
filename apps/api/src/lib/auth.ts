@@ -71,13 +71,13 @@ export async function getSessionUser(
 
   return {
     id: result.user.id,
-    email: result.user.email!,
-    name: result.user.name!,
+    email: result.user.email ?? "",
+    name: result.user.name ?? "",
     screen_name: result.user.screen_name,
     image: result.user.image,
     description: result.user.description,
     github_id: result.user.github_id,
-    createdAt: new Date(result.user.createdAt!),
+    createdAt: new Date(result.user.createdAt),
   };
 }
 
