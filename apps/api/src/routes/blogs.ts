@@ -12,7 +12,7 @@ import {
 } from "../services/blogs.service";
 
 type Bindings = {
-  DB: any;
+  DB: D1Database;
   STORAGE: R2Bucket;
   STORAGE_URL: string;
   NODE_ENV: string;
@@ -98,6 +98,7 @@ blogs.put(
       const result = await updateBlog(id, title, description, theme, c.env);
       return c.json(result);
     } catch (error) {
+      console.error("Blog update error:", error);
       return c.json({ error: "Failed to update blog" }, 500);
     }
   },

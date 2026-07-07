@@ -243,7 +243,11 @@ auth.get("/callback/github", async (c) => {
         .run();
     } else {
       // 既存ユーザーの場合、github_idがなければ追加
-      const updateData: any = {
+      const updateData: {
+        name: string | null;
+        image: string | null;
+        github_id?: string;
+      } = {
         name: user.name || githubUser.name,
         image: githubUser.avatar_url,
       };
@@ -427,7 +431,7 @@ auth.post(
         .from(users)
         .where(eq(users.email, email))
         .get();
-      if (!user || !user.hash) {
+      if (!user?.hash) {
         return c.json({ error: "Invalid email or password" }, 401);
       }
 
@@ -983,7 +987,7 @@ auth.post(
         .where(eq(users.id, resetToken.userId))
         .get();
 
-      if (!user || !user.email) {
+      if (!user?.email) {
         return c.json({ error: "User not found" }, 404);
       }
 

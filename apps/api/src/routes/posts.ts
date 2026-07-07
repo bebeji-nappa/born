@@ -6,6 +6,7 @@ import { csrfProtection } from "../middleware/csrf";
 import {
   createPost,
   deletePostById,
+  getAllPosts,
   getAllPostsByUserId,
   getPostById,
   updatePostById,
@@ -23,6 +24,7 @@ posts.get("/", async (c) => {
     const result = await getAllPosts(c.env, user.id, true);
     return c.json(result);
   } catch (error) {
+    console.error("Posts fetch error:", error);
     return c.json({ error: "Failed to fetch posts" }, 500);
   }
 });
@@ -70,6 +72,7 @@ posts.get(
       );
       return c.json(result);
     } catch (error) {
+      console.error("Posts fetch error:", error);
       return c.json({ error: "Failed to fetch posts" }, 500);
     }
   },
@@ -105,6 +108,7 @@ posts.post(
       );
       return c.json(result, 201);
     } catch (error) {
+      console.error("Post create error:", error);
       return c.json({ error: "Failed to create post" }, 500);
     }
   },
@@ -135,6 +139,7 @@ posts.put(
       const result = await updatePostById(id, title, content, published, c.env);
       return c.json(result);
     } catch (error) {
+      console.error("Post update error:", error);
       return c.json({ error: "Failed to update post" }, 500);
     }
   },
@@ -155,6 +160,7 @@ posts.delete(
       const result = await deletePostById(id, c.env);
       return c.json(result);
     } catch (error) {
+      console.error("Post delete error:", error);
       return c.json({ error: "Failed to delete post" }, 500);
     }
   },
