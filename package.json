@@ -8,15 +8,12 @@
     "lint": "turbo run lint",
     "prepare": "husky"
   },
-  "packageManager": "pnpm@10.29.3",
+  "packageManager": "pnpm@10.34.4",
   "dependencies": {
     "husky": "^9.1.7",
-    "turbo": "^2.8.9"
+    "turbo": "^2.10.4"
   },
   "devDependencies": {
-    "lint-staged": "^16.2.3"
-  },
-  "volta": {
-    "node": "24.13.1"
+    "lint-staged": "^17.0.8"
   }
 }
