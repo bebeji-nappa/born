@@ -34,13 +34,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
-    "@cloudflare/vitest-pool-workers": "^0.18.0",
-    "@cloudflare/workers-types": "^5.20260707.1",
+    "@cloudflare/vitest-pool-workers": "^0.12.12",
+    "@cloudflare/workers-types": "^4.20260217.0",
     "@types/node": "^26.1.0",
     "drizzle-kit": "^0.31.10",
     "lint-staged": "^17.0.8",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.10",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
     "wrangler": "^4.107.0"
   }
 }
