@@ -20,17 +20,6 @@ import {
   getUserbyId,
 } from "../services/users.service";
 
-// Cookie domain helper - クライアントとAPIが異なるサブドメインの場合に対応
-function getCookieDomain(nodeEnv?: string): string | undefined {
-  if (nodeEnv === "production") {
-    return "born-docs.com";
-  } else if (nodeEnv === "staging") {
-    return ".born-docs.com";
-  }
-  // ローカル開発環境ではdomainを指定しない
-  return undefined;
-}
-
 type Bindings = {
   DATABASE_URL: string;
   DB: D1Database;
@@ -97,6 +86,7 @@ users.get(
         .get();
       return c.json({ user: user || null });
     } catch (error) {
+      console.error("User fetch by screen name error:", error);
       return c.json({ error: "Failed to fetch user by screen name" }, 500);
     }
   },
@@ -111,6 +101,7 @@ users.get(
       const result = await getUserbyId(id, c.env);
       return c.json(result);
     } catch (error) {
+      console.error("User fetch error:", error);
       return c.json({ error: "Failed to fetch user" }, 500);
     }
   },
@@ -139,7 +130,7 @@ users.put("/profile", async (c) => {
       .where(eq(sessions.sessionToken, sessionToken))
       .get();
 
-    if (!result || !result.user) {
+    if (!result?.user) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -205,7 +196,7 @@ users.put("/screen-name", async (c) => {
       .where(eq(sessions.sessionToken, sessionToken))
       .get();
 
-    if (!result || !result.user) {
+    if (!result?.user) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -278,7 +269,7 @@ users.put("/avatar/image", async (c) => {
       .where(eq(sessions.sessionToken, sessionToken))
       .get();
 
-    if (!result || !result.user) {
+    if (!result?.user) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -429,7 +420,7 @@ users.put(
         .where(eq(sessions.sessionToken, sessionToken))
         .get();
 
-      if (!result || !result.user) {
+      if (!result?.user) {
         return c.json({ error: "Unauthorized" }, 401);
       }
 
@@ -513,7 +504,7 @@ users.get("/email/pending", async (c) => {
       .where(eq(sessions.sessionToken, sessionToken))
       .get();
 
-    if (!result || !result.user) {
+    if (!result?.user) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
@@ -578,7 +569,7 @@ users.post(
         .where(eq(sessions.sessionToken, sessionToken))
         .get();
 
-      if (!result || !result.user) {
+      if (!result?.user) {
         return c.json({ error: "Unauthorized" }, 401);
       }
 

@@ -20,13 +20,16 @@ export function sanitizeText(input: string | null | undefined): string | null {
   if (!input) return null;
 
   // 制御文字やスクリプトタグを削除
-  return input
-    .replace(/[\u0000-\u001F\u007F]/g, "") // 制御文字削除
-    .replace(/<script[^>]*>.*?<\/script>/gi, "") // scriptタグ削除
-    .replace(/<iframe[^>]*>.*?<\/iframe>/gi, "") // iframeタグ削除
-    .replace(/javascript:/gi, "") // javascript:プロトコル削除
-    .replace(/on\w+\s*=/gi, "") // onイベント属性削除
-    .trim();
+  return (
+    input
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: 制御文字を意図的に除去するための正規表現
+      .replace(/[\u0000-\u001F\u007F]/g, "") // 制御文字削除
+      .replace(/<script[^>]*>.*?<\/script>/gi, "") // scriptタグ削除
+      .replace(/<iframe[^>]*>.*?<\/iframe>/gi, "") // iframeタグ削除
+      .replace(/javascript:/gi, "") // javascript:プロトコル削除
+      .replace(/on\w+\s*=/gi, "") // onイベント属性削除
+      .trim()
+  );
 }
 
 /**
