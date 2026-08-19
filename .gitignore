@@ -2,3 +2,5 @@ node_modules
 .turbo
 .DS_Store
 *.bak
+.idea/
+.idea/**
